@@ -1,11 +1,13 @@
 import { FormEvent } from 'react';
+import { Link } from '@inertiajs/react';
 
 interface BbsMenuProps {
     counter: number;
     installedAt: string;
+    perPage: number;
 }
 
-export default function BbsMenu({ counter, installedAt }: BbsMenuProps) {
+export default function BbsMenu({ counter, installedAt, perPage }: BbsMenuProps) {
     const installedDate = new Date(installedAt);
     const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
 
@@ -45,6 +47,10 @@ export default function BbsMenu({ counter, installedAt }: BbsMenuProps) {
                 >
                     Post / Reload
                 </button>
+                {' '}
+                <Link href={`/?readnew=1&d=${perPage}`}>
+                    <button type="button">Unread</button>
+                </Link>
             </div>
 
             <hr />

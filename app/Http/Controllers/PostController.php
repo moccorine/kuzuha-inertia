@@ -14,13 +14,25 @@ class PostController extends Controller
         $perPage = $request->query('d', 40);
         $perPage = max(1, min((int)$perPage, 200)); // 1-200の範囲に制限
         
-        $posts = Post::with(['parent', 'thread'])
-            ->latest()
-            ->paginate($perPage)
+        $query = Post::with(['parent', 'thread'])->latest();
+        
+        // 未読モード
+        $readnew = $request->query('readnew');
+        $lastSeenId = $request->cookie('last_seen_post_id');
+        
+        if ($readnew && $lastSeenId) {
+            $query->where('id', '>', $lastSeenId);
+        }
+        
+        $posts = $query->paginate($perPage)
             ->onEachSide(1)
             ->appends(['d' => $perPage]);
 
         $counter = increment_counter();
+        
+        // 最新のpost IDをCookieに保存
+        $latestPostId = Post::max('id');
+        cookie()->queue('last_seen_post_id', $latestPostId, 60 * 24 * 365); // 1年間保存
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
@@ -28,6 +40,7 @@ class PostController extends Controller
             'appName' => config('app.name'),
             'counter' => $counter,
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
+            'latestPostId' => $latestPostId,
         ]);
     }
 

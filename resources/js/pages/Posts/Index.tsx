@@ -39,7 +39,7 @@ export default function Index({ posts, perPage, appName, counter, installedAt }:
 
                 <PostForm perPage={perPage} />
 
-                <BbsMenu counter={counter} installedAt={installedAt} />
+                <BbsMenu counter={counter} installedAt={installedAt} perPage={perPage} />
 
                 {posts.data.length === 0 ? (
                     <div style={{ fontSize: '15px', fontStyle: 'italic' }}>
