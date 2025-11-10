@@ -17,12 +17,13 @@ interface Props {
     posts: {
         data: Post[];
     };
+    perPage: number;
     appName: string;
     counter: number;
     installedAt: string;
 }
 
-export default function Index({ posts, appName, counter, installedAt }: Props) {
+export default function Index({ posts, perPage, appName, counter, installedAt }: Props) {
     return (
         <GuestLayout>
             <Head title={appName} />
@@ -31,7 +32,7 @@ export default function Index({ posts, appName, counter, installedAt }: Props) {
                     <Link href="/">{appName}</Link>
                 </div>
 
-                <PostForm />
+                <PostForm perPage={perPage} />
 
                 <BbsMenu counter={counter} installedAt={installedAt} />
 

@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
+    public $incrementing = false;
+    
     protected $fillable = [
+        'id',
         'thread_id',
         'parent_id',
         'username',

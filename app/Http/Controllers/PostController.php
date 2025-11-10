@@ -9,16 +9,20 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->query('d', 40);
+        $perPage = max(1, min((int)$perPage, 200)); // 1-200の範囲に制限
+        
         $posts = Post::with(['parent', 'thread'])
             ->latest()
-            ->paginate(50);
+            ->paginate($perPage);
 
         $counter = increment_counter();
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
+            'perPage' => $perPage,
             'appName' => config('app.name'),
             'counter' => $counter,
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),

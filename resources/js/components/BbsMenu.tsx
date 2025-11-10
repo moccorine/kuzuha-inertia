@@ -1,3 +1,5 @@
+import { FormEvent } from 'react';
+
 interface BbsMenuProps {
     counter: number;
     installedAt: string;

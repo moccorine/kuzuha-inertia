@@ -1,20 +1,53 @@
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
-export default function PostForm() {
+interface PostFormProps {
+    perPage: number;
+}
+
+export default function PostForm({ perPage }: PostFormProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',
         email: '',
         title: '',
         body: '',
         url: '',
+        d: perPage,
     });
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('bbsFormData');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                setData({
+                    username: parsed.username || '',
+                    email: parsed.email || '',
+                    title: '',
+                    body: '',
+                    url: '',
+                    d: parsed.d || perPage,
+                });
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        
+        // Save to localStorage
+        localStorage.setItem('bbsFormData', JSON.stringify({
+            username: data.username,
+            email: data.email,
+            d: data.d,
+        }));
+        
         post('/posts', {
             onSuccess: () => reset('body', 'title', 'url'),
         });
@@ -56,6 +89,15 @@ export default function PostForm() {
                         value={data.title}
                         onChange={(e) => setData('title', e.target.value)}
                         style={{ display: 'inline-block', width: '300px', marginRight: '0.5rem' }}
+                    />
+                    Display count{' '}
+                    <Input 
+                        type="text" 
+                        name="d" 
+                        value={data.d}
+                        onChange={(e) => setData('d', parseInt(e.target.value) || perPage)}
+                        size={3}
+                        style={{ display: 'inline-block', width: '50px', marginRight: '0.5rem' }}
                     />
                     <Button type="submit" disabled={processing}>Post / Reload</Button>
                     {' '}
