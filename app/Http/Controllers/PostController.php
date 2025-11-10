@@ -126,6 +126,29 @@ class PostController extends Controller
     }
 
     /**
+     * Display thread posts.
+     */
+    public function thread(string $id)
+    {
+        $perPage = request()->input('d', 40);
+        $perPage = max(1, min(200, (int)$perPage));
+
+        $posts = Post::with('parent')
+            ->where('thread_id', $id)
+            ->orWhere('id', $id)
+            ->orderBy('id', 'asc')
+            ->paginate($perPage)
+            ->appends(['d' => $perPage])
+            ->onEachSide(1);
+
+        return Inertia::render('Posts/Thread', [
+            'posts' => $posts,
+            'threadId' => $id,
+            'appName' => config('app.name'),
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)

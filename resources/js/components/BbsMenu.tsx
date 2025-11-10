@@ -30,7 +30,7 @@ export default function BbsMenu({ counter, installedAt }: BbsMenuProps) {
             <hr style={{ marginTop: '1rem', marginBottom: '0.5rem' }} />
 
             <div style={{ fontSize: '13px', marginBottom: '1rem' }}>
-                ■: Follow Post (Reply)
+                ■: Follow Post (Reply)　◆: Thread Display
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
