@@ -7,6 +7,104 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Legacy BBS Styles */
+html { 
+    max-height: 100%; 
+    -webkit-text-size-adjust: 100%; 
+}
+
+body { 
+    background: #004040 !important; 
+    color: #fff !important; 
+    font-family: 'ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif !important; 
+    font-size: 14px;
+}
+
+a:link { color: #efe; transition: 0.1s; }
+a:visited { color: #ddd; }
+a:active { color: #f00; }
+a:hover { color: #10e0e0; }
+
+hr { 
+    border: 0 none; 
+    height: 2px; 
+    background-color: #c0c0c0; 
+    color: #c0c0c0;
+}
+
+.pagetitle { 
+    font-size: large; 
+    font-weight: bold; 
+    text-align: left; 
+}
+
+.ms { 
+    color: #fffffe; 
+    font-size: 17px; 
+    font-weight: bold; 
+}
+
+.q { color: #ccc; }
+
+.error { 
+    font-size: 20px; 
+    font-weight: bold; 
+    color: #f00; 
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button {
+    padding: .5px .4em; 
+    border-radius: 2px !important;
+    margin-right: .5em; 
+    transition: 0.1s;
+    color: #000 !important;
+    background: #fff;
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+button:hover {
+    background: #cdf !important;
+    color: #000 !important;
+}
+
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+button:active {
+    background: #8bf !important;
+    color: #000 !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    max-width: 100%;
+    background: #fff;
+    color: #000;
+    border-radius: 2px !important;
+    border: 1px solid #999 !important;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+textarea:hover {
+    background: #eef;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    background-color: #ddd;
+}
+
 @theme {
     --font-sans:
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,

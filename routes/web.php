@@ -1,14 +1,18 @@
 <?php
 
+use App\Http\Controllers\InstallController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-    ]);
-})->name('home');
+Route::prefix('install')->name('install.')->group(function () {
+    Route::get('/', [InstallController::class, 'index'])->name('index');
+    Route::post('/', [InstallController::class, 'store'])->name('store');
+});
+
+Route::get('/', [PostController::class, 'index'])->name('home');
+Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

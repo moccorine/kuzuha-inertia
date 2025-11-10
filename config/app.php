@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'credit' => env('APP_CREDIT', 'Kuzuha/Inertia'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

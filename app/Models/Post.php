@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Post extends Model
+{
+    protected $fillable = [
+        'thread_id',
+        'parent_id',
+        'username',
+        'email',
+        'title',
+        'body',
+        'ip_address',
+        'user_agent',
+        'protect_code',
+    ];
+
+    public function thread(): BelongsTo
+    {
+        return $this->belongsTo(Post::class, 'thread_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Post::class, 'parent_id');
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Post::class, 'parent_id');
+    }
+
+    public function threadPosts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'thread_id');
+    }
+}
