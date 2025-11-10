@@ -61,6 +61,8 @@ export default function PostItem({ post }: PostItemProps) {
                                 <Link href={`/posts/${post.id}`} className="internal">■</Link>
                                 &nbsp;
                                 <Link href={`/threads/${post.thread_id || post.id}`} className="internal">◆</Link>
+                                &nbsp;
+                                <Link href={`/tree/${post.thread_id || post.id}`} className="internal">木</Link>
                                 {hasValidUsername && (
                                     <>
                                         &nbsp;

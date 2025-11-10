@@ -184,6 +184,48 @@ class PostController extends Controller
     }
 
     /**
+     * Display thread in tree view.
+     */
+    public function tree(string $id)
+    {
+        // Get all posts in the thread
+        $posts = Post::where('thread_id', $id)
+            ->orWhere('id', $id)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        // Build tree structure
+        $tree = $this->buildTree($posts);
+
+        return Inertia::render('Posts/Tree', [
+            'tree' => $tree,
+            'threadId' => $id,
+            'appName' => config('app.name'),
+        ]);
+    }
+
+    /**
+     * Build tree structure from posts.
+     */
+    private function buildTree($posts, $parentId = null, $level = 0)
+    {
+        $branch = [];
+
+        foreach ($posts as $post) {
+            if ($post->parent_id == $parentId) {
+                $node = [
+                    'post' => $post,
+                    'level' => $level,
+                    'children' => $this->buildTree($posts, $post->id, $level + 1)
+                ];
+                $branch[] = $node;
+            }
+        }
+
+        return $branch;
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
