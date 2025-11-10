@@ -54,7 +54,7 @@ export default function PostItem({ post }: PostItemProps) {
                             </span>
                         </span>
                     </span>
-                    <div className="contents">
+                    <div className="post-contents">
                         <pre 
                             className="msgnormal" 
                             dangerouslySetInnerHTML={{ 

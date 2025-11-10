@@ -16,6 +16,11 @@ interface Post {
 interface Props {
     posts: {
         data: Post[];
+        links: Array<{
+            url: string | null;
+            label: string;
+            active: boolean;
+        }>;
     };
     perPage: number;
     appName: string;
@@ -41,9 +46,42 @@ export default function Index({ posts, perPage, appName, counter, installedAt }:
                         No posts yet.
                     </div>
                 ) : (
-                    posts.data.map((post) => (
-                        <PostItem key={post.id} post={post} />
-                    ))
+                    <>
+                        {posts.data.map((post) => (
+                            <PostItem key={post.id} post={post} />
+                        ))}
+                        
+                        {posts.links && (
+                            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                                {posts.links.map((link, index) => {
+                                    if (!link.url) return null;
+                                    
+                                    // Only show Previous and Next (check for Japanese labels)
+                                    if (!link.label.includes('前へ') && !link.label.includes('次へ')) {
+                                        return null;
+                                    }
+                                    
+                                    let label = link.label;
+                                    
+                                    // Convert to English
+                                    if (label.includes('前へ')) {
+                                        label = 'Previous';
+                                    } else if (label.includes('次へ')) {
+                                        label = 'Next';
+                                    }
+                                    
+                                    return (
+                                        <span key={index}>
+                                            <Link href={link.url}>
+                                                <button type="button">{label}</button>
+                                            </Link>
+                                            {' '}
+                                        </span>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </GuestLayout>

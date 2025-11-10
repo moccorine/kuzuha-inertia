@@ -16,7 +16,9 @@ class PostController extends Controller
         
         $posts = Post::with(['parent', 'thread'])
             ->latest()
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->onEachSide(1)
+            ->appends(['d' => $perPage]);
 
         $counter = increment_counter();
 
@@ -44,7 +46,8 @@ class PostController extends Controller
     {
         // 空の投稿はリロード扱い
         if (empty(trim($request->body))) {
-            return redirect('/');
+            $perPage = $request->input('d', 40);
+            return redirect('/?d=' . $perPage);
         }
 
         $validated = $request->validate([
@@ -94,7 +97,9 @@ class PostController extends Controller
             $post->save();
         }
 
-        return redirect('/');
+        // Redirect with display count parameter
+        $perPage = $request->input('d', 40);
+        return redirect('/?d=' . $perPage);
     }
 
     /**

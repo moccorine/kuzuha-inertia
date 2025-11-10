@@ -19,6 +19,9 @@ if (!function_exists('quote_post')) {
      */
     function quote_post(string $body): string
     {
+        // Strip HTML tags
+        $body = strip_tags($body);
+        
         // Remove existing double quotes (lines starting with > >)
         $lines = explode("\n", $body);
         $filteredLines = array_filter($lines, fn($line) => !preg_match("/^> > /", $line));
