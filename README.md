@@ -140,10 +140,57 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 ### Other Features (その他機能)
 - [ ] Settings functionality (設定機能)
 - [ ] Info page (情報ページ)
+  - Markdown-based content (Markdownで記述)
+  - Store in `resources/markdown/info.md`
+  - Render with React Markdown component
+  - Admin can edit via file or admin panel
+- [ ] Tripcode support (トリップ機能)
+  - Username format: `Name#password` → `Name◆tripcode`
+  - Generate tripcode from password hash
+  - Display tripcode after username
 - [ ] Admin panel (管理画面)
+  - Post management (投稿管理)
+    - List all posts with filters (投稿一覧・フィルター)
+    - Delete posts (投稿削除)
+    - View post details (IP, user agent, etc.)
+  - User management (ユーザー管理)
+    - Ban IP addresses (IP禁止)
+    - View access logs (アクセスログ)
+  - System settings (システム設定)
+    - BBS configuration (掲示板設定)
+    - Maintenance mode (メンテナンスモード)
+    - Custom link management (カスタムリンク管理)
+  - Database management (データベース管理)
+    - Backup/Export (バックアップ・エクスポート)
+    - Statistics (統計情報)
 - [ ] Image upload support (画像アップロード)
 - [ ] RSS feed (RSSフィード)
 - [ ] Mobile responsive design improvements (モバイル対応改善)
+- [ ] URL auto-linking (URL自動リンク)
+  - Detect URLs in post body and convert to links
+  - Support http, https, ftp protocols
+- [ ] Log read mode (ログ読みモード)
+  - Toggle between newest-first and oldest-first display
+  - Store preference in localStorage
+  - Auto-enable for unread mode
+- [ ] Undo/Delete own post (投稿取り消し)
+  - Allow users to delete their most recent post
+  - Time limit: 5-10 minutes after posting
+  - Session-based authentication with CSRF protection
+  - Show delete button only on user's latest post
+
+### Real-time Features (リアルタイム機能)
+- [ ] Online user counter (同時接続数表示)
+  - Redis/Memcachedでの実装を推奨
+  - 5分以内のアクセスをカウント
+  - IPベースの一意キー生成
+- [ ] Modern Mode with WebSocket (モダンモード)
+  - Laravel Reverbを使用したWebSocket統合
+  - Real-time post updates (新規投稿のリアルタイム表示)
+  - Live online user counter (リアルタイム接続数)
+  - Optional: typing indicators (入力中表示)
+  - Toggle between legacy mode and modern mode
+  - Graceful degradation for non-WebSocket browsers
 
 ## License
 
