@@ -1,8 +1,8 @@
-import { Head, Link } from '@inertiajs/react';
-import GuestLayout from '@/layouts/guest-layout';
+import BbsMenu from '@/components/BbsMenu';
 import PostForm from '@/components/PostForm';
 import PostItem from '@/components/PostItem';
-import BbsMenu from '@/components/BbsMenu';
+import GuestLayout from '@/layouts/guest-layout';
+import { Head, Link } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -28,7 +28,13 @@ interface Props {
     installedAt: string;
 }
 
-export default function Index({ posts, perPage, appName, counter, installedAt }: Props) {
+export default function Index({
+    posts,
+    perPage,
+    appName,
+    counter,
+    installedAt,
+}: Props) {
     return (
         <GuestLayout>
             <Head title={appName} />
@@ -39,7 +45,11 @@ export default function Index({ posts, perPage, appName, counter, installedAt }:
 
                 <PostForm perPage={perPage} />
 
-                <BbsMenu counter={counter} installedAt={installedAt} perPage={perPage} />
+                <BbsMenu
+                    counter={counter}
+                    installedAt={installedAt}
+                    perPage={perPage}
+                />
 
                 {posts.data.length === 0 ? (
                     <div style={{ fontSize: '15px', fontStyle: 'italic' }}>
@@ -50,32 +60,41 @@ export default function Index({ posts, perPage, appName, counter, installedAt }:
                         {posts.data.map((post) => (
                             <PostItem key={post.id} post={post} />
                         ))}
-                        
+
                         {posts.links && (
-                            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                            <div
+                                style={{
+                                    marginTop: '1rem',
+                                    marginBottom: '1rem',
+                                }}
+                            >
                                 {posts.links.map((link, index) => {
                                     if (!link.url) return null;
-                                    
+
                                     // Only show Previous and Next (check for Japanese labels)
-                                    if (!link.label.includes('前へ') && !link.label.includes('次へ')) {
+                                    if (
+                                        !link.label.includes('前へ') &&
+                                        !link.label.includes('次へ')
+                                    ) {
                                         return null;
                                     }
-                                    
+
                                     let label = link.label;
-                                    
+
                                     // Convert to English
                                     if (label.includes('前へ')) {
                                         label = 'Previous';
                                     } else if (label.includes('次へ')) {
                                         label = 'Next';
                                     }
-                                    
+
                                     return (
                                         <span key={index}>
                                             <Link href={link.url}>
-                                                <button type="button">{label}</button>
-                                            </Link>
-                                            {' '}
+                                                <button type="button">
+                                                    {label}
+                                                </button>
+                                            </Link>{' '}
                                         </span>
                                     );
                                 })}
@@ -87,4 +106,3 @@ export default function Index({ posts, perPage, appName, counter, installedAt }:
         </GuestLayout>
     );
 }
-

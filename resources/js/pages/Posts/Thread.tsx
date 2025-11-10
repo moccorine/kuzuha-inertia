@@ -1,6 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
-import GuestLayout from '@/layouts/guest-layout';
 import PostItem from '@/components/PostItem';
+import GuestLayout from '@/layouts/guest-layout';
+import { Head, Link } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -33,13 +33,14 @@ interface Props {
 }
 
 export default function Thread({ posts, threadId, appName }: Props) {
-    const filteredLinks = posts.links.filter(link => 
-        link.label === '&laquo; Previous' || link.label === 'Next &raquo;'
+    const filteredLinks = posts.links.filter(
+        (link) =>
+            link.label === '&laquo; Previous' || link.label === 'Next &raquo;',
     );
 
-    const translatedLinks = filteredLinks.map(link => ({
+    const translatedLinks = filteredLinks.map((link) => ({
         ...link,
-        label: link.label === '&laquo; Previous' ? 'Previous' : 'Next'
+        label: link.label === '&laquo; Previous' ? 'Previous' : 'Next',
     }));
 
     return (
@@ -58,21 +59,27 @@ export default function Thread({ posts, threadId, appName }: Props) {
 
                 {translatedLinks.length > 0 && (
                     <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-                        {translatedLinks.map((link, index) => (
+                        {translatedLinks.map((link, index) =>
                             link.url ? (
-                                <Link 
-                                    key={index} 
+                                <Link
+                                    key={index}
                                     href={link.url}
                                     style={{ marginRight: '0.5rem' }}
                                 >
                                     {link.label}
                                 </Link>
                             ) : (
-                                <span key={index} style={{ marginRight: '0.5rem', color: '#888' }}>
+                                <span
+                                    key={index}
+                                    style={{
+                                        marginRight: '0.5rem',
+                                        color: '#888',
+                                    }}
+                                >
                                     {link.label}
                                 </span>
-                            )
-                        ))}
+                            ),
+                        )}
                     </div>
                 )}
 

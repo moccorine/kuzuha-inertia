@@ -17,7 +17,7 @@ class CheckInstalled
         }
 
         // 未インストール判定
-        if (!Setting::get('admin_password')) {
+        if (! Setting::get('admin_password')) {
             return redirect()->route('install.index');
         }
 

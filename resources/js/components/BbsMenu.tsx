@@ -1,4 +1,3 @@
-import { FormEvent } from 'react';
 import { Link } from '@inertiajs/react';
 
 interface BbsMenuProps {
@@ -7,7 +6,11 @@ interface BbsMenuProps {
     perPage: number;
 }
 
-export default function BbsMenu({ counter, installedAt, perPage }: BbsMenuProps) {
+export default function BbsMenu({
+    counter,
+    installedAt,
+    perPage,
+}: BbsMenuProps) {
     const installedDate = new Date(installedAt);
     const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
 
@@ -32,22 +35,24 @@ export default function BbsMenu({ counter, installedAt, perPage }: BbsMenuProps)
             <hr style={{ marginTop: '1rem', marginBottom: '0.5rem' }} />
 
             <div style={{ fontSize: '13px', marginBottom: '1rem' }}>
-                ■: Follow Post (Reply)　★: User Posts　◆: Thread Display　木: Tree View
+                ■: Follow Post (Reply)　★: User Posts　◆: Thread Display　木:
+                Tree View
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
-                <button 
-                    type="button" 
+                <button
+                    type="button"
                     onClick={() => {
-                        const form = document.getElementById('post-form') as HTMLFormElement;
+                        const form = document.getElementById(
+                            'post-form',
+                        ) as HTMLFormElement;
                         if (form) {
                             form.requestSubmit();
                         }
                     }}
                 >
                     Post / Reload
-                </button>
-                {' '}
+                </button>{' '}
                 <Link href={`/?readnew=1&d=${perPage}`}>
                     <button type="button">Unread</button>
                 </Link>

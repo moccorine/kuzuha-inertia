@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Services\QuoteService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,24 +11,24 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('d', 40);
-        $perPage = max(1, min((int)$perPage, 200)); // 1-200の範囲に制限
-        
+        $perPage = max(1, min((int) $perPage, 200)); // 1-200の範囲に制限
+
         $query = Post::with(['parent', 'thread'])->latest();
-        
+
         // 未読モード
         $readnew = $request->query('readnew');
         $lastSeenId = $request->cookie('last_seen_post_id');
-        
+
         if ($readnew && $lastSeenId) {
             $query->where('id', '>', $lastSeenId);
         }
-        
+
         $posts = $query->paginate($perPage)
             ->onEachSide(1)
             ->appends(['d' => $perPage]);
 
         $counter = increment_counter();
-        
+
         // 最新のpost IDをCookieに保存
         $latestPostId = Post::max('id');
         cookie()->queue('last_seen_post_id', $latestPostId, 60 * 24 * 365); // 1年間保存
@@ -60,7 +59,8 @@ class PostController extends Controller
         // 空の投稿はリロード扱い
         if (empty(trim($request->body))) {
             $perPage = $request->input('d', 40);
-            return redirect('/?d=' . $perPage);
+
+            return redirect('/?d='.$perPage);
         }
 
         $validated = $request->validate([
@@ -74,18 +74,18 @@ class PostController extends Controller
 
         // デフォルト値設定
         $username = $validated['username'] ?: 'Anonymous';
-        
+
         // 本文処理
         $body = $validated['body'];
-        
+
         // URL追加
-        if (!empty($validated['url'])) {
-            $body .= "\n\n" . $validated['url'];
+        if (! empty($validated['url'])) {
+            $body .= "\n\n".$validated['url'];
         }
 
         // Calculate thread_id
         $threadId = null;
-        if (!empty($validated['parent_id'])) {
+        if (! empty($validated['parent_id'])) {
             $parent = Post::find($validated['parent_id']);
             if ($parent) {
                 $threadId = $parent->thread_id ?: $parent->id;
@@ -103,16 +103,17 @@ class PostController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
-        
+
         // Set thread_id to self if it's a new thread
-        if (!$threadId) {
+        if (! $threadId) {
             $post->thread_id = $post->id;
             $post->save();
         }
 
         // Redirect with display count parameter
         $perPage = $request->input('d', 40);
-        return redirect('/?d=' . $perPage);
+
+        return redirect('/?d='.$perPage);
     }
 
     /**
@@ -121,7 +122,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Post::with('parent')->findOrFail($id);
-        
+
         // Generate default title for follow-up
         $defaultTitle = '＞';
         if ($post->username && $post->username !== 'Anonymous') {
@@ -144,7 +145,7 @@ class PostController extends Controller
     public function thread(string $id)
     {
         $perPage = request()->input('d', 40);
-        $perPage = max(1, min(200, (int)$perPage));
+        $perPage = max(1, min(200, (int) $perPage));
 
         $posts = Post::with('parent')
             ->where('thread_id', $id)
@@ -167,7 +168,7 @@ class PostController extends Controller
     public function userPosts(string $username)
     {
         $perPage = request()->input('d', 40);
-        $perPage = max(1, min(200, (int)$perPage));
+        $perPage = max(1, min(200, (int) $perPage));
 
         $posts = Post::with('parent')
             ->where('username', $username)
@@ -216,7 +217,7 @@ class PostController extends Controller
                 $node = [
                     'post' => $post,
                     'level' => $level,
-                    'children' => $this->buildTree($posts, $post->id, $level + 1)
+                    'children' => $this->buildTree($posts, $post->id, $level + 1),
                 ];
                 $branch[] = $node;
             }

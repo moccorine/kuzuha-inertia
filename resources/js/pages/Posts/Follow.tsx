@@ -1,7 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
-import GuestLayout from '@/layouts/guest-layout';
 import FollowForm from '@/components/FollowForm';
 import PostItem from '@/components/PostItem';
+import GuestLayout from '@/layouts/guest-layout';
+import { Head, Link } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -19,7 +19,12 @@ interface Props {
     appName: string;
 }
 
-export default function Follow({ post, quotedBody, defaultTitle, appName }: Props) {
+export default function Follow({
+    post,
+    quotedBody,
+    defaultTitle,
+    appName,
+}: Props) {
     return (
         <GuestLayout>
             <Head title={`Follow - ${appName}`} />
@@ -32,11 +37,21 @@ export default function Follow({ post, quotedBody, defaultTitle, appName }: Prop
 
                 <PostItem post={post} />
 
-                <div style={{ marginTop: '1rem', marginBottom: '1rem', fontSize: '14px' }}>
+                <div
+                    style={{
+                        marginTop: '1rem',
+                        marginBottom: '1rem',
+                        fontSize: '14px',
+                    }}
+                >
                     Follow Post　<Link href="/">←Back</Link>
                 </div>
 
-                <FollowForm parentId={post.id} quotedBody={quotedBody} defaultTitle={defaultTitle} />
+                <FollowForm
+                    parentId={post.id}
+                    quotedBody={quotedBody}
+                    defaultTitle={defaultTitle}
+                />
             </div>
         </GuestLayout>
     );

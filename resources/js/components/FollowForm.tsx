@@ -1,8 +1,8 @@
-import { FormEventHandler } from 'react';
-import { useForm } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import { useForm } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
 
 interface FollowFormProps {
     parentId: number;
@@ -10,7 +10,11 @@ interface FollowFormProps {
     defaultTitle: string;
 }
 
-export default function FollowForm({ parentId, quotedBody, defaultTitle }: FollowFormProps) {
+export default function FollowForm({
+    parentId,
+    quotedBody,
+    defaultTitle,
+}: FollowFormProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',
         email: '',
@@ -32,69 +36,87 @@ export default function FollowForm({ parentId, quotedBody, defaultTitle }: Follo
             <div className="form" style={{ marginBottom: '1rem' }}>
                 <div style={{ marginBottom: '0.5rem' }}>
                     Name{' '}
-                    <Input 
-                        type="text" 
-                        name="username" 
-                        maxLength={30} 
+                    <Input
+                        type="text"
+                        name="username"
+                        maxLength={30}
                         value={data.username}
                         onChange={(e) => setData('username', e.target.value)}
                         style={{ display: 'inline-block', width: '200px' }}
                     />
                 </div>
-                
+
                 <div style={{ marginBottom: '0.5rem' }}>
                     E-mail{' '}
-                    <Input 
-                        type="text" 
-                        name="email" 
-                        maxLength={255} 
+                    <Input
+                        type="text"
+                        name="email"
+                        maxLength={255}
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
                         style={{ display: 'inline-block', width: '300px' }}
                     />
                 </div>
-                
+
                 <div style={{ marginBottom: '0.5rem' }}>
                     Subject{' '}
-                    <Input 
-                        type="text" 
-                        name="title" 
-                        maxLength={40} 
+                    <Input
+                        type="text"
+                        name="title"
+                        maxLength={40}
                         value={data.title}
                         onChange={(e) => setData('title', e.target.value)}
-                        style={{ display: 'inline-block', width: '300px', marginRight: '0.5rem' }}
+                        style={{
+                            display: 'inline-block',
+                            width: '300px',
+                            marginRight: '0.5rem',
+                        }}
                     />
-                    <Button type="submit" disabled={processing}>Post / Reload</Button>
-                    {' '}
-                    <Button type="button" variant="outline" onClick={() => reset()}>Clear</Button>
+                    <Button type="submit" disabled={processing}>
+                        Post / Reload
+                    </Button>{' '}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => reset()}
+                    >
+                        Clear
+                    </Button>
                 </div>
-                
+
                 <div style={{ marginTop: '1rem' }}>
                     Message
                     <span className="pfhelp">
                         (Please insert line breaks. HTML tags are not allowed.)
                     </span>
                     <br />
-                    <Textarea 
-                        rows={5} 
+                    <Textarea
+                        rows={5}
                         name="body"
                         value={data.body}
                         onChange={(e) => setData('body', e.target.value)}
                         style={{ width: '100%', maxWidth: '700px' }}
                     />
-                    {errors.body && <div className="error" style={{ fontSize: '13px', marginTop: '0.3rem' }}>{errors.body}</div>}
+                    {errors.body && (
+                        <div
+                            className="error"
+                            style={{ fontSize: '13px', marginTop: '0.3rem' }}
+                        >
+                            {errors.body}
+                        </div>
+                    )}
                 </div>
-                
+
                 <div style={{ marginTop: '1rem' }}>
                     URL
                     <span className="pfhelp">
                         (Optional: Enter URL if you want to add a link)
                     </span>
                     <br />
-                    <Input 
-                        type="text" 
-                        name="url" 
-                        maxLength={255} 
+                    <Input
+                        type="text"
+                        name="url"
+                        maxLength={255}
                         value={data.url}
                         onChange={(e) => setData('url', e.target.value)}
                         style={{ width: '100%', maxWidth: '700px' }}

@@ -15,7 +15,7 @@ class PostTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Set admin password to skip install middleware
         Setting::set('admin_password', bcrypt('password'));
         Setting::set('installed_at', now()->toDateTimeString());
@@ -107,7 +107,7 @@ class PostTest extends TestCase
             'username' => 'Reply User',
             'email' => '',
             'title' => '＞Parent User',
-            'body' => '> Parent content' . "\n\n" . 'Reply content',
+            'body' => '> Parent content'."\n\n".'Reply content',
             'parent_id' => $parent->id,
             'd' => 40,
         ]);

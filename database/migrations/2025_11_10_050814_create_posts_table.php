@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('user_agent')->nullable();
             $table->string('protect_code', 4)->nullable();
             $table->timestamps();
-            
+
             $table->index('created_at');
         });
     }
