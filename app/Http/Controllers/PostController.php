@@ -162,6 +162,28 @@ class PostController extends Controller
     }
 
     /**
+     * Display posts by specific user.
+     */
+    public function userPosts(string $username)
+    {
+        $perPage = request()->input('d', 40);
+        $perPage = max(1, min(200, (int)$perPage));
+
+        $posts = Post::with('parent')
+            ->where('username', $username)
+            ->orderBy('id', 'desc')
+            ->paginate($perPage)
+            ->appends(['d' => $perPage])
+            ->onEachSide(1);
+
+        return Inertia::render('Posts/UserPosts', [
+            'posts' => $posts,
+            'username' => $username,
+            'appName' => config('app.name'),
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)

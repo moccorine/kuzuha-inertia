@@ -33,6 +33,12 @@ export default function PostItem({ post }: PostItemProps) {
         return `${year}/${month}/${day}(${weekday}) ${hours}:${minutes}:${seconds}`;
     };
 
+    // Check if username is valid (not empty, not Anonymous, not just whitespace)
+    const hasValidUsername = post.username && 
+        post.username !== 'Anonymous' && 
+        post.username.trim() !== '' &&
+        post.username.trim() !== '　'; // Full-width space
+
     return (
         <>
             <span className="ngline">
@@ -40,7 +46,7 @@ export default function PostItem({ post }: PostItemProps) {
                     <span className="nw">
                         <span className="ms">{post.title || ' '}</span>
                         &nbsp;&nbsp;
-                        {post.username && post.username !== 'Anonymous' && (
+                        {hasValidUsername && (
                             <>
                                 <span className="mu">Author: </span>
                                 <span className="mun">{post.username}</span>
@@ -55,6 +61,12 @@ export default function PostItem({ post }: PostItemProps) {
                                 <Link href={`/posts/${post.id}`} className="internal">■</Link>
                                 &nbsp;
                                 <Link href={`/threads/${post.thread_id || post.id}`} className="internal">◆</Link>
+                                {hasValidUsername && (
+                                    <>
+                                        &nbsp;
+                                        <Link href={`/users/${encodeURIComponent(post.username)}/posts`} className="internal">★</Link>
+                                    </>
+                                )}
                             </span>
                         </span>
                     </span>
