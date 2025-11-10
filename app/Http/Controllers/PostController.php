@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Services\QuoteService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +15,13 @@ class PostController extends Controller
             ->latest()
             ->paginate(50);
 
+        $counter = increment_counter();
+
         return Inertia::render('Posts/Index', [
             'posts' => $posts,
             'appName' => config('app.name'),
+            'counter' => $counter,
+            'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
         ]);
     }
 
@@ -44,6 +49,7 @@ class PostController extends Controller
             'title' => 'nullable|string|max:40',
             'body' => 'required|string|max:10000',
             'url' => 'nullable|url|max:255',
+            'parent_id' => 'nullable|exists:posts,id',
         ]);
 
         // デフォルト値設定
@@ -63,6 +69,7 @@ class PostController extends Controller
             'email' => $validated['email'],
             'title' => $validated['title'],
             'body' => $body,
+            'parent_id' => $validated['parent_id'] ?? null,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
@@ -75,7 +82,13 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        return Inertia::render('Posts/Follow', [
+            'post' => $post,
+            'quotedBody' => quote_post($post->body),
+            'appName' => config('app.name'),
+        ]);
     }
 
     /**

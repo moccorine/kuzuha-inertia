@@ -4,13 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
-export default function PostForm() {
+interface FollowFormProps {
+    parentId: number;
+    quotedBody: string;
+}
+
+export default function FollowForm({ parentId, quotedBody }: FollowFormProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',
         email: '',
         title: '',
-        body: '',
+        body: quotedBody,
         url: '',
+        parent_id: parentId,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -21,7 +27,7 @@ export default function PostForm() {
     };
 
     return (
-        <form method="post" action="/posts" onSubmit={submit} id="post-form">
+        <form method="post" action="/posts" onSubmit={submit}>
             <div className="form" style={{ marginBottom: '1rem' }}>
                 <div style={{ marginBottom: '0.5rem' }}>
                     Name{' '}

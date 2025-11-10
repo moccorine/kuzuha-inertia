@@ -26,6 +26,8 @@ class InstallController extends Controller
         ]);
 
         Setting::set('admin_password', Hash::make($request->password));
+        Setting::set('counter', 0);
+        Setting::set('installed_at', now()->toDateTimeString());
 
         return redirect('/')->with('success', 'Installation completed successfully');
     }

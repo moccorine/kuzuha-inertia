@@ -12,3 +12,46 @@ if (!function_exists('app_version')) {
         return 'dev';
     }
 }
+
+if (!function_exists('quote_post')) {
+    /**
+     * Format post body as quoted text
+     */
+    function quote_post(string $body): string
+    {
+        // Remove existing double quotes (lines starting with > >)
+        $lines = explode("\n", $body);
+        $filteredLines = array_filter($lines, fn($line) => !preg_match("/^> > /", $line));
+        $body = implode("\n", $filteredLines);
+        
+        // Add > prefix to each line
+        $lines = explode("\n", $body);
+        $quotedLines = array_map(fn($line) => '> ' . $line, $lines);
+        
+        return implode("\n", $quotedLines) . "\n\n";
+    }
+}
+
+if (!function_exists('increment_counter')) {
+    /**
+     * Increment and return counter value
+     */
+    function increment_counter(): int
+    {
+        $counter = (int) \App\Models\Setting::get('counter', 0);
+        $counter++;
+        \App\Models\Setting::set('counter', $counter);
+        return $counter;
+    }
+}
+
+if (!function_exists('get_counter')) {
+    /**
+     * Get current counter value
+     */
+    function get_counter(): int
+    {
+        return (int) \App\Models\Setting::get('counter', 0);
+    }
+}
+

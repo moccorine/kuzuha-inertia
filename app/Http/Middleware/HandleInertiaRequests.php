@@ -37,6 +37,9 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $startTime = defined('LARAVEL_START') ? LARAVEL_START : $request->server('REQUEST_TIME_FLOAT');
+        $executionTime = number_format(microtime(true) - $startTime, 6);
+
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
         $locale = app()->getLocale();
@@ -47,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'appCredit' => config('app.credit'),
             'appVersion' => app_version(),
+            'executionTime' => $executionTime,
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
