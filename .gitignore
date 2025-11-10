@@ -27,3 +27,4 @@ yarn-error.log
 /.vscode
 /.zed
 /.legacy
+database/logs/*.dat
