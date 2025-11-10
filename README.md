@@ -97,6 +97,54 @@ pm2 startup
 - Git-based versioning
 - Admin password protection
 
+## Changes from Legacy BBS
+
+- **Database**: File-based (.dat) → MySQL/MariaDB
+- **Gzip compression**: Removed (modern web servers handle this automatically)
+- **i-mode support**: Removed (obsolete mobile phone format)
+
+## Implementation Notes
+
+### Settings (環境設定)
+
+Legacy BBS stored user preferences in cookies (colors, display count, etc.). Modern approach:
+
+**Planned Implementation:**
+- Use `localStorage` for client-side preferences (no server round-trip)
+- Settings include:
+  - Display count per page (already implemented)
+  - Username/email persistence (already implemented)
+  - Theme/color preferences (future)
+  - UI preferences (future)
+- No need for cookie-based serialization
+- Settings are per-browser, not per-user (anonymous BBS nature)
+
+**Already Implemented:**
+- Display count (`d` parameter) with localStorage
+- Username/email persistence in PostForm
+
+**Future Settings:**
+- Color scheme customization
+- Font size adjustment
+- Compact/detailed view toggle
+
+## TODO
+
+### Archive & Search (アーカイブ・検索)
+- [ ] 年月別投稿数一覧ページ
+- [ ] SQLite FTS5による全文検索
+- [ ] キーワード検索（タイトル・本文）
+- [ ] 日付範囲指定検索
+- [ ] 投稿のJSON/HTMLエクスポート機能
+
+### Other Features (その他機能)
+- [ ] Settings functionality (設定機能)
+- [ ] Info page (情報ページ)
+- [ ] Admin panel (管理画面)
+- [ ] Image upload support (画像アップロード)
+- [ ] RSS feed (RSSフィード)
+- [ ] Mobile responsive design improvements (モバイル対応改善)
+
 ## License
 
 MIT
