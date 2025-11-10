@@ -23,5 +23,9 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+        
+        // Import legacy BBS posts
+        $this->command->info('Importing legacy BBS posts...');
+        $this->command->call('bbs:import', ['date' => '20251110', '--file' => true]);
     }
 }

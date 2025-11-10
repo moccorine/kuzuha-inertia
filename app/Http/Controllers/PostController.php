@@ -63,16 +63,32 @@ class PostController extends Controller
             $body .= "\n\n" . $validated['url'];
         }
 
+        // Calculate thread_id
+        $threadId = null;
+        if (!empty($validated['parent_id'])) {
+            $parent = Post::find($validated['parent_id']);
+            if ($parent) {
+                $threadId = $parent->thread_id ?: $parent->id;
+            }
+        }
+
         // 投稿作成
-        Post::create([
+        $post = Post::create([
             'username' => $username,
             'email' => $validated['email'],
             'title' => $validated['title'],
             'body' => $body,
             'parent_id' => $validated['parent_id'] ?? null,
+            'thread_id' => $threadId,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
+        
+        // Set thread_id to self if it's a new thread
+        if (!$threadId) {
+            $post->thread_id = $post->id;
+            $post->save();
+        }
 
         return redirect('/');
     }
@@ -82,11 +98,20 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::with('parent')->findOrFail($id);
+        
+        // Generate default title for follow-up
+        $defaultTitle = '＞';
+        if ($post->username && $post->username !== 'Anonymous') {
+            $defaultTitle .= $post->username;
+        } else {
+            $defaultTitle .= '　';
+        }
 
         return Inertia::render('Posts/Follow', [
             'post' => $post,
             'quotedBody' => quote_post($post->body),
+            'defaultTitle' => $defaultTitle,
             'appName' => config('app.name'),
         ]);
     }

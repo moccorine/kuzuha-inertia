@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 interface FollowFormProps {
     parentId: number;
     quotedBody: string;
+    defaultTitle: string;
 }
 
-export default function FollowForm({ parentId, quotedBody }: FollowFormProps) {
+export default function FollowForm({ parentId, quotedBody, defaultTitle }: FollowFormProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',
         email: '',
-        title: '',
+        title: defaultTitle,
         body: quotedBody,
         url: '',
         parent_id: parentId,

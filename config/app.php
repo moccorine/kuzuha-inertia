@@ -17,6 +17,8 @@ return [
 
     'credit' => env('APP_CREDIT', 'Kuzuha/Inertia'),
 
+    'legacy_bbs_url' => env('LEGACY_BBS_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

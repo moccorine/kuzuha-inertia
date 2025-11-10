@@ -20,10 +20,10 @@ body {
     font-size: 14px;
 }
 
-a:link { color: #efe; transition: 0.1s; }
-a:visited { color: #ddd; }
-a:active { color: #f00; }
-a:hover { color: #10e0e0; }
+a:link { color: #efe; transition: 0.1s; text-decoration: underline; }
+a:visited { color: #ddd; text-decoration: underline; }
+a:active { color: #f00; text-decoration: underline; }
+a:hover { color: #10e0e0; text-decoration: underline; }
 
 hr { 
     border: 0 none; 
@@ -44,7 +44,30 @@ hr {
     font-weight: bold; 
 }
 
+.m {
+    margin-bottom: 0.5rem;
+}
+
+.contents {
+    margin-left: 27px;
+    padding: 0.75rem 0.5rem;
+}
+
+@media screen and (max-width: 640px) {
+    .contents {
+        margin-left: 10px;
+    }
+}
+
 .q { color: #ccc; }
+
+.msgnormal {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
+    margin: 0;
+    padding: 0.5rem;
+}
 
 .error { 
     font-size: 20px; 

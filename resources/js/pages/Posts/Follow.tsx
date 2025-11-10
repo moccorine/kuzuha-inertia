@@ -15,14 +15,15 @@ interface Post {
 interface Props {
     post: Post;
     quotedBody: string;
+    defaultTitle: string;
     appName: string;
 }
 
-export default function Follow({ post, quotedBody, appName }: Props) {
+export default function Follow({ post, quotedBody, defaultTitle, appName }: Props) {
     return (
         <GuestLayout>
             <Head title={`Follow - ${appName}`} />
-            <div style={{ padding: '1rem', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ padding: '1rem 0.5rem 0 0.5rem' }}>
                 <div className="pagetitle" style={{ marginBottom: '1rem' }}>
                     <Link href="/">{appName}</Link>
                 </div>
@@ -35,7 +36,7 @@ export default function Follow({ post, quotedBody, appName }: Props) {
                     Follow Post　<Link href="/">←Back</Link>
                 </div>
 
-                <FollowForm parentId={post.id} quotedBody={quotedBody} />
+                <FollowForm parentId={post.id} quotedBody={quotedBody} defaultTitle={defaultTitle} />
             </div>
         </GuestLayout>
     );

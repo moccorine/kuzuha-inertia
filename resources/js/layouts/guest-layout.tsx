@@ -18,7 +18,7 @@ export default function GuestLayout({ children }: GuestLayoutProps) {
             <div style={{ flex: 1 }}>
                 {children}
             </div>
-            <footer style={{ padding: '1rem', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+            <footer>
                 <hr style={{ marginBottom: '1rem' }} />
                 <div className="copyright" style={{ textAlign: 'right', fontSize: '13px' }}>
                     {appCredit} {appVersion}

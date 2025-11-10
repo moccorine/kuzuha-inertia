@@ -26,7 +26,7 @@ export default function Index({ posts, appName, counter, installedAt }: Props) {
     return (
         <GuestLayout>
             <Head title={appName} />
-            <div style={{ padding: '1rem', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ padding: '1rem 0.5rem 0 0.5rem' }}>
                 <div className="pagetitle" style={{ marginBottom: '1rem' }}>
                     <Link href="/">{appName}</Link>
                 </div>
