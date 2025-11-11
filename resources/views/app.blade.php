@@ -28,6 +28,33 @@
             html.dark {
                 background-color: oklch(0.145 0 0);
             }
+
+            @php
+                $themeName = request()->cookie('theme', env('THEME_DEFAULT', 'default'));
+                $theme = config("themes.{$themeName}", config('themes.default'));
+            @endphp
+
+            :root {
+                --theme-background: {{ $theme['background'] }};
+                --theme-text: {{ $theme['text'] }};
+                --theme-link: {{ $theme['link'] }};
+                --theme-link-visited: {{ $theme['link_visited'] }};
+                --theme-link-hover: {{ $theme['link_hover'] }};
+                --theme-link-active: {{ $theme['link_active'] }};
+                --theme-hr: {{ $theme['hr'] }};
+                --theme-title: {{ $theme['title'] }};
+                --theme-quote: {{ $theme['quote'] }};
+                --theme-error: {{ $theme['error'] }};
+                --theme-input-bg: {{ $theme['input_bg'] }};
+                --theme-input-text: {{ $theme['input_text'] }};
+                --theme-input-border: {{ $theme['input_border'] }};
+                --theme-input-hover: {{ $theme['input_hover'] }};
+                --theme-input-focus: {{ $theme['input_focus'] }};
+                --theme-button-bg: {{ $theme['button_bg'] }};
+                --theme-button-text: {{ $theme['button_text'] }};
+                --theme-button-hover: {{ $theme['button_hover'] }};
+                --theme-button-active: {{ $theme['button_active'] }};
+            }
         </style>
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>

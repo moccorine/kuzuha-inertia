@@ -18,6 +18,14 @@ Route::get('/users/{username}/posts', [PostController::class, 'userPosts'])->nam
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::delete('/posts/{id}/undo', [PostController::class, 'undo'])->name('posts.undo');
 
+// Theme switcher (for testing)
+Route::get('/theme/{theme}', function ($theme) {
+    if (!in_array($theme, ['default', 'dark'])) {
+        abort(404);
+    }
+    return redirect()->back()->cookie('theme', $theme, 60 * 24 * 365);
+})->name('theme.switch');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

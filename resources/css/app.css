@@ -14,8 +14,8 @@ html {
 }
 
 body {
-    background: #004040 !important;
-    color: #fff !important;
+    background: var(--theme-background) !important;
+    color: var(--theme-text) !important;
     font-family:
         'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo,
         'ＭＳ Ｐゴシック', sans-serif !important;
@@ -23,28 +23,28 @@ body {
 }
 
 a:link {
-    color: #efe;
+    color: var(--theme-link);
     transition: 0.1s;
     text-decoration: underline;
 }
 a:visited {
-    color: #ddd;
+    color: var(--theme-link-visited);
     text-decoration: underline;
 }
 a:active {
-    color: #f00;
+    color: var(--theme-link-active);
     text-decoration: underline;
 }
 a:hover {
-    color: #10e0e0;
+    color: var(--theme-link-hover);
     text-decoration: underline;
 }
 
 hr {
     border: 0 none;
     height: 2px;
-    background-color: #c0c0c0;
-    color: #c0c0c0;
+    background-color: var(--theme-hr);
+    color: var(--theme-hr);
 }
 
 .pagetitle {
@@ -54,7 +54,7 @@ hr {
 }
 
 .ms {
-    color: #fffffe;
+    color: var(--theme-title);
     font-size: 17px;
     font-weight: bold;
 }
@@ -80,7 +80,7 @@ hr {
 }
 
 .q {
-    color: #ccc;
+    color: var(--theme-quote);
 }
 
 .msgnormal {
@@ -96,7 +96,7 @@ hr {
 .error {
     font-size: 20px;
     font-weight: bold;
-    color: #f00;
+    color: var(--theme-error);
 }
 
 input[type='button'],
@@ -107,24 +107,24 @@ button {
     border-radius: 2px !important;
     margin-right: 0.5em;
     transition: 0.1s;
-    color: #000 !important;
-    background: #fff;
+    color: var(--theme-button-text) !important;
+    background: var(--theme-button-bg);
 }
 
 input[type='button']:hover,
 input[type='submit']:hover,
 input[type='reset']:hover,
 button:hover {
-    background: #cdf !important;
-    color: #000 !important;
+    background: var(--theme-button-hover) !important;
+    color: var(--theme-button-text) !important;
 }
 
 input[type='button']:active,
 input[type='submit']:active,
 input[type='reset']:active,
 button:active {
-    background: #8bf !important;
-    color: #000 !important;
+    background: var(--theme-button-active) !important;
+    color: var(--theme-button-text) !important;
 }
 
 input[type='text'],
@@ -132,24 +132,24 @@ input[type='email'],
 input[type='password'],
 textarea {
     max-width: 100%;
-    background: #fff;
-    color: #000;
+    background: var(--theme-input-bg);
+    color: var(--theme-input-text);
     border-radius: 2px !important;
-    border: 1px solid #999 !important;
+    border: 1px solid var(--theme-input-border) !important;
 }
 
 input[type='text']:hover,
 input[type='email']:hover,
 input[type='password']:hover,
 textarea:hover {
-    background: #eef;
+    background: var(--theme-input-hover);
 }
 
 input[type='text']:focus,
 input[type='email']:focus,
 input[type='password']:focus,
 textarea:focus {
-    background-color: #ddd;
+    background-color: var(--theme-input-focus);
 }
 
 @theme {

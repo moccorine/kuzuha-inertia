@@ -45,6 +45,9 @@ class HandleInertiaRequests extends Middleware
         $locale = app()->getLocale();
         $fallbackLocale = config('app.fallback_locale');
 
+        $themeName = $request->cookie('theme', env('THEME_DEFAULT', 'default'));
+        $theme = config("themes.{$themeName}", config('themes.default'));
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -68,6 +71,7 @@ class HandleInertiaRequests extends Middleware
                     ? $request->session()->get('last_post_time')->toIso8601String()
                     : $request->session()->get('last_post_time'))
                 : null,
+            'theme' => $theme,
         ];
     }
 
