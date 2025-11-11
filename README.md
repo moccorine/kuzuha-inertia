@@ -161,11 +161,12 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 - [ ] 投稿のJSON/HTMLエクスポート機能
 
 ### Other Features (その他機能)
-- [ ] Info page (情報ページ)
+- [x] Information page (情報ページ)
   - Markdown-based content (Markdownで記述)
-  - Store in `resources/markdown/info.md`
-  - Render with React Markdown component
-  - Admin can edit via file or admin panel
+  - Store in database (information_page table)
+  - Render with react-markdown
+  - Admin can edit via CodeMirror editor at /admin/system/information
+  - Public display at /{url} or /information
 - [ ] Tripcode support (トリップ機能)
   - Username format: `Name#password` → `Name◆tripcode`
   - Generate tripcode from password hash
