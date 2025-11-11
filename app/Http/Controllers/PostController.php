@@ -13,6 +13,9 @@ class PostController extends Controller
         $perPage = $request->query('d', 40);
         $perPage = max(1, min((int) $perPage, 200)); // 1-200の範囲に制限
 
+        // ログ読みモード（フォーム非表示）
+        $hideForm = $request->query('hide');
+        
         $query = Post::with(['parent', 'thread'])->latest();
 
         // 未読モード
@@ -25,7 +28,7 @@ class PostController extends Controller
 
         $posts = $query->paginate($perPage)
             ->onEachSide(1)
-            ->appends(['d' => $perPage]);
+            ->appends(['d' => $perPage, 'hide' => $hideForm]);
 
         $counter = increment_counter();
 
@@ -42,6 +45,7 @@ class PostController extends Controller
             'counter' => $counter,
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
             'latestPostId' => $latestPostId,
+            'hideForm' => $hideForm,
             'informationPage' => $informationPage ? [
                 'url' => $informationPage->url,
                 'hasContent' => !empty($informationPage->content),
@@ -295,6 +299,64 @@ class PostController extends Controller
             'posts' => $posts,
             'username' => $username,
             'appName' => config('app.name'),
+        ]);
+    }
+
+    /**
+     * Display all threads in tree view.
+     */
+    public function treeIndex(Request $request)
+    {
+        $perPage = $request->query('d', 10);
+        $perPage = max(1, min((int) $perPage, 50));
+
+        $readnew = $request->query('readnew');
+        $lastSeenId = $request->cookie('last_seen_post_id');
+
+        // Get latest threads (posts where id = thread_id or thread_id is null)
+        $threadsQuery = Post::whereRaw('id = thread_id OR thread_id IS NULL')
+            ->latest();
+
+        // If readnew mode, filter threads with new posts
+        if ($readnew && $lastSeenId) {
+            $threadsQuery->whereHas('thread', function ($query) use ($lastSeenId) {
+                $query->where('id', '>', $lastSeenId);
+            });
+        }
+
+        $threads = $threadsQuery->paginate($perPage)
+            ->onEachSide(1)
+            ->appends(['d' => $perPage, 'readnew' => $readnew]);
+
+        // For each thread, get all posts and build tree
+        $trees = [];
+        foreach ($threads as $thread) {
+            $posts = Post::where('thread_id', $thread->id)
+                ->orWhere('id', $thread->id)
+                ->orderBy('id', 'asc')
+                ->get();
+
+            // Check if thread has new posts
+            $hasNewPosts = $readnew && $lastSeenId && $posts->where('id', '>', $lastSeenId)->count() > 0;
+
+            // Skip thread if in readnew mode and no new posts
+            if ($readnew && $lastSeenId && !$hasNewPosts) {
+                continue;
+            }
+
+            $trees[] = [
+                'thread' => $thread,
+                'tree' => $this->buildTree($posts),
+                'updated_at' => $posts->max('created_at'),
+            ];
+        }
+
+        return Inertia::render('posts/tree-index', [
+            'trees' => $trees,
+            'pagination' => $threads,
+            'perPage' => $perPage,
+            'appName' => config('app.name'),
+            'lastSeenId' => $lastSeenId,
         ]);
     }
 
