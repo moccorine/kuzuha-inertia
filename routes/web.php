@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InstallController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,6 +19,9 @@ Route::get('/users/{username}/posts', [PostController::class, 'userPosts'])->nam
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::delete('/posts/{id}/undo', [PostController::class, 'undo'])->name('posts.undo');
 
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+Route::post('/settings/theme', [SettingsController::class, 'updateTheme'])->name('settings.theme');
+
 // Theme switcher (for testing)
 Route::get('/theme/{theme}', function ($theme) {
     if (!in_array($theme, ['default', 'dark'])) {
@@ -31,5 +35,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 });
-
-require __DIR__.'/settings.php';

@@ -33,7 +33,7 @@ class PostController extends Controller
         $latestPostId = Post::max('id');
         cookie()->queue('last_seen_post_id', $latestPostId, 60 * 24 * 365); // 1年間保存
 
-        return Inertia::render('Posts/Index', [
+        return Inertia::render('posts/index', [
             'posts' => $posts,
             'perPage' => $perPage,
             'appName' => config('app.name'),
@@ -197,7 +197,7 @@ class PostController extends Controller
             $defaultTitle .= '　';
         }
 
-        return Inertia::render('Posts/Follow', [
+        return Inertia::render('posts/follow', [
             'post' => $post,
             'quotedBody' => quote_post($post->body),
             'defaultTitle' => $defaultTitle,
@@ -221,7 +221,7 @@ class PostController extends Controller
             ->appends(['d' => $perPage])
             ->onEachSide(1);
 
-        return Inertia::render('Posts/Thread', [
+        return Inertia::render('posts/thread', [
             'posts' => $posts,
             'threadId' => $id,
             'appName' => config('app.name'),
@@ -243,7 +243,7 @@ class PostController extends Controller
             ->appends(['d' => $perPage])
             ->onEachSide(1);
 
-        return Inertia::render('Posts/UserPosts', [
+        return Inertia::render('posts/user-posts', [
             'posts' => $posts,
             'username' => $username,
             'appName' => config('app.name'),
@@ -264,7 +264,7 @@ class PostController extends Controller
         // Build tree structure
         $tree = $this->buildTree($posts);
 
-        return Inertia::render('Posts/Tree', [
+        return Inertia::render('posts/tree', [
             'tree' => $tree,
             'threadId' => $id,
             'appName' => config('app.name'),

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Spinner } from '@/components/ui/spinner';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 
@@ -113,6 +114,7 @@ export default function PostForm({ perPage }: PostFormProps) {
                         }}
                     />
                     <Button type="submit" disabled={processing}>
+                        {processing && <Spinner className="mr-1" />}
                         Post / Reload
                     </Button>{' '}
                     <Button

@@ -26,7 +26,7 @@ test('index page displays posts', function () {
 
     $response->assertStatus(200);
     $response->assertInertia(fn (Assert $page) => $page
-        ->component('Posts/Index')
+        ->component('posts/index')
         ->has('posts.data', 1)
         ->where('posts.data.0.username', 'Test User')
         ->where('posts.data.0.title', 'Test Title')
@@ -80,7 +80,7 @@ test('pagination works correctly', function () {
     $response = $this->get('/?d=10');
 
     $response->assertInertia(fn (Assert $page) => $page
-        ->component('Posts/Index')
+        ->component('posts/index')
         ->has('posts.data', 10)
         ->has('posts.links')
         ->where('posts.links.0.url', null) // First page, no previous
@@ -94,7 +94,7 @@ test('next page link works', function () {
     $response = $this->get('/?d=10&page=2');
 
     $response->assertInertia(fn (Assert $page) => $page
-        ->component('Posts/Index')
+        ->component('posts/index')
         ->has('posts.data', 10)
         ->has('posts.links')
     );
@@ -198,7 +198,7 @@ test('index page shows undo button for recent post', function () {
     ])->get('/');
 
     $response->assertInertia(fn (Assert $page) => $page
-        ->component('Posts/Index')
+        ->component('posts/index')
         ->where('lastPostId', $post->id)
         ->has('lastPostTime')
     );

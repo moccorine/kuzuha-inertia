@@ -1,4 +1,6 @@
 import { Link } from '@inertiajs/react';
+import { Spinner } from '@/components/ui/spinner';
+import { useState } from 'react';
 
 interface BbsMenuProps {
     counter: number;
@@ -11,15 +13,16 @@ export default function BbsMenu({
     installedAt,
     perPage,
 }: BbsMenuProps) {
+    const [processing, setProcessing] = useState(false);
     const installedDate = new Date(installedAt);
     const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
 
     return (
         <>
             <div style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
-                <button type="button" onClick={() => alert('Settings')}>
-                    Settings
-                </button>
+                <Link href="/settings">
+                    <button type="button">Settings</button>
+                </Link>
             </div>
 
             <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>
@@ -42,19 +45,25 @@ export default function BbsMenu({
             <div style={{ marginBottom: '1rem' }}>
                 <button
                     type="button"
+                    disabled={processing}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem' }}
                     onClick={() => {
                         const form = document.getElementById(
                             'post-form',
                         ) as HTMLFormElement;
                         if (form) {
+                            setProcessing(true);
                             form.requestSubmit();
+                            // Reset after a short delay to allow form submission
+                            setTimeout(() => setProcessing(false), 1000);
                         }
                     }}
                 >
+                    {processing && <Spinner />}
                     Post / Reload
                 </button>{' '}
                 <Link href={`/?readnew=1&d=${perPage}`}>
-                    <button type="button">Unread</button>
+                    <button type="button" style={{ padding: '0.5rem 1rem' }}>Unread</button>
                 </Link>
             </div>
 

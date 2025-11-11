@@ -16,7 +16,7 @@ class InstallController extends Controller
             return redirect('/');
         }
 
-        return Inertia::render('Install/Index');
+        return Inertia::render('install/index');
     }
 
     public function store(Request $request)
