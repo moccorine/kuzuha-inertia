@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Seed information page
+        $this->call(InformationPageSeeder::class);
+
         // Import legacy BBS posts
         $this->command->info('Importing legacy BBS posts...');
         $this->command->call('bbs:import', ['date' => '20251110', '--file' => true]);
