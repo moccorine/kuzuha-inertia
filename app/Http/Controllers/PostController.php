@@ -38,6 +38,9 @@ class PostController extends Controller
         cookie()->queue('last_seen_post_id', $latestPostId, 60 * 24 * 365); // 1年間保存
 
         $informationPage = \App\Models\InformationPage::first();
+        $customLinks = \App\Models\CustomLink::where('is_active', true)
+            ->orderBy('order')
+            ->get();
 
         return Inertia::render('posts/index', [
             'posts' => $posts,
@@ -48,6 +51,7 @@ class PostController extends Controller
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
             'latestPostId' => $latestPostId,
             'hideForm' => $hideForm,
+            'customLinks' => $customLinks,
             'informationPage' => $informationPage ? [
                 'url' => $informationPage->url,
                 'hasContent' => !empty($informationPage->content),
