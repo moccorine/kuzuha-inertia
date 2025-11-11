@@ -20,6 +20,19 @@ class SettingsController extends Controller
         ]);
     }
 
+    public function customTheme()
+    {
+        $themes = collect(config('themes'))->map(fn($theme, $key) => [
+            'key' => $key,
+            'name' => $theme['name'],
+        ])->values();
+
+        return Inertia::render('settings/custom-theme', [
+            'themes' => $themes,
+            'currentTheme' => request()->cookie('theme', env('THEME_DEFAULT', 'default')),
+        ]);
+    }
+
     public function updateTheme(Request $request)
     {
         $request->validate([
