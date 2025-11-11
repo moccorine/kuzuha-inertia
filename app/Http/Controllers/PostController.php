@@ -299,6 +299,64 @@ class PostController extends Controller
     }
 
     /**
+     * Display all threads in tree view.
+     */
+    public function treeIndex(Request $request)
+    {
+        $perPage = $request->query('d', 10);
+        $perPage = max(1, min((int) $perPage, 50));
+
+        $readnew = $request->query('readnew');
+        $lastSeenId = $request->cookie('last_seen_post_id');
+
+        // Get latest threads (posts where id = thread_id or thread_id is null)
+        $threadsQuery = Post::whereRaw('id = thread_id OR thread_id IS NULL')
+            ->latest();
+
+        // If readnew mode, filter threads with new posts
+        if ($readnew && $lastSeenId) {
+            $threadsQuery->whereHas('thread', function ($query) use ($lastSeenId) {
+                $query->where('id', '>', $lastSeenId);
+            });
+        }
+
+        $threads = $threadsQuery->paginate($perPage)
+            ->onEachSide(1)
+            ->appends(['d' => $perPage, 'readnew' => $readnew]);
+
+        // For each thread, get all posts and build tree
+        $trees = [];
+        foreach ($threads as $thread) {
+            $posts = Post::where('thread_id', $thread->id)
+                ->orWhere('id', $thread->id)
+                ->orderBy('id', 'asc')
+                ->get();
+
+            // Check if thread has new posts
+            $hasNewPosts = $readnew && $lastSeenId && $posts->where('id', '>', $lastSeenId)->count() > 0;
+
+            // Skip thread if in readnew mode and no new posts
+            if ($readnew && $lastSeenId && !$hasNewPosts) {
+                continue;
+            }
+
+            $trees[] = [
+                'thread' => $thread,
+                'tree' => $this->buildTree($posts),
+                'updated_at' => $posts->max('created_at'),
+            ];
+        }
+
+        return Inertia::render('posts/tree-index', [
+            'trees' => $trees,
+            'pagination' => $threads,
+            'perPage' => $perPage,
+            'appName' => config('app.name'),
+            'lastSeenId' => $lastSeenId,
+        ]);
+    }
+
+    /**
      * Display thread in tree view.
      */
     public function tree(string $id)

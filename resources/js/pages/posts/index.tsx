@@ -68,7 +68,7 @@ export default function Index({
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <a href="#" style={{ fontSize: '14px' }}>Archive</a>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <a href="#" style={{ fontSize: '14px' }}>Tree View</a>
+                    <Link href="/tree" style={{ fontSize: '14px' }}>Tree View</Link>
                 </div>
 
                 <PostForm perPage={perPage} />

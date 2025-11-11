@@ -212,6 +212,13 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Time limit: 5 minutes after posting
   - Encrypted token-based authentication
   - Show delete button only on user's latest post
+- [x] Tree View (ツリービュー)
+  - Display threads in tree structure with text-based branches (├, │, └)
+  - All threads view at /tree
+  - Individual thread tree at /tree/{id}
+  - Unread mode support with post highlighting
+  - Remove quoted lines (>) from display
+  - Show username with tripcode in italic
 
 ### Real-time Features (リアルタイム機能)
 - [ ] Online user counter (同時接続数表示)
