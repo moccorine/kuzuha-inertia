@@ -13,6 +13,9 @@ class PostController extends Controller
         $perPage = $request->query('d', 40);
         $perPage = max(1, min((int) $perPage, 200)); // 1-200の範囲に制限
 
+        // ログ読みモード（フォーム非表示）
+        $hideForm = $request->query('hide');
+        
         $query = Post::with(['parent', 'thread'])->latest();
 
         // 未読モード
@@ -25,7 +28,7 @@ class PostController extends Controller
 
         $posts = $query->paginate($perPage)
             ->onEachSide(1)
-            ->appends(['d' => $perPage]);
+            ->appends(['d' => $perPage, 'hide' => $hideForm]);
 
         $counter = increment_counter();
 
@@ -42,6 +45,7 @@ class PostController extends Controller
             'counter' => $counter,
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
             'latestPostId' => $latestPostId,
+            'hideForm' => $hideForm,
             'informationPage' => $informationPage ? [
                 'url' => $informationPage->url,
                 'hasContent' => !empty($informationPage->content),

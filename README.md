@@ -203,10 +203,10 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Optional checkbox "URL自動リンク" (default: checked)
   - Server-side processing with autolink() helper
   - Preference saved in localStorage
-- [ ] Log read mode (ログ読みモード)
-  - Toggle between newest-first and oldest-first display
-  - Store preference in localStorage
-  - Auto-enable for unread mode
+- [x] Log read mode (ログ読みモード)
+  - Hide post form and menu for read-only mode
+  - Access via /?hide=1 parameter
+  - Toggle with "Log Read" / "Show Form" link
 - [x] Undo/Delete own post (投稿取り消し)
   - Allow users to delete their most recent post
   - Time limit: 5 minutes after posting

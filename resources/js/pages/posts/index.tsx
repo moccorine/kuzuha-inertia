@@ -26,6 +26,7 @@ interface Props {
     appName: string;
     counter: number;
     installedAt: string;
+    hideForm?: boolean;
     informationPage: {
         url: string;
         hasContent: boolean;
@@ -38,6 +39,7 @@ export default function Index({
     appName,
     counter,
     installedAt,
+    hideForm,
     informationPage,
 }: Props) {
     const { lastPostId, lastPostTime } = usePage().props as any;
@@ -69,16 +71,25 @@ export default function Index({
                     <a href="#" style={{ fontSize: '14px' }}>Archive</a>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <Link href="/tree" style={{ fontSize: '14px' }}>Tree View</Link>
+                    <span style={{ margin: '0 0.5rem' }}>|</span>
+                    <a 
+                        href={hideForm ? "/" : `/?hide=1&d=${perPage}`}
+                        style={{ fontSize: '14px', cursor: 'pointer' }}
+                    >
+                        {hideForm ? 'Show Form' : 'Log Read'}
+                    </a>
                 </div>
 
-                <PostForm perPage={perPage} />
+                {!hideForm && <PostForm perPage={perPage} />}
 
-                <BbsMenu
-                    counter={counter}
-                    installedAt={installedAt}
-                    perPage={perPage}
-                    informationPage={informationPage}
-                />
+                {!hideForm && (
+                    <BbsMenu
+                        counter={counter}
+                        installedAt={installedAt}
+                        perPage={perPage}
+                        informationPage={informationPage}
+                    />
+                )}
 
                 {posts.data.length === 0 ? (
                     <div style={{ fontSize: '15px', fontStyle: 'italic' }}>
