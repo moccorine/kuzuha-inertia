@@ -31,6 +31,7 @@ class PostController extends Controller
             ->appends(['d' => $perPage, 'hide' => $hideForm]);
 
         $counter = increment_counter();
+        $onlineCount = online_counter();
 
         // 最新のpost IDをCookieに保存
         $latestPostId = Post::max('id');
@@ -43,6 +44,7 @@ class PostController extends Controller
             'perPage' => $perPage,
             'appName' => config('app.name'),
             'counter' => $counter,
+            'onlineCount' => $onlineCount,
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
             'latestPostId' => $latestPostId,
             'hideForm' => $hideForm,

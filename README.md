@@ -187,6 +187,8 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - User restrictions (ユーザー制限)
     - Ban IP addresses (IP禁止)
     - View access logs (アクセスログ)
+    - Spatie/Honeypot
+    - anonymouse ID
   - System settings (システム設定)
     - BBS configuration (掲示板設定)
     - Maintenance mode (メンテナンスモード)
@@ -194,8 +196,6 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Database management (データベース管理)
     - Backup/Export (バックアップ・エクスポート)
     - Statistics (統計情報)
-- [ ] Image upload support (画像アップロード)
-- [ ] RSS feed (RSSフィード)
 - [ ] Mobile responsive design improvements (モバイル対応改善)
 - [x] URL auto-linking (URL自動リンク)
   - Detect URLs in post body and convert to links
@@ -221,10 +221,12 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Show username with tripcode in italic
 
 ### Real-time Features (リアルタイム機能)
-- [ ] Online user counter (同時接続数表示)
-  - Redis/Memcachedでの実装を推奨
+- [x] Online user counter (同時接続数表示)
+  - Database-based implementation (DBベース実装)
   - 5分以内のアクセスをカウント
-  - IPベースの一意キー生成
+  - IPベースのユニークキー生成（SHA256ハッシュ）
+  - 古いエントリの自動削除
+  - Display "Online: X (within 5 min)" in BbsMenu
 - [ ] Modern Mode with WebSocket (モダンモード)
   - Laravel Reverbを使用したWebSocket統合
   - Real-time post updates (新規投稿のリアルタイム表示)
@@ -232,6 +234,16 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Optional: typing indicators (入力中表示)
   - Toggle between legacy mode and modern mode
   - Graceful degradation for non-WebSocket browsers
+
+### optional
+- [ ] Optional
+  - 位置情報投稿機能
+  - [ ] Image upload support (画像アップロード)
+  - [ ] RSS feed (RSSフィード)
+  - [ ] 問合せform
+  - [ ] Tree Viewインライン表示
+  - [ ] Humanized Datediff
+  - [ ] Bookmark / Faves
 
 ## License
 

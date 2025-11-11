@@ -105,3 +105,27 @@ if (! function_exists('autolink')) {
         return preg_replace($pattern, '<a href="$1" target="_blank" rel="noopener noreferrer" class="autolink">$1</a>', $text);
     }
 }
+
+if (! function_exists('online_counter')) {
+    /**
+     * Track online user and return count.
+     */
+    function online_counter(): int
+    {
+        $ipHash = hash('sha256', request()->ip());
+        $timeout = now()->subMinutes(5);
+
+        // Update or insert current user
+        DB::table('online_users')->updateOrInsert(
+            ['ip_hash' => $ipHash],
+            ['last_seen_at' => now()]
+        );
+
+        // Clean up old entries and count active users
+        DB::table('online_users')
+            ->where('last_seen_at', '<', $timeout)
+            ->delete();
+
+        return DB::table('online_users')->count();
+    }
+}

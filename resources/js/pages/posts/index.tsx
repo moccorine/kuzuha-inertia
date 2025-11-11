@@ -25,6 +25,7 @@ interface Props {
     perPage: number;
     appName: string;
     counter: number;
+    onlineCount: number;
     installedAt: string;
     hideForm?: boolean;
     informationPage: {
@@ -38,6 +39,7 @@ export default function Index({
     perPage,
     appName,
     counter,
+    onlineCount,
     installedAt,
     hideForm,
     informationPage,
@@ -87,6 +89,7 @@ export default function Index({
                         counter={counter}
                         installedAt={installedAt}
                         perPage={perPage}
+                        onlineCount={onlineCount}
                         informationPage={informationPage}
                     />
                 )}
