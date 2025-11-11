@@ -26,6 +26,10 @@ interface Props {
     appName: string;
     counter: number;
     installedAt: string;
+    informationPage: {
+        url: string;
+        hasContent: boolean;
+    } | null;
 }
 
 export default function Index({
@@ -34,6 +38,7 @@ export default function Index({
     appName,
     counter,
     installedAt,
+    informationPage,
 }: Props) {
     const { lastPostId, lastPostTime } = usePage().props as any;
 
@@ -47,7 +52,23 @@ export default function Index({
             <Head title={appName} />
             <div style={{ padding: '1rem 0.5rem 0 0.5rem' }}>
                 <div className="pagetitle" style={{ marginBottom: '1rem' }}>
-                    <Link href="/">{appName}</Link>
+                    <Link href="/" style={{ fontSize: '24px', fontWeight: 'bold' }}>{appName}</Link>
+                    {informationPage && (
+                        <>
+                            <span style={{ margin: '0 0.5rem' }}>|</span>
+                            {informationPage.url ? (
+                                <a href={informationPage.url} style={{ fontSize: '14px' }}>Information</a>
+                            ) : informationPage.hasContent ? (
+                                <Link href="/information" style={{ fontSize: '14px' }}>Information</Link>
+                            ) : null}
+                        </>
+                    )}
+                    <span style={{ margin: '0 0.5rem' }}>|</span>
+                    <a href="#" style={{ fontSize: '14px' }}>Contact</a>
+                    <span style={{ margin: '0 0.5rem' }}>|</span>
+                    <a href="#" style={{ fontSize: '14px' }}>Archive</a>
+                    <span style={{ margin: '0 0.5rem' }}>|</span>
+                    <a href="#" style={{ fontSize: '14px' }}>Tree View</a>
                 </div>
 
                 <PostForm perPage={perPage} />
@@ -56,6 +77,7 @@ export default function Index({
                     counter={counter}
                     installedAt={installedAt}
                     perPage={perPage}
+                    informationPage={informationPage}
                 />
 
                 {posts.data.length === 0 ? (

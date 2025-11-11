@@ -12,6 +12,8 @@ Route::prefix('install')->name('install.')->group(function () {
 });
 
 Route::get('/', [PostController::class, 'index'])->name('home');
+Route::get('/information', [PostController::class, 'information'])->name('information');
+Route::get('/{url}', [PostController::class, 'informationByUrl'])->name('information.url')->where('url', '^(?!posts|threads|tree|users|settings|theme|install|admin).*$');
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/threads/{id}', [PostController::class, 'thread'])->name('posts.thread');
 Route::get('/tree/{id}', [PostController::class, 'tree'])->name('posts.tree');
@@ -34,8 +36,4 @@ Route::get('/theme/{theme}', function ($theme) {
     return redirect()->back()->withCookie($cookie);
 })->name('theme.switch');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-});
+require __DIR__.'/admin.php';

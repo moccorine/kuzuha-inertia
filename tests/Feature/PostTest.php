@@ -8,8 +8,11 @@ use Inertia\Testing\AssertableInertia as Assert;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    // Set admin password to skip install middleware
-    Setting::set('admin_password', bcrypt('password'));
+    // Create admin user to skip install middleware
+    \App\Models\User::factory()->create([
+        'username' => 'admin',
+        'email' => 'admin@example.com',
+    ]);
     Setting::set('installed_at', now()->toDateTimeString());
 });
 

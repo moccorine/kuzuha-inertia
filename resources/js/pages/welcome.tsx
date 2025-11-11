@@ -1,5 +1,5 @@
 import { useTranslation } from '@/lib/i18n';
-import { dashboard, login, register } from '@/routes';
+import { login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 

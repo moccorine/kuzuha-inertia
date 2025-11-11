@@ -1,129 +1,59 @@
-import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import AuthLayout from '@/layouts/auth-layout';
-import { useTranslation } from '@/lib/i18n';
-import { register } from '@/routes';
-import { store } from '@/routes/login';
-import { request } from '@/routes/password';
-import { Form, Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
 
 interface LoginProps {
     status?: string;
-    canResetPassword: boolean;
-    canRegister: boolean;
 }
 
-export default function Login({
-    status,
-    canResetPassword,
-    canRegister,
-}: LoginProps) {
-    const { t } = useTranslation();
+export default function Login({ status }: LoginProps) {
+    const { data, setData, post, processing, errors } = useForm({
+        username: '',
+        password: '',
+        remember: false,
+    });
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        post('/login');
+    };
 
     return (
-        <AuthLayout
-            title={t('auth.login.title')}
-            description={t('auth.login.description')}
-        >
-            <Head title={t('auth.login.title')} />
+        <>
+            <Head title="Login" />
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                <div style={{ background: 'rgba(0, 64, 64, 0.8)', border: '2px solid #c0c0c0', borderRadius: '4px', padding: '2rem', maxWidth: '500px', width: '100%' }}>
+                    <div className="pagetitle" style={{ marginBottom: '0.5rem' }}>Admin Login</div>
+                    <div style={{ fontSize: '14px', color: '#ccc', marginBottom: '1.5rem' }}>Please enter your credentials</div>
 
-            <Form
-                {...store.form()}
-                resetOnSuccess={['password']}
-                className="flex flex-col gap-6"
-            >
-                {({ processing, errors }) => (
-                    <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">
-                                    {t('auth.login.email')}
-                                </Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@example.com"
-                                />
-                                <InputError message={errors.email} />
-                            </div>
+                    {status && <div style={{ fontSize: '14px', color: '#0f0', marginBottom: '1rem' }}>{status}</div>}
+                    {errors.username && <div className="error" style={{ fontSize: '14px', marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255, 0, 0, 0.1)', border: '1px solid #f00', borderRadius: '4px' }}>{errors.username}</div>}
 
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">
-                                        {t('auth.login.password')}
-                                    </Label>
-                                    {canResetPassword && (
-                                        <TextLink
-                                            href={request()}
-                                            className="ml-auto text-sm"
-                                            tabIndex={5}
-                                        >
-                                            {t('auth.login.forgot_password')}
-                                        </TextLink>
-                                    )}
-                                </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="current-password"
-                                    placeholder={t('auth.login.password')}
-                                />
-                                <InputError message={errors.password} />
-                            </div>
-
-                            <div className="flex items-center space-x-3">
-                                <Checkbox
-                                    id="remember"
-                                    name="remember"
-                                    tabIndex={3}
-                                />
-                                <Label htmlFor="remember">
-                                    {t('auth.login.remember')}
-                                </Label>
-                            </div>
-
-                            <Button
-                                type="submit"
-                                className="mt-4 w-full"
-                                tabIndex={4}
-                                disabled={processing}
-                                data-test="login-button"
-                            >
-                                {processing && <Spinner />}
-                                {t('auth.login.submit')}
-                            </Button>
+                    <form onSubmit={submit}>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label htmlFor="username" style={{ display: 'block', fontSize: '14px', marginBottom: '0.3rem' }}>Username</label>
+                            <input id="username" type="text" name="username" autoComplete="username" value={data.username} onChange={(e) => setData('username', e.target.value)} required autoFocus style={{ width: '100%', padding: '0.5rem', fontSize: '14px' }} />
                         </div>
 
-                        {canRegister && (
-                            <div className="text-center text-sm text-muted-foreground">
-                                {t('auth.login.no_account')}{' '}
-                                <TextLink href={register()} tabIndex={5}>
-                                    {t('auth.login.create_account')}
-                                </TextLink>
-                            </div>
-                        )}
-                    </>
-                )}
-            </Form>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label htmlFor="password" style={{ display: 'block', fontSize: '14px', marginBottom: '0.3rem' }}>Password</label>
+                            <input id="password" type="password" name="password" autoComplete="current-password" value={data.password} onChange={(e) => setData('password', e.target.value)} required style={{ width: '100%', padding: '0.5rem', fontSize: '14px' }} />
+                        </div>
 
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label style={{ fontSize: '14px' }}>
+                                <input type="checkbox" name="remember" checked={data.remember} onChange={(e) => setData('remember', e.target.checked)} style={{ marginRight: '0.5rem' }} />
+                                Remember me
+                            </label>
+                        </div>
+
+                        <button type="submit" disabled={processing} style={{ width: '100%', padding: '0.7rem', fontSize: '15px', marginTop: '1rem', cursor: processing ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                            {processing && <Spinner />}
+                            Login
+                        </button>
+                    </form>
                 </div>
-            )}
-        </AuthLayout>
+            </div>
+        </>
     );
 }

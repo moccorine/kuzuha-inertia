@@ -19,10 +19,21 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'username',
         'name',
         'email',
         'password',
     ];
+
+    /**
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'username';
+    }
 
     /**
      * The attributes that should be hidden for serialization.

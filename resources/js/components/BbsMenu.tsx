@@ -6,12 +6,17 @@ interface BbsMenuProps {
     counter: number;
     installedAt: string;
     perPage: number;
+    informationPage?: {
+        url: string;
+        hasContent: boolean;
+    } | null;
 }
 
 export default function BbsMenu({
     counter,
     installedAt,
     perPage,
+    informationPage,
 }: BbsMenuProps) {
     const [processing, setProcessing] = useState(false);
     const [customBgColor, setCustomBgColor] = useState('#004040');
@@ -88,7 +93,17 @@ export default function BbsMenu({
             <hr style={{ marginBottom: '1rem' }} />
 
             <div style={{ fontSize: '13px' }}>
-                <a href="#">Info</a> | <a href="#">Archive</a>
+                {informationPage && (
+                    <>
+                        {informationPage.url ? (
+                            <a href={informationPage.url}>Information</a>
+                        ) : informationPage.hasContent ? (
+                            <Link href="/information">Information</Link>
+                        ) : null}
+                        {(informationPage.url || informationPage.hasContent) && ' | '}
+                    </>
+                )}
+                <a href="#">Archive</a>
             </div>
 
             <hr style={{ marginTop: '1rem', marginBottom: '0.5rem' }} />

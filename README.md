@@ -95,7 +95,30 @@ pm2 startup
 - Anonymous posting
 - Server-Side Rendering (SSR)
 - Git-based versioning
-- Admin password protection
+- Username-based authentication (admin only)
+- Theme system (default, dark, custom themes)
+- Admin panel (UI framework implemented)
+
+## Admin Panel
+
+Access: `/admin` (requires authentication)
+
+**Implemented:**
+- Dashboard
+- Settings
+  - Profile management
+  - Password change
+  - Two-factor authentication
+  - Theme selection
+- Navigation structure for:
+  - Posts management (TODO)
+  - User restrictions (TODO)
+  - System settings (TODO)
+
+**Authentication:**
+- Username-based login (not email)
+- User registration disabled
+- Initial admin user created via installer
 
 ## Changes from Legacy BBS
 
@@ -138,7 +161,6 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 - [ ] 投稿のJSON/HTMLエクスポート機能
 
 ### Other Features (その他機能)
-- [ ] Settings functionality (設定機能)
 - [ ] Info page (情報ページ)
   - Markdown-based content (Markdownで記述)
   - Store in `resources/markdown/info.md`
@@ -148,12 +170,16 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Username format: `Name#password` → `Name◆tripcode`
   - Generate tripcode from password hash
   - Display tripcode after username
-- [ ] Admin panel (管理画面)
+- [x] Admin panel UI framework (管理画面UIフレームワーク)
+  - Navigation menu (Dashboard, Posts, Restrictions, System)
+  - Settings pages (Profile, Password, Two-factor, Theme)
+  - AppLayout with breadcrumbs
+- [ ] Admin panel functionality (管理画面機能)
   - Post management (投稿管理)
     - List all posts with filters (投稿一覧・フィルター)
     - Delete posts (投稿削除)
     - View post details (IP, user agent, etc.)
-  - User management (ユーザー管理)
+  - User restrictions (ユーザー制限)
     - Ban IP addresses (IP禁止)
     - View access logs (アクセスログ)
   - System settings (システム設定)

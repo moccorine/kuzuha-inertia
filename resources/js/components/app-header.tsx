@@ -30,15 +30,9 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { useTranslation } from '@/lib/i18n';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
-import AppLogo from './app-logo';
-import AppLogoIcon from './app-logo-icon';
-
-const activeItemStyles =
-    'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
+import { LayoutGrid, Menu, Search, MessageSquare, UserX, Settings } from 'lucide-react';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -46,30 +40,34 @@ interface AppHeaderProps {
 
 export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
-    const { auth } = page.props;
+    const { auth, name } = page.props;
     const getInitials = useInitials();
     const { t } = useTranslation();
 
     const mainNavItems: NavItem[] = [
         {
-            title: t('navigation.dashboard'),
-            href: dashboard(),
+            title: 'ダッシュボード',
+            href: '/admin',
             icon: LayoutGrid,
+        },
+        {
+            title: '投稿一覧',
+            href: '/admin/posts',
+            icon: MessageSquare,
+        },
+        {
+            title: 'ユーザー制限',
+            href: '/admin/restrictions',
+            icon: UserX,
+        },
+        {
+            title: 'システム',
+            href: '/admin/system',
+            icon: Settings,
         },
     ];
 
-    const rightNavItems: NavItem[] = [
-        {
-            title: t('navigation.repository'),
-            href: 'https://github.com/laravel/react-starter-kit',
-            icon: Folder,
-        },
-        {
-            title: t('navigation.documentation'),
-            href: 'https://laravel.com/docs/starter-kits#react',
-            icon: BookOpen,
-        },
-    ];
+    const rightNavItems: NavItem[] = [];
     return (
         <>
             <div className="border-b border-sidebar-border/80">
@@ -94,7 +92,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                     Navigation Menu
                                 </SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
-                                    <AppLogoIcon className="h-6 w-6 fill-current text-black dark:text-white" />
+                                    <span className="text-lg font-semibold">{name}</span>
                                 </SheetHeader>
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
@@ -142,11 +140,11 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </div>
 
                     <Link
-                        href={dashboard()}
+                        href="/admin"
                         prefetch
                         className="flex items-center space-x-2"
                     >
-                        <AppLogo />
+                        <span className="text-lg font-semibold">{name}</span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -162,10 +160,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                             href={item.href}
                                             className={cn(
                                                 navigationMenuTriggerStyle(),
-                                                isSameUrl(
-                                                    page.url,
-                                                    item.href,
-                                                ) && activeItemStyles,
                                                 'h-9 cursor-pointer px-3',
                                             )}
                                         >
