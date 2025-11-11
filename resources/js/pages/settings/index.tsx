@@ -1,4 +1,4 @@
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, router, usePage, Link } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 interface Theme {
@@ -16,24 +16,20 @@ export default function Index({ themes, currentTheme }: Props) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        router.post('/settings/theme', { theme: selectedTheme }, {
-            onSuccess: () => {
-                window.location.href = '/settings';
-            }
-        });
+        window.location.href = `/theme/${selectedTheme}`;
     };
 
     return (
         <>
-            <Head title="設定" />
+            <Head title="Settings" />
 
             <div className="nw">
-                <div className="pagetitle">設定</div>
+                <div className="pagetitle">Settings</div>
                 <hr />
 
                 <form onSubmit={handleSubmit}>
                     <div className="m">
-                        <div className="ms">テーマ</div>
+                        <div className="ms">Theme</div>
                         <div className="post-contents">
                             <select
                                 value={selectedTheme}
@@ -55,10 +51,16 @@ export default function Index({ themes, currentTheme }: Props) {
                     </div>
 
                     <div className="m">
-                        <button type="submit">保存</button>
+                        <button type="submit">Save</button>
                         <button type="button" onClick={() => router.visit('/')}>
-                            戻る
+                            Back
                         </button>
+                    </div>
+
+                    <div className="m">
+                        <Link href="/settings/custom-theme">
+                            <button type="button">Custom Theme Settings</button>
+                        </Link>
                     </div>
                 </form>
             </div>

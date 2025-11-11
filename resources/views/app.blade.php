@@ -57,6 +57,49 @@
             }
         </style>
 
+        {{-- Apply custom theme colors from localStorage after base theme is set --}}
+        <script>
+            (function() {
+                // Remove any existing custom theme style tag first
+                const existingStyle = document.getElementById('custom-theme-override');
+                if (existingStyle) {
+                    existingStyle.remove();
+                }
+
+                const themeCookie = document.cookie.split('; ').find(row => row.startsWith('theme='));
+                const currentTheme = themeCookie ? themeCookie.split('=')[1] : '{{ env('THEME_DEFAULT', 'default') }}';
+                
+                if (currentTheme === 'custom') {
+                    const customTheme = localStorage.getItem('customTheme');
+                    
+                    if (customTheme) {
+                        try {
+                            const { colors } = JSON.parse(customTheme);
+                            
+                            // Create a style tag to override theme variables
+                            const styleTag = document.createElement('style');
+                            styleTag.id = 'custom-theme-override';
+                            styleTag.textContent = `
+                                :root {
+                                    --theme-text: ${colors.text};
+                                    --theme-background: ${colors.background};
+                                    --theme-link: ${colors.link};
+                                    --theme-link-visited: ${colors.link_visited};
+                                    --theme-link-active: ${colors.link_active};
+                                    --theme-link-hover: ${colors.link_hover};
+                                    --theme-title: ${colors.title};
+                                    --theme-quote: ${colors.quote};
+                                }
+                            `;
+                            document.head.appendChild(styleTag);
+                        } catch (e) {
+                            console.error('Failed to parse custom theme:', e);
+                        }
+                    }
+                }
+            })();
+        </script>
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
