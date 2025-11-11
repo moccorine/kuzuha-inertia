@@ -2,7 +2,7 @@ import BbsMenu from '@/components/BbsMenu';
 import PostForm from '@/components/PostForm';
 import PostItem from '@/components/PostItem';
 import GuestLayout from '@/layouts/guest-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -35,6 +35,13 @@ export default function Index({
     counter,
     installedAt,
 }: Props) {
+    const { lastPostId, lastPostTime } = usePage().props as any;
+
+    // Check if undo is available (within 5 minutes)
+    const canUndo =
+        lastPostTime &&
+        new Date().getTime() - new Date(lastPostTime).getTime() < 5 * 60 * 1000;
+
     return (
         <GuestLayout>
             <Head title={appName} />
@@ -58,7 +65,12 @@ export default function Index({
                 ) : (
                     <>
                         {posts.data.map((post) => (
-                            <PostItem key={post.id} post={post} />
+                            <PostItem
+                                key={post.id}
+                                post={post}
+                                lastPostId={lastPostId}
+                                canUndo={canUndo}
+                            />
                         ))}
 
                         {posts.links && (

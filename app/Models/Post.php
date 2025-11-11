@@ -11,8 +11,6 @@ class Post extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
     protected $fillable = [
         'id',
         'thread_id',
@@ -24,6 +22,7 @@ class Post extends Model
         'ip_address',
         'user_agent',
         'protect_code',
+        'undo_token',
     ];
 
     public function thread(): BelongsTo

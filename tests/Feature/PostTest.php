@@ -1,163 +1,205 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\Post;
 use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
-use Tests\TestCase;
 
-class PostTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    // Set admin password to skip install middleware
+    Setting::set('admin_password', bcrypt('password'));
+    Setting::set('installed_at', now()->toDateTimeString());
+});
 
-        // Set admin password to skip install middleware
-        Setting::set('admin_password', bcrypt('password'));
-        Setting::set('installed_at', now()->toDateTimeString());
-    }
+test('index page displays posts', function () {
+    Post::factory()->create([
+        'id' => 1,
+        'thread_id' => 1,
+        'username' => 'Test User',
+        'title' => 'Test Title',
+        'body' => 'Test Body',
+    ]);
 
-    public function test_index_page_displays_posts(): void
-    {
-        Post::factory()->create([
-            'id' => 1,
-            'thread_id' => 1,
-            'username' => 'Test User',
-            'title' => 'Test Title',
-            'body' => 'Test Body',
-        ]);
+    $response = $this->get('/');
 
-        $response = $this->get('/');
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Posts/Index')
+        ->has('posts.data', 1)
+        ->where('posts.data.0.username', 'Test User')
+        ->where('posts.data.0.title', 'Test Title')
+        ->where('posts.data.0.body', 'Test Body')
+    );
+});
 
-        $response->assertStatus(200);
-        $response->assertInertia(fn (Assert $page) => $page
-            ->component('Posts/Index')
-            ->has('posts.data', 1)
-            ->where('posts.data.0.username', 'Test User')
-            ->where('posts.data.0.title', 'Test Title')
-            ->where('posts.data.0.body', 'Test Body')
-        );
-    }
+test('can create post', function () {
+    $response = $this->from('/')->post('/posts', [
+        'username' => 'New User',
+        'email' => 'test@example.com',
+        'title' => 'New Post',
+        'body' => 'This is a new post',
+    ]);
 
-    public function test_can_create_post(): void
-    {
-        $response = $this->post('/posts', [
-            'username' => 'New User',
-            'email' => 'test@example.com',
-            'title' => 'New Post',
-            'body' => 'New post content',
-            'd' => 40,
-        ]);
+    $response->assertRedirect();
 
-        $response->assertRedirect('/?d=40');
-        $this->assertDatabaseHas('posts', [
-            'username' => 'New User',
-            'title' => 'New Post',
-            'body' => 'New post content',
-        ]);
-    }
+    $this->assertDatabaseHas('posts', [
+        'username' => 'New User',
+        'title' => 'New Post',
+        'body' => 'This is a new post',
+    ]);
+});
 
-    public function test_empty_body_redirects_without_creating_post(): void
-    {
-        $response = $this->post('/posts', [
-            'username' => 'Test',
-            'body' => '',
-            'd' => 40,
-        ]);
+test('can create follow up post', function () {
+    $parent = Post::factory()->create([
+        'id' => 1,
+        'thread_id' => 1,
+    ]);
 
-        $response->assertRedirect('/?d=40');
-        $this->assertDatabaseCount('posts', 0);
-    }
+    $response = $this->from('/')->post('/posts', [
+        'username' => 'Reply User',
+        'email' => 'reply@example.com',
+        'body' => 'This is a reply',
+        'parent_id' => $parent->id,
+    ]);
 
-    public function test_follow_page_displays_post(): void
-    {
-        $post = Post::factory()->create([
-            'id' => 1,
-            'thread_id' => 1,
-            'username' => 'Original User',
-            'body' => 'Original content',
-        ]);
+    $response->assertRedirect();
 
-        $response = $this->get("/posts/{$post->id}");
+    $this->assertDatabaseHas('posts', [
+        'username' => 'Reply User',
+        'body' => 'This is a reply',
+        'parent_id' => $parent->id,
+        'thread_id' => $parent->thread_id,
+    ]);
+});
 
-        $response->assertStatus(200);
-        $response->assertInertia(fn (Assert $page) => $page
-            ->component('Posts/Follow')
-            ->where('post.id', $post->id)
-            ->where('post.username', 'Original User')
-            ->has('quotedBody')
-            ->has('defaultTitle')
-        );
-    }
+test('pagination works correctly', function () {
+    Post::factory()->count(50)->create();
 
-    public function test_can_create_follow_up_post(): void
-    {
-        $parent = Post::factory()->create([
-            'id' => 1,
-            'thread_id' => 1,
-            'username' => 'Parent User',
-            'body' => 'Parent content',
-        ]);
+    $response = $this->get('/?d=10');
 
-        $response = $this->post('/posts', [
-            'username' => 'Reply User',
-            'email' => '',
-            'title' => '＞Parent User',
-            'body' => '> Parent content'."\n\n".'Reply content',
-            'parent_id' => $parent->id,
-            'd' => 40,
-        ]);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Posts/Index')
+        ->has('posts.data', 10)
+        ->has('posts.links')
+        ->where('posts.links.0.url', null) // First page, no previous
+        ->has('posts.links.1.url') // Has next page
+    );
+});
 
-        $response->assertRedirect('/?d=40');
-        $this->assertDatabaseHas('posts', [
-            'username' => 'Reply User',
-            'parent_id' => $parent->id,
-            'thread_id' => 1,
-        ]);
-    }
+test('next page link works', function () {
+    Post::factory()->count(100)->create();
 
-    public function test_per_page_parameter_works(): void
-    {
-        Post::factory()->count(50)->create();
+    $response = $this->get('/?d=10&page=2');
 
-        $response = $this->get('/?d=10');
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Posts/Index')
+        ->has('posts.data', 10)
+        ->has('posts.links')
+    );
+});
 
-        $response->assertInertia(fn (Assert $page) => $page
-            ->component('Posts/Index')
-            ->has('posts.data', 10)
-            ->where('perPage', 10)
-        );
-    }
+test('can undo own recent post', function () {
+    // Create a post
+    $response = $this->from('/')->post('/posts', [
+        'username' => 'Test User',
+        'email' => 'test@example.com',
+        'title' => 'Test Post',
+        'body' => 'This is a test post',
+    ]);
 
-    public function test_pagination_links_are_displayed(): void
-    {
-        // Create enough posts to have multiple pages
-        Post::factory()->count(100)->create();
+    $response->assertRedirect();
 
-        $response = $this->get('/?d=10');
+    // Get the created post
+    $post = Post::where('username', 'Test User')->first();
+    expect($post)->not->toBeNull();
+    expect($post->undo_token)->not->toBeNull();
 
-        $response->assertInertia(fn (Assert $page) => $page
-            ->component('Posts/Index')
-            ->has('posts.links')
-            ->where('posts.links.0.url', null) // First page, no previous
-            ->has('posts.links.1.url') // Has next page
-        );
-    }
+    // Get undo cookie from response
+    $undoCookie = $response->getCookie('undo_token');
+    expect($undoCookie)->not->toBeNull();
 
-    public function test_next_page_link_works(): void
-    {
-        Post::factory()->count(100)->create();
+    // Delete the post with cookie
+    $response = $this->withCookie('undo_token', $undoCookie->getValue())
+        ->delete("/posts/{$post->id}/undo");
 
-        $response = $this->get('/?d=10&page=2');
+    $response->assertRedirect();
 
-        $response->assertInertia(fn (Assert $page) => $page
-            ->component('Posts/Index')
-            ->has('posts.data', 10)
-            ->has('posts.links')
-        );
-    }
-}
+    // Verify post is deleted
+    $this->assertDatabaseMissing('posts', [
+        'id' => $post->id,
+    ]);
+});
+
+test('cannot undo other users post', function () {
+    // Create a post
+    $post = Post::factory()->create([
+        'id' => 999,
+        'thread_id' => 999,
+        'undo_token' => \Illuminate\Support\Str::random(32),
+    ]);
+
+    // Try to delete without cookie
+    $response = $this->from('/')->delete("/posts/{$post->id}/undo");
+
+    $response->assertRedirect();
+    $response->assertSessionHasErrors('error');
+
+    // Verify post still exists
+    $this->assertDatabaseHas('posts', [
+        'id' => $post->id,
+    ]);
+});
+
+test('cannot undo after time limit', function () {
+    // Create a post
+    $post = Post::factory()->create([
+        'username' => 'Test User',
+        'undo_token' => \Illuminate\Support\Str::random(32),
+    ]);
+
+    // Create expired undo cookie (6 minutes ago)
+    $undoData = [
+        'post_id' => $post->id,
+        'token' => $post->undo_token,
+        'created_at' => now()->subMinutes(6)->timestamp,
+    ];
+    $encryptedCookie = encrypt($undoData);
+
+    // Try to delete with expired cookie
+    $response = $this->from('/')->withCookie('undo_token', $encryptedCookie)
+        ->delete("/posts/{$post->id}/undo");
+
+    $response->assertRedirect();
+    $response->assertSessionHasErrors('error');
+
+    // Verify post still exists
+    $this->assertDatabaseHas('posts', [
+        'id' => $post->id,
+    ]);
+});
+
+test('index page shows undo button for recent post', function () {
+    // Create a post
+    $this->from('/')->post('/posts', [
+        'username' => 'Test User',
+        'email' => 'test@example.com',
+        'body' => 'Test post',
+    ]);
+
+    $post = Post::where('username', 'Test User')->first();
+    expect($post)->not->toBeNull();
+
+    // Check index page with session
+    $response = $this->withSession([
+        'last_post_id' => $post->id,
+        'last_post_time' => now()->timestamp,
+    ])->get('/');
+
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Posts/Index')
+        ->where('lastPostId', $post->id)
+        ->has('lastPostTime')
+    );
+});

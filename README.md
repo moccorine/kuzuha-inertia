@@ -14,7 +14,7 @@ Legacy BBS reimplemented with Laravel + Inertia.js + React
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/moccorine/kuzuha-inertia.git
 cd kuzuha-inertia
 
 # Install dependencies
@@ -173,10 +173,10 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Toggle between newest-first and oldest-first display
   - Store preference in localStorage
   - Auto-enable for unread mode
-- [ ] Undo/Delete own post (投稿取り消し)
+- [x] Undo/Delete own post (投稿取り消し)
   - Allow users to delete their most recent post
-  - Time limit: 5-10 minutes after posting
-  - Session-based authentication with CSRF protection
+  - Time limit: 5 minutes after posting
+  - Encrypted token-based authentication
   - Show delete button only on user's latest post
 
 ### Real-time Features (リアルタイム機能)

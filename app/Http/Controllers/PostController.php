@@ -96,7 +96,7 @@ class PostController extends Controller
         $post = Post::create([
             'username' => $username,
             'email' => $validated['email'],
-            'title' => $validated['title'],
+            'title' => $validated['title'] ?? null,
             'body' => $body,
             'parent_id' => $validated['parent_id'] ?? null,
             'thread_id' => $threadId,
@@ -110,6 +110,26 @@ class PostController extends Controller
             $post->save();
         }
 
+        // Store post ID and time in session for undo functionality
+        $request->session()->put('last_post_id', $post->id);
+        $request->session()->put('last_post_time', now());
+
+        // Generate undo token (encrypted post ID + random key)
+        $undoToken = \Illuminate\Support\Str::random(32);
+        $undoData = [
+            'post_id' => $post->id,
+            'token' => $undoToken,
+            'created_at' => now()->timestamp,
+        ];
+
+        // Store token in database
+        \DB::table('posts')->where('id', $post->id)->update([
+            'undo_token' => $undoToken,
+        ]);
+
+        // Set encrypted cookie (24 hours)
+        cookie()->queue('undo_token', encrypt($undoData), 60 * 24);
+
         // Redirect with display count parameter
         $perPage = $request->input('d', 40);
 
@@ -117,10 +137,56 @@ class PostController extends Controller
     }
 
     /**
+     * Delete user's own recent post (undo).
+     */
+    public function undo(Request $request, string $id)
+    {
+        // Get undo token from cookie
+        $undoCookie = $request->cookie('undo_token');
+        if (! $undoCookie) {
+            return back()->withErrors(['error' => 'No undo token found.']);
+        }
+
+        try {
+            $undoData = decrypt($undoCookie);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Invalid undo token.']);
+        }
+
+        // Verify post ID matches
+        if ($undoData['post_id'] != $id) {
+            return back()->withErrors(['error' => 'You can only delete your most recent post.']);
+        }
+
+        // Check time limit (5 minutes)
+        if (now()->timestamp - $undoData['created_at'] > 300) {
+            return back()->withErrors(['error' => 'Time limit exceeded. You can only delete posts within 5 minutes.']);
+        }
+
+        // Get post and verify token
+        $post = Post::findOrFail($id);
+        if ($post->undo_token !== $undoData['token']) {
+            return back()->withErrors(['error' => 'Invalid undo token.']);
+        }
+
+        // Delete post
+        $post->delete();
+
+        // Clear cookie
+        cookie()->queue(cookie()->forget('undo_token'));
+
+        // Clear session
+        session()->forget(['last_post_id', 'last_post_time']);
+
+        return redirect('/')->with('success', 'Post deleted successfully.');
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
+
         $post = Post::with('parent')->findOrFail($id);
 
         // Generate default title for follow-up

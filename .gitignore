@@ -28,4 +28,5 @@ yarn-error.log
 /.zed
 /.legacy
 database/logs/*.dat
+legacy_bbs/logs/**/*.dat
 *.swp

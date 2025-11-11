@@ -62,6 +62,12 @@ class HandleInertiaRequests extends Middleware
             'fallbackTranslations' => $fallbackLocale !== $locale
                 ? $this->frontendTranslations($fallbackLocale)
                 : [],
+            'lastPostId' => $request->session()->get('last_post_id'),
+            'lastPostTime' => $request->session()->get('last_post_time')
+                ? (is_object($request->session()->get('last_post_time'))
+                    ? $request->session()->get('last_post_time')->toIso8601String()
+                    : $request->session()->get('last_post_time'))
+                : null,
         ];
     }
 

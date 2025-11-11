@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('ip_address', 45)->nullable();
             $table->string('user_agent')->nullable();
             $table->string('protect_code', 4)->nullable();
+            $table->string('undo_token', 32)->nullable();
             $table->timestamps();
 
             $table->index('created_at');

@@ -16,6 +16,7 @@ Route::get('/threads/{id}', [PostController::class, 'thread'])->name('posts.thre
 Route::get('/tree/{id}', [PostController::class, 'tree'])->name('posts.tree');
 Route::get('/users/{username}/posts', [PostController::class, 'userPosts'])->name('users.posts');
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+Route::delete('/posts/{id}/undo', [PostController::class, 'undo'])->name('posts.undo');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

@@ -36,7 +36,7 @@ export default function BbsMenu({
 
             <div style={{ fontSize: '13px', marginBottom: '1rem' }}>
                 ■: Follow Post (Reply)　★: User Posts　◆: Thread Display　木:
-                Tree View
+                Tree View　×: Undo (Delete own post)
             </div>
 
             <div style={{ marginBottom: '1rem' }}>

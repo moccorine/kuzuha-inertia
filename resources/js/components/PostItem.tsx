@@ -1,4 +1,14 @@
-import { Link } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 interface Post {
     id: number;
@@ -16,9 +26,13 @@ interface Post {
 
 interface PostItemProps {
     post: Post;
+    lastPostId?: number;
+    canUndo?: boolean;
 }
 
-export default function PostItem({ post }: PostItemProps) {
+export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
+    const [open, setOpen] = useState(false);
+
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr);
         // Convert to JST (UTC+9)
@@ -41,6 +55,13 @@ export default function PostItem({ post }: PostItemProps) {
         post.username !== 'Anonymous' &&
         post.username.trim() !== '' &&
         post.username.trim() !== '　'; // Full-width space
+
+    const handleUndo = () => {
+        router.delete(`/posts/${post.id}/undo`, {
+            preserveScroll: true,
+            onSuccess: () => setOpen(false),
+        });
+    };
 
     return (
         <>
@@ -92,6 +113,58 @@ export default function PostItem({ post }: PostItemProps) {
                                 >
                                     木
                                 </Link>
+                                {canUndo && lastPostId === post.id && (
+                                    <>
+                                        &nbsp;
+                                        <Dialog
+                                            open={open}
+                                            onOpenChange={setOpen}
+                                        >
+                                            <DialogTrigger asChild>
+                                                <button
+                                                    type="button"
+                                                    style={{
+                                                        background: 'none',
+                                                        border: 'none',
+                                                        color: '#efe',
+                                                        cursor: 'pointer',
+                                                        textDecoration:
+                                                            'underline',
+                                                        padding: 0,
+                                                    }}
+                                                >
+                                                    ×
+                                                </button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogTitle>
+                                                    Delete Post
+                                                </DialogTitle>
+                                                <DialogDescription>
+                                                    Are you sure you want to
+                                                    delete this post? This
+                                                    action cannot be undone.
+                                                </DialogDescription>
+                                                <DialogFooter>
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            setOpen(false)
+                                                        }
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        onClick={handleUndo}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </>
+                                )}
                             </span>
                         </span>
                     </span>
