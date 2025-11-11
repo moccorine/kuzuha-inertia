@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Spinner } from '@/components/ui/spinner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface BbsMenuProps {
     counter: number;
@@ -14,15 +14,71 @@ export default function BbsMenu({
     perPage,
 }: BbsMenuProps) {
     const [processing, setProcessing] = useState(false);
+    const [customBgColor, setCustomBgColor] = useState('#004040');
+    
     const installedDate = new Date(installedAt);
     const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
 
+    useEffect(() => {
+        const customTheme = localStorage.getItem('customTheme');
+        if (customTheme) {
+            try {
+                const { colors } = JSON.parse(customTheme);
+                if (colors?.background) {
+                    setCustomBgColor(colors.background);
+                }
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+    }, []);
     return (
         <>
             <div style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
                 <Link href="/settings">
                     <button type="button">Settings</button>
                 </Link>
+            </div>
+
+            <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>
+                <a href="/theme/default">
+                    <span style={{ 
+                        display: 'inline-block', 
+                        width: '12px', 
+                        height: '12px', 
+                        backgroundColor: '#004040',
+                        border: '1px solid #fff',
+                        marginRight: '3px',
+                        verticalAlign: 'middle'
+                    }}></span>
+                    Legacy
+                </a>
+                {' | '}
+                <a href="/theme/dark">
+                    <span style={{ 
+                        display: 'inline-block', 
+                        width: '12px', 
+                        height: '12px', 
+                        backgroundColor: '#1a1a1a',
+                        border: '1px solid #fff',
+                        marginRight: '3px',
+                        verticalAlign: 'middle'
+                    }}></span>
+                    Dark
+                </a>
+                {' | '}
+                <a href="/theme/custom">
+                    <span style={{ 
+                        display: 'inline-block', 
+                        width: '12px', 
+                        height: '12px', 
+                        backgroundColor: customBgColor,
+                        border: '1px solid #fff',
+                        marginRight: '3px',
+                        verticalAlign: 'middle'
+                    }}></span>
+                    Custom
+                </a>
             </div>
 
             <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>

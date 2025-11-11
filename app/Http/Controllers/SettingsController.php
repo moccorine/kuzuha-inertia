@@ -27,8 +27,11 @@ class SettingsController extends Controller
             'name' => $theme['name'],
         ])->values();
 
+        $themesData = config('themes');
+
         return Inertia::render('settings/custom-theme', [
             'themes' => $themes,
+            'themesData' => $themesData,
             'currentTheme' => request()->cookie('theme', env('THEME_DEFAULT', 'default')),
         ]);
     }
