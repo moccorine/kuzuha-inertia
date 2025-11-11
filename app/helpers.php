@@ -94,3 +94,14 @@ if (! function_exists('process_username_with_tripcode')) {
         ];
     }
 }
+
+if (! function_exists('autolink')) {
+    /**
+     * Convert URLs in text to HTML links
+     */
+    function autolink(string $text): string
+    {
+        $pattern = '/((https?|ftp|news):\/\/[-_.,!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+        return preg_replace($pattern, '<a href="$1" target="_blank" rel="noopener noreferrer" class="autolink">$1</a>', $text);
+    }
+}

@@ -76,6 +76,7 @@ class PostController extends Controller
             'body' => 'required|string|max:10000',
             'url' => 'nullable|url|max:255',
             'parent_id' => 'nullable|exists:posts,id',
+            'autolink' => 'nullable|boolean',
         ]);
 
         // デフォルト値設定
@@ -92,6 +93,13 @@ class PostController extends Controller
         // URL追加
         if (! empty($validated['url'])) {
             $body .= "\n\n".$validated['url'];
+        }
+
+        // Apply autolink if enabled
+        if (!empty($validated['autolink'])) {
+            \Log::info('Before autolink: ' . $body);
+            $body = autolink($body);
+            \Log::info('After autolink: ' . $body);
         }
 
         // Calculate thread_id

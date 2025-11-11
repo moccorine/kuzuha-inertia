@@ -290,3 +290,7 @@ textarea:focus {
 .muh {
     font-style: italic;
 }
+
+.autolink {
+    color: var(--theme-link);
+}
