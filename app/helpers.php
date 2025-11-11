@@ -58,3 +58,39 @@ if (! function_exists('get_counter')) {
         return (int) \App\Models\Setting::get('counter', 0);
     }
 }
+
+if (! function_exists('generate_tripcode')) {
+    /**
+     * Generate tripcode from password
+     */
+    function generate_tripcode(string $password): string
+    {
+        $hash = hash_hmac('sha256', $password, config('app.key'));
+        return '◆' . substr($hash, 0, 10);
+    }
+}
+
+if (! function_exists('process_username_with_tripcode')) {
+    /**
+     * Process username and extract tripcode if present
+     * Format: Name#password -> ['name' => 'Name', 'tripcode' => '◆xxxxxxxxxx']
+     */
+    function process_username_with_tripcode(string $username): array
+    {
+        if (strpos($username, '#') === false) {
+            return [
+                'name' => $username,
+                'tripcode' => null,
+            ];
+        }
+
+        $parts = explode('#', $username, 2);
+        $name = $parts[0];
+        $password = $parts[1] ?? '';
+
+        return [
+            'name' => $name,
+            'tripcode' => generate_tripcode($password),
+        ];
+    }
+}

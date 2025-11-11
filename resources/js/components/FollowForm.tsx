@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 
 interface FollowFormProps {
     parentId: number;
@@ -24,8 +24,38 @@ export default function FollowForm({
         parent_id: parentId,
     });
 
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('bbsFormData');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                setData({
+                    username: parsed.username || '',
+                    email: parsed.email || '',
+                    title: defaultTitle,
+                    body: quotedBody,
+                    url: '',
+                    parent_id: parentId,
+                });
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+    }, []);
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        // Save to localStorage
+        localStorage.setItem(
+            'bbsFormData',
+            JSON.stringify({
+                username: data.username,
+                email: data.email,
+            }),
+        );
+
         post('/posts', {
             onSuccess: () => reset('body', 'title', 'url'),
         });
@@ -44,6 +74,9 @@ export default function FollowForm({
                         onChange={(e) => setData('username', e.target.value)}
                         style={{ display: 'inline-block', width: '200px' }}
                     />
+                    <span style={{ marginLeft: '0.5rem', fontSize: '12px', color: 'var(--theme-text)', opacity: 0.7 }}>
+                        (Use Name#password for tripcode)
+                    </span>
                 </div>
 
                 <div style={{ marginBottom: '0.5rem' }}>

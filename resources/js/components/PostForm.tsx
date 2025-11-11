@@ -70,6 +70,9 @@ export default function PostForm({ perPage }: PostFormProps) {
                         onChange={(e) => setData('username', e.target.value)}
                         style={{ display: 'inline-block', width: '200px' }}
                     />
+                    <span style={{ marginLeft: '0.5rem', fontSize: '12px', color: 'var(--theme-text)', opacity: 0.7 }}>
+                        (Use Name#password for tripcode)
+                    </span>
                 </div>
 
                 <div style={{ marginBottom: '0.5rem' }}>

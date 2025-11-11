@@ -16,6 +16,7 @@ class Post extends Model
         'thread_id',
         'parent_id',
         'username',
+        'tripcode',
         'email',
         'title',
         'body',

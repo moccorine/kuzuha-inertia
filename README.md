@@ -167,10 +167,12 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Render with react-markdown
   - Admin can edit via CodeMirror editor at /admin/system/information
   - Public display at /{url} or /information
-- [ ] Tripcode support (トリップ機能)
-  - Username format: `Name#password` → `Name◆tripcode`
-  - Generate tripcode from password hash
-  - Display tripcode after username
+- [x] Tripcode support (トリップ機能)
+  - Username format: `Name#password` → `Name ◆tripcode`
+  - Generate tripcode using HMAC-SHA256 with APP_KEY
+  - 10-character hash displayed in italic after username
+  - Stored in database (posts.tripcode column)
+  - Same password always generates same tripcode
 - [x] Admin panel UI framework (管理画面UIフレームワーク)
   - Navigation menu (Dashboard, Posts, Restrictions, System)
   - Settings pages (Profile, Password, Two-factor, Theme)

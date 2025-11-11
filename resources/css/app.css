@@ -286,3 +286,7 @@ textarea:focus {
         @apply bg-background text-foreground;
     }
 }
+
+.muh {
+    font-style: italic;
+}
