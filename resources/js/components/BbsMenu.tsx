@@ -6,6 +6,7 @@ interface BbsMenuProps {
     counter: number;
     installedAt: string;
     perPage: number;
+    onlineCount?: number;
     informationPage?: {
         url: string;
         hasContent: boolean;
@@ -16,6 +17,7 @@ export default function BbsMenu({
     counter,
     installedAt,
     perPage,
+    onlineCount,
     informationPage,
 }: BbsMenuProps) {
     const [processing, setProcessing] = useState(false);
@@ -88,6 +90,9 @@ export default function BbsMenu({
 
             <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>
                 {counter} since {formattedDate} (Durability Level: ∞)
+                {onlineCount !== undefined && (
+                    <> | Online: {onlineCount} (within 5 min)</>
+                )}
             </div>
 
             <hr style={{ marginBottom: '1rem' }} />
