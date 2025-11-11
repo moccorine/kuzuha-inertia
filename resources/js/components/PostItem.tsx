@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { formatBbsDateTime, humanizeDiff } from '@/utils/datetime';
 
 interface Post {
     id: number;
@@ -34,22 +35,6 @@ interface PostItemProps {
 
 export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
     const [open, setOpen] = useState(false);
-
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        // Convert to JST (UTC+9)
-        const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-        const year = jstDate.getUTCFullYear();
-        const month = String(jstDate.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(jstDate.getUTCDate()).padStart(2, '0');
-        const weekday = ['日', '月', '火', '水', '木', '金', '土'][
-            jstDate.getUTCDay()
-        ];
-        const hours = String(jstDate.getUTCHours()).padStart(2, '0');
-        const minutes = String(jstDate.getUTCMinutes()).padStart(2, '0');
-        const seconds = String(jstDate.getUTCSeconds()).padStart(2, '0');
-        return `${year}/${month}/${day}(${weekday}) ${hours}:${minutes}:${seconds}`;
-    };
 
     // Check if username is valid (not empty, not Anonymous, not just whitespace)
     const hasValidUsername =
@@ -83,7 +68,7 @@ export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
                             </>
                         )}
                         <span className="md">
-                            Posted: {formatDate(post.created_at)}
+                            Posted: {formatBbsDateTime(post.created_at)} ({humanizeDiff(post.created_at)})
                             <a id={`a${post.id}`}>&nbsp;</a>
                             <span className="nb">
                                 &nbsp;&nbsp;&nbsp;
@@ -190,7 +175,7 @@ export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
                                 __html:
                                     post.body +
                                     (post.parent_id
-                                        ? `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatDate(post.parent.created_at) : '#' + post.parent_id}</a>`
+                                        ? `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatBbsDateTime(post.parent.created_at) : '#' + post.parent_id}</a>`
                                         : ''),
                             }}
                         />

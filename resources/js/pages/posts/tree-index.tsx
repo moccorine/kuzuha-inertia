@@ -1,5 +1,6 @@
 import GuestLayout from '@/layouts/guest-layout';
 import { Head, Link } from '@inertiajs/react';
+import { formatBbsDateTime, humanizeDiff } from '@/utils/datetime';
 
 interface Post {
     id: number;
@@ -124,7 +125,7 @@ export default function TreeIndex({ trees, pagination, perPage, appName, lastSee
                                         ◆
                                     </Link>
                                     <span style={{ color: '#999', marginLeft: '0.5rem' }}>
-                                        [Updated: {new Date(tree.updated_at).toLocaleString()}]
+                                        [Updated: {formatBbsDateTime(tree.updated_at)} ({humanizeDiff(tree.updated_at)})]
                                     </span>
                                     {'\n'}
                                     {tree.tree.map((node, index) => 

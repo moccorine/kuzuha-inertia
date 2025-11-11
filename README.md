@@ -242,7 +242,10 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - [ ] RSS feed (RSSフィード)
   - [ ] 問合せform
   - [ ] Tree Viewインライン表示
-  - [ ] Humanized Datediff
+  - [x] Humanized Datediff
+    - Unified datetime format: `2025/11/11(火) 18:17:02`
+    - Human-readable diff: `3分前`, `2時間前`, `5日前`
+    - Utility functions in `/utils/datetime.ts`
   - [ ] Bookmark / Faves
 
 ## License
