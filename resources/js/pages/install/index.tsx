@@ -4,6 +4,9 @@ import { FormEventHandler } from 'react';
 
 export default function Index() {
     const { data, setData, post, processing, errors } = useForm({
+        username: '',
+        name: '',
+        email: '',
         password: '',
         password_confirmation: '',
     });
@@ -48,10 +51,126 @@ export default function Index() {
                             marginBottom: '1.5rem',
                         }}
                     >
-                        Please set the administrator password
+                        Create administrator account
                     </div>
 
                     <form onSubmit={submit}>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label
+                                htmlFor="username"
+                                style={{
+                                    display: 'block',
+                                    fontSize: '14px',
+                                    marginBottom: '0.3rem',
+                                }}
+                            >
+                                Username
+                            </label>
+                            <input
+                                id="username"
+                                type="text"
+                                autoComplete="username"
+                                value={data.username}
+                                onChange={(e) =>
+                                    setData('username', e.target.value)
+                                }
+                                required
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    fontSize: '14px',
+                                }}
+                            />
+                            {errors.username && (
+                                <div
+                                    className="error"
+                                    style={{
+                                        fontSize: '13px',
+                                        marginTop: '0.3rem',
+                                    }}
+                                >
+                                    {errors.username}
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label
+                                htmlFor="name"
+                                style={{
+                                    display: 'block',
+                                    fontSize: '14px',
+                                    marginBottom: '0.3rem',
+                                }}
+                            >
+                                Name
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                autoComplete="name"
+                                value={data.name}
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
+                                required
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    fontSize: '14px',
+                                }}
+                            />
+                            {errors.name && (
+                                <div
+                                    className="error"
+                                    style={{
+                                        fontSize: '13px',
+                                        marginTop: '0.3rem',
+                                    }}
+                                >
+                                    {errors.name}
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label
+                                htmlFor="email"
+                                style={{
+                                    display: 'block',
+                                    fontSize: '14px',
+                                    marginBottom: '0.3rem',
+                                }}
+                            >
+                                Email (optional)
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                autoComplete="email"
+                                value={data.email}
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    fontSize: '14px',
+                                }}
+                            />
+                            {errors.email && (
+                                <div
+                                    className="error"
+                                    style={{
+                                        fontSize: '13px',
+                                        marginTop: '0.3rem',
+                                    }}
+                                >
+                                    {errors.email}
+                                </div>
+                            )}
+                        </div>
+
                         <div style={{ marginBottom: '1rem' }}>
                             <label
                                 htmlFor="password"
@@ -135,7 +254,7 @@ export default function Index() {
 
                         <input
                             type="submit"
-                            value="Complete Setup"
+                            value="Create Admin Account"
                             disabled={processing}
                             style={{
                                 width: '100%',

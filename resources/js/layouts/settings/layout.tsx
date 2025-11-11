@@ -3,10 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTranslation } from '@/lib/i18n';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
-import { edit } from '@/routes/profile';
-import { show } from '@/routes/two-factor';
-import { edit as editPassword } from '@/routes/user-password';
+import { profile, password, twoFactor } from '@/routes/admin/settings';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -17,22 +14,17 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const sidebarNavItems: NavItem[] = [
         {
             title: t('navigation.profile'),
-            href: edit(),
+            href: profile.url(),
             icon: null,
         },
         {
             title: t('navigation.password'),
-            href: editPassword(),
+            href: password.url(),
             icon: null,
         },
         {
             title: t('navigation.two_factor'),
-            href: show(),
-            icon: null,
-        },
-        {
-            title: t('navigation.appearance'),
-            href: editAppearance(),
+            href: twoFactor.url(),
             icon: null,
         },
     ];

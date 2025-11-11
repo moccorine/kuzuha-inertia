@@ -33,6 +33,8 @@ class PostController extends Controller
         $latestPostId = Post::max('id');
         cookie()->queue('last_seen_post_id', $latestPostId, 60 * 24 * 365); // 1年間保存
 
+        $informationPage = \App\Models\InformationPage::first();
+
         return Inertia::render('posts/index', [
             'posts' => $posts,
             'perPage' => $perPage,
@@ -40,6 +42,10 @@ class PostController extends Controller
             'counter' => $counter,
             'installedAt' => \App\Models\Setting::get('installed_at', now()->toDateTimeString()),
             'latestPostId' => $latestPostId,
+            'informationPage' => $informationPage ? [
+                'url' => $informationPage->url,
+                'hasContent' => !empty($informationPage->content),
+            ] : null,
         ]);
     }
 
@@ -179,6 +185,34 @@ class PostController extends Controller
         session()->forget(['last_post_id', 'last_post_time']);
 
         return redirect('/')->with('success', 'Post deleted successfully.');
+    }
+
+    public function information()
+    {
+        $page = \App\Models\InformationPage::first();
+
+        if (!$page || empty($page->content)) {
+            abort(404);
+        }
+
+        return Inertia::render('posts/information', [
+            'content' => $page->content,
+            'appName' => config('app.name'),
+        ]);
+    }
+
+    public function informationByUrl($url)
+    {
+        $page = \App\Models\InformationPage::where('url', $url)->first();
+
+        if (!$page || empty($page->content)) {
+            abort(404);
+        }
+
+        return Inertia::render('posts/information', [
+            'content' => $page->content,
+            'appName' => config('app.name'),
+        ]);
     }
 
     /**

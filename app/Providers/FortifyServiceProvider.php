@@ -28,6 +28,20 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Configure Fortify to use username instead of email
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = \App\Models\User::where('username', $request->username)->first();
+
+            if ($user && \Hash::check($request->password, $user->password)) {
+                return $user;
+            }
+            
+            return null;
+        });
+
+        // Redirect to /admin after login
+        config(['fortify.home' => '/admin']);
+
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
