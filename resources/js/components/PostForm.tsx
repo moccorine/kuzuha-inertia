@@ -17,6 +17,7 @@ export default function PostForm({ perPage }: PostFormProps) {
         body: '',
         url: '',
         d: perPage,
+        autolink: true,
     });
 
     // Load from localStorage on mount
@@ -32,6 +33,7 @@ export default function PostForm({ perPage }: PostFormProps) {
                     body: '',
                     url: '',
                     d: parsed.d || perPage,
+                    autolink: parsed.autolink !== undefined ? parsed.autolink : true,
                 });
             } catch (e) {
                 // Ignore parse errors
@@ -49,6 +51,7 @@ export default function PostForm({ perPage }: PostFormProps) {
                 username: data.username,
                 email: data.email,
                 d: data.d,
+                autolink: data.autolink,
             }),
         );
 
@@ -101,21 +104,6 @@ export default function PostForm({ perPage }: PostFormProps) {
                             marginRight: '0.5rem',
                         }}
                     />
-                    Display count{' '}
-                    <Input
-                        type="text"
-                        name="d"
-                        value={data.d}
-                        onChange={(e) =>
-                            setData('d', parseInt(e.target.value) || perPage)
-                        }
-                        size={3}
-                        style={{
-                            display: 'inline-block',
-                            width: '50px',
-                            marginRight: '0.5rem',
-                        }}
-                    />
                     <Button type="submit" disabled={processing}>
                         {processing && <Spinner className="mr-1" />}
                         Post / Reload
@@ -127,6 +115,22 @@ export default function PostForm({ perPage }: PostFormProps) {
                     >
                         Clear
                     </Button>
+                    <span style={{ marginLeft: '1rem' }}>
+                        Display count{' '}
+                        <Input
+                            type="text"
+                            name="d"
+                            value={data.d}
+                            onChange={(e) =>
+                                setData('d', parseInt(e.target.value) || perPage)
+                            }
+                            size={3}
+                            style={{
+                                display: 'inline-block',
+                                width: '50px',
+                            }}
+                        />
+                    </span>
                 </div>
 
                 <div style={{ marginTop: '1rem' }}>
@@ -166,6 +170,19 @@ export default function PostForm({ perPage }: PostFormProps) {
                         onChange={(e) => setData('url', e.target.value)}
                         style={{ width: '100%', maxWidth: '700px' }}
                     />
+                </div>
+
+                <div style={{ marginTop: '0.5rem' }}>
+                    <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+                        <input
+                            type="checkbox"
+                            name="autolink"
+                            checked={data.autolink}
+                            onChange={(e) => setData('autolink', e.target.checked)}
+                            style={{ marginRight: '0.3rem' }}
+                        />
+                        URL自動リンク
+                    </label>
                 </div>
             </div>
         </form>

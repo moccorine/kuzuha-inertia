@@ -132,22 +132,24 @@ Access: `/admin` (requires authentication)
 
 Legacy BBS stored user preferences in cookies (colors, display count, etc.). Modern approach:
 
-**Planned Implementation:**
+**Implementation:**
 - Use `localStorage` for client-side preferences (no server round-trip)
+- Settings page at `/settings` for centralized configuration
 - Settings include:
-  - Display count per page (already implemented)
-  - Username/email persistence (already implemented)
-  - Theme/color preferences (future)
-  - UI preferences (future)
+  - Display count per page (1-200, default: 40)
+  - URL auto-linking (default: enabled)
+  - Username/email persistence
+  - Theme selection (Legacy, Dark, Custom)
 - No need for cookie-based serialization
 - Settings are per-browser, not per-user (anonymous BBS nature)
 
-**Already Implemented:**
+**Implemented:**
 - Display count (`d` parameter) with localStorage
-- Username/email persistence in PostForm
+- URL auto-linking checkbox with localStorage
+- Username/email persistence in PostForm and FollowForm
+- Theme selection with custom theme editor
 
 **Future Settings:**
-- Color scheme customization
 - Font size adjustment
 - Compact/detailed view toggle
 
@@ -195,9 +197,12 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 - [ ] Image upload support (画像アップロード)
 - [ ] RSS feed (RSSフィード)
 - [ ] Mobile responsive design improvements (モバイル対応改善)
-- [ ] URL auto-linking (URL自動リンク)
+- [x] URL auto-linking (URL自動リンク)
   - Detect URLs in post body and convert to links
   - Support http, https, ftp protocols
+  - Optional checkbox "URL自動リンク" (default: checked)
+  - Server-side processing with autolink() helper
+  - Preference saved in localStorage
 - [ ] Log read mode (ログ読みモード)
   - Toggle between newest-first and oldest-first display
   - Store preference in localStorage

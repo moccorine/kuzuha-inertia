@@ -22,6 +22,7 @@ export default function FollowForm({
         body: quotedBody,
         url: '',
         parent_id: parentId,
+        autolink: true,
     });
 
     // Load from localStorage on mount
@@ -37,6 +38,7 @@ export default function FollowForm({
                     body: quotedBody,
                     url: '',
                     parent_id: parentId,
+                    autolink: parsed.autolink !== undefined ? parsed.autolink : true,
                 });
             } catch (e) {
                 // Ignore parse errors
@@ -53,6 +55,7 @@ export default function FollowForm({
             JSON.stringify({
                 username: data.username,
                 email: data.email,
+                autolink: data.autolink,
             }),
         );
 
@@ -154,6 +157,19 @@ export default function FollowForm({
                         onChange={(e) => setData('url', e.target.value)}
                         style={{ width: '100%', maxWidth: '700px' }}
                     />
+                </div>
+
+                <div style={{ marginTop: '0.5rem' }}>
+                    <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+                        <input
+                            type="checkbox"
+                            name="autolink"
+                            checked={data.autolink}
+                            onChange={(e) => setData('autolink', e.target.checked)}
+                            style={{ marginRight: '0.3rem' }}
+                        />
+                        URL自動リンク
+                    </label>
                 </div>
             </div>
         </form>
