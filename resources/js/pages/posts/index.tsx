@@ -28,6 +28,11 @@ interface Props {
     onlineCount: number;
     installedAt: string;
     hideForm?: boolean;
+    customLinks: Array<{
+        id: number;
+        title: string;
+        url: string;
+    }>;
     informationPage: {
         url: string;
         hasContent: boolean;
@@ -42,6 +47,7 @@ export default function Index({
     onlineCount,
     installedAt,
     hideForm,
+    customLinks,
     informationPage,
 }: Props) {
     const { lastPostId, lastPostTime } = usePage().props as any;
@@ -90,6 +96,7 @@ export default function Index({
                         installedAt={installedAt}
                         perPage={perPage}
                         onlineCount={onlineCount}
+                        customLinks={customLinks}
                         informationPage={informationPage}
                     />
                 )}

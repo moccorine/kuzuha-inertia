@@ -17,6 +17,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/system', [SystemController::class, 'index'])->name('system.index');
     Route::get('/system/information', [SystemController::class, 'information'])->name('system.information');
     Route::post('/system/information', [SystemController::class, 'updateInformation'])->name('system.information.update');
+    Route::get('/system/links', [SystemController::class, 'links'])->name('system.links');
+    Route::post('/system/links', [SystemController::class, 'storeLink'])->name('system.links.store');
+    Route::patch('/system/links/{link}', [SystemController::class, 'updateLink'])->name('system.links.update');
+    Route::delete('/system/links/{link}', [SystemController::class, 'deleteLink'])->name('system.links.delete');
     
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');

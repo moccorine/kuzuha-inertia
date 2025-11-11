@@ -7,6 +7,11 @@ interface BbsMenuProps {
     installedAt: string;
     perPage: number;
     onlineCount?: number;
+    customLinks?: Array<{
+        id: number;
+        title: string;
+        url: string;
+    }>;
     informationPage?: {
         url: string;
         hasContent: boolean;
@@ -18,6 +23,7 @@ export default function BbsMenu({
     installedAt,
     perPage,
     onlineCount,
+    customLinks = [],
     informationPage,
 }: BbsMenuProps) {
     const [processing, setProcessing] = useState(false);
@@ -109,6 +115,18 @@ export default function BbsMenu({
                     </>
                 )}
                 <a href="#">Archive</a>
+                {customLinks.length > 0 && (
+                    <>
+                        {customLinks.map((link) => (
+                            <span key={link.id}>
+                                {' | '}
+                                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                    {link.title}
+                                </a>
+                            </span>
+                        ))}
+                    </>
+                )}
             </div>
 
             <hr style={{ marginTop: '1rem', marginBottom: '0.5rem' }} />
