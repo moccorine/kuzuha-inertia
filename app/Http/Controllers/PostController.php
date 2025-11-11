@@ -81,6 +81,11 @@ class PostController extends Controller
         // デフォルト値設定
         $username = $validated['username'] ?: 'Anonymous';
 
+        // Process tripcode
+        $processed = process_username_with_tripcode($username);
+        $username = $processed['name'];
+        $tripcode = $processed['tripcode'];
+
         // 本文処理
         $body = $validated['body'];
 
@@ -101,6 +106,7 @@ class PostController extends Controller
         // 投稿作成
         $post = Post::create([
             'username' => $username,
+            'tripcode' => $tripcode,
             'email' => $validated['email'],
             'title' => $validated['title'] ?? null,
             'body' => $body,

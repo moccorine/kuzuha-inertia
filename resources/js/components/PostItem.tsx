@@ -4,6 +4,7 @@ import {
     DialogContent,
     DialogDescription,
     DialogFooter,
+    DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
@@ -18,6 +19,7 @@ interface Post {
         created_at: string;
     };
     username: string;
+    tripcode: string | null;
     email: string | null;
     title: string | null;
     body: string;
@@ -74,6 +76,9 @@ export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
                             <>
                                 <span className="mu">Author: </span>
                                 <span className="mun">{post.username}</span>
+                                {post.tripcode && (
+                                    <span className="muh"> {post.tripcode}</span>
+                                )}
                                 &nbsp;&nbsp;
                             </>
                         )}
@@ -136,16 +141,26 @@ export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
                                                     ×
                                                 </button>
                                             </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogTitle>
-                                                    Delete Post
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    Are you sure you want to
-                                                    delete this post? This
-                                                    action cannot be undone.
-                                                </DialogDescription>
-                                                <DialogFooter>
+                                            <DialogContent 
+                                                className="bg-[var(--theme-background)] border-[var(--theme-hr)]"
+                                                style={{
+                                                    position: 'fixed',
+                                                    top: '50%',
+                                                    left: '50%',
+                                                    transform: 'translate(-50%, -50%)',
+                                                }}
+                                            >
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        Delete Post
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Are you sure you want to
+                                                        delete this post? This
+                                                        action cannot be undone.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <DialogFooter style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
                                                     <Button
                                                         variant="outline"
                                                         onClick={() =>
