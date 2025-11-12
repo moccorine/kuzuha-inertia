@@ -121,6 +121,10 @@ export default function PostForm({ perPage }: PostFormProps) {
 
     return (
         <form method="post" action="/posts" onSubmit={submit} id="post-form">
+            {/* Honeypot fields */}
+            <input type="text" name="my_name" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+            <input type="text" name="my_time" value={Date.now()} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" readOnly />
+            
             <div className="form" style={{ marginBottom: '1rem' }}>
                 <div style={{ marginBottom: '0.5rem' }}>
                     Name{' '}

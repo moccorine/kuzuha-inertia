@@ -23,7 +23,9 @@ Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/threads/{id}', [PostController::class, 'thread'])->name('posts.thread');
 Route::get('/tree/{id}', [PostController::class, 'tree'])->name('posts.tree');
 Route::get('/users/{username}/posts', [PostController::class, 'userPosts'])->name('users.posts');
-Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+Route::post('/posts', [PostController::class, 'store'])
+    ->middleware(\Spatie\Honeypot\ProtectAgainstSpam::class)
+    ->name('posts.store');
 Route::delete('/posts/{id}/undo', [PostController::class, 'undo'])->name('posts.undo');
 
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

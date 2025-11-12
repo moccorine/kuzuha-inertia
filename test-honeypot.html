@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Honeypot Test</title>
+</head>
+<body>
+    <h1>Honeypot Test</h1>
+    
+    <h2>Test 1: Normal Post (Should Work)</h2>
+    <form action="http://localhost:8000/posts" method="POST">
+        <input type="hidden" name="_token" value="GET_FROM_BROWSER">
+        <input type="text" name="my_name" style="display:none" tabindex="-1" autocomplete="off">
+        <input type="text" name="my_time" value="" style="display:none" tabindex="-1" autocomplete="off" readonly>
+        <input type="text" name="username" placeholder="Username">
+        <textarea name="body" placeholder="Message">Normal post</textarea>
+        <button type="submit">Submit Normal</button>
+    </form>
+    
+    <h2>Test 2: Spam Post (Should Fail - Honeypot Filled)</h2>
+    <form action="http://localhost:8000/posts" method="POST">
+        <input type="hidden" name="_token" value="GET_FROM_BROWSER">
+        <input type="text" name="my_name" value="I_AM_A_BOT" style="display:none">
+        <input type="text" name="my_time" value="" style="display:none" readonly>
+        <input type="text" name="username" placeholder="Username">
+        <textarea name="body" placeholder="Message">Spam post</textarea>
+        <button type="submit">Submit Spam</button>
+    </form>
+    
+    <h2>Test 3: Too Fast Post (Should Fail - Submitted Too Quickly)</h2>
+    <form action="http://localhost:8000/posts" method="POST">
+        <input type="hidden" name="_token" value="GET_FROM_BROWSER">
+        <input type="text" name="my_name" style="display:none">
+        <input type="text" name="my_time" id="fast-time" style="display:none" readonly>
+        <input type="text" name="username" placeholder="Username">
+        <textarea name="body" placeholder="Message">Too fast post</textarea>
+        <button type="submit">Submit Fast</button>
+    </form>
+    
+    <script>
+        // Set current timestamp for fast post test
+        document.getElementById('fast-time').value = Date.now();
+    </script>
+    
+    <h3>Instructions:</h3>
+    <ol>
+        <li>Open http://localhost:8000 in browser</li>
+        <li>Open Developer Tools (F12)</li>
+        <li>Go to Console tab</li>
+        <li>Get CSRF token: <code>document.querySelector('meta[name="csrf-token"]').content</code></li>
+        <li>Replace "GET_FROM_BROWSER" with the token in this HTML</li>
+        <li>Open this file in browser and test</li>
+    </ol>
+</body>
+</html>

@@ -192,7 +192,6 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 
 ### optional
 - [ ] Optional
-  - 位置情報投稿機能
   - [ ] Image upload support (画像アップロード)
   - [ ] RSS feed (RSSフィード)
   - [ ] 問合せform
