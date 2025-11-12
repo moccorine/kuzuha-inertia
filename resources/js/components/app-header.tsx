@@ -50,7 +50,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth, name } = page.props;
     const getInitials = useInitials();
-    const { t } = useTranslation();
 
     const mainNavItems: NavItem[] = [
         {

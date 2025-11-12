@@ -27,7 +27,7 @@ interface Props {
     appName: string;
 }
 
-export default function ArchiveDate({ posts, date, perPage, appName }: Props) {
+export default function ArchiveDate({ posts, date, appName }: Props) {
     return (
         <GuestLayout>
             <Head title={`${appName} - Archive ${date}`} />

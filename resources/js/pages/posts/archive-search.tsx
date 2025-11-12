@@ -38,7 +38,6 @@ export default function ArchiveSearch({
     targetBody,
     ignoreCase,
     dates,
-    perPage,
 }: Props) {
     const { props } = usePage<{ appName: string }>();
 

@@ -49,7 +49,7 @@ export default function CustomTheme({
                 const parsed = JSON.parse(saved);
                 setBaseTheme(parsed.base || currentTheme);
                 setColors({ ...defaultColors, ...parsed.colors });
-            } catch (e) {
+            } catch {
                 // Ignore parse errors
             }
         }
@@ -64,7 +64,7 @@ export default function CustomTheme({
                     const { colors: savedColors } = JSON.parse(customTheme);
                     setColors({ ...defaultColors, ...savedColors });
                     return;
-                } catch (e) {
+                } catch {
                     // Fall through to default
                 }
             }

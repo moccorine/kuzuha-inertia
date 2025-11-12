@@ -46,7 +46,7 @@ export default function PostForm({ perPage }: PostFormProps) {
                     latitude: null,
                     longitude: null,
                 });
-            } catch (e) {
+            } catch {
                 // Ignore parse errors
             }
         } else if (auth?.user) {

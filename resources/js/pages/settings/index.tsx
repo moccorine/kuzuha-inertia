@@ -25,7 +25,7 @@ export default function Index({ themes, currentTheme }: Props) {
                 setAutolink(
                     parsed.autolink !== undefined ? parsed.autolink : true,
                 );
-            } catch (e) {
+            } catch {
                 // Ignore parse errors
             }
         }
@@ -40,7 +40,7 @@ export default function Index({ themes, currentTheme }: Props) {
         if (saved) {
             try {
                 formData = JSON.parse(saved);
-            } catch (e) {
+            } catch {
                 // Ignore
             }
         }

@@ -43,7 +43,7 @@ export default function BbsMenu({
                 if (colors?.background) {
                     setCustomBgColor(colors.background);
                 }
-            } catch (e) {
+            } catch {
                 // Ignore parse errors
             }
         }
@@ -166,8 +166,8 @@ export default function BbsMenu({
             <hr style={{ marginTop: '1rem', marginBottom: '0.5rem' }} />
 
             <div style={{ fontSize: '13px', marginBottom: '1rem' }}>
-                ■: Follow Post (Reply)　★: User Posts　◆: Thread Display　木:
-                Tree View　×: Undo (Delete own post)
+                ■: Follow Post (Reply) ★: User Posts ◆: Thread Display 木:
+                Tree View ×: Undo (Delete own post)
             </div>
 
             <div style={{ marginBottom: '1rem' }}>

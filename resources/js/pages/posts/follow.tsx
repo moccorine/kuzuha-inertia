@@ -44,7 +44,7 @@ export default function Follow({
                         fontSize: '14px',
                     }}
                 >
-                    Follow Post　<Link href="/">←Back</Link>
+                    Follow Post <Link href="/">←Back</Link>
                 </div>
 
                 <FollowForm

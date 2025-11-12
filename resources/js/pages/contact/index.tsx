@@ -12,11 +12,12 @@ import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import GuestLayout from '@/layouts/guest-layout';
 import { Head, useForm } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 export default function Contact() {
-    const num1 = useMemo(() => Math.floor(Math.random() * 10) + 1, []);
-    const num2 = useMemo(() => Math.floor(Math.random() * 10) + 1, []);
+    const [num1] = useState(() => Math.floor(Math.random() * 10) + 1);
+    const [num2] = useState(() => Math.floor(Math.random() * 10) + 1);
+    const [honeypotTime] = useState(() => Date.now());
 
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -99,7 +100,7 @@ export default function Contact() {
                     <input
                         type="text"
                         name="my_time"
-                        value={Date.now()}
+                        value={honeypotTime}
                         style={{ display: 'none' }}
                         tabIndex={-1}
                         autoComplete="off"
