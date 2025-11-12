@@ -9,6 +9,7 @@
 /resources/js/wayfinder
 /storage/*.key
 /storage/pail
+/storage/cache
 /vendor
 .DS_Store
 .env
@@ -28,5 +29,6 @@ yarn-error.log
 /.zed
 /.legacy
 database/logs/*.dat
+database/dumps
 legacy_bbs/logs/**/*.dat
 *.swp

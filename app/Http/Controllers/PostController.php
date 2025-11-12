@@ -309,6 +309,53 @@ class PostController extends Controller
     }
 
     /**
+     * Display topic list (threads only).
+     */
+    public function topics(Request $request, string $date = null)
+    {
+        $query = Post::whereNull('parent_id')
+            ->withCount(['replies' => function ($query) {
+                $query->select(\DB::raw('count(*)'));
+            }]);
+        
+        if ($date) {
+            // Check if it's a month (YYYY-MM) or date (YYYY-MM-DD)
+            if (preg_match('/^\d{4}-\d{2}$/', $date)) {
+                $query->whereRaw('strftime("%Y-%m", created_at) = ?', [$date]);
+            } else {
+                $query->whereDate('created_at', $date);
+            }
+        }
+        
+        $threads = $query->orderBy('created_at', 'desc')->paginate(1500);
+        
+        // Get username counts (exclude empty/anonymous)
+        $usernameQuery = Post::whereNull('parent_id')
+            ->whereNotNull('username')
+            ->where('username', '!=', '');
+        
+        if ($date) {
+            if (preg_match('/^\d{4}-\d{2}$/', $date)) {
+                $usernameQuery->whereRaw('strftime("%Y-%m", created_at) = ?', [$date]);
+            } else {
+                $usernameQuery->whereDate('created_at', $date);
+            }
+        }
+        
+        $usernameCounts = $usernameQuery
+            ->selectRaw('username, COUNT(*) as count')
+            ->groupBy('username')
+            ->orderBy('count', 'desc')
+            ->get();
+        
+        return inertia('posts/topics', [
+            'threads' => $threads,
+            'date' => $date,
+            'usernameCounts' => $usernameCounts,
+        ]);
+    }
+
+    /**
      * Display all threads in tree view.
      */
     public function treeIndex(Request $request)
@@ -363,6 +410,168 @@ class PostController extends Controller
             'perPage' => $perPage,
             'appName' => config('app.name'),
             'lastSeenId' => $lastSeenId,
+        ]);
+    }
+
+    /**
+     * Display archive by date.
+     */
+    public function archive(Request $request)
+    {
+        $view = $request->query('view', 'daily'); // daily or monthly
+        $page = $request->query('page', 1);
+
+        if ($view === 'monthly') {
+            // Get monthly post counts (SQLite compatible)
+            $counts = \DB::table('posts')
+                ->selectRaw('strftime("%Y-%m", created_at) as period, COUNT(*) as count, SUM(CASE WHEN parent_id IS NULL THEN 1 ELSE 0 END) as topic_count')
+                ->groupBy('period')
+                ->orderBy('period', 'desc')
+                ->get();
+        } else {
+            // Get daily post counts (SQLite compatible) with pagination
+            $counts = \DB::table('posts')
+                ->selectRaw('DATE(created_at) as period, COUNT(*) as count, SUM(CASE WHEN parent_id IS NULL THEN 1 ELSE 0 END) as topic_count')
+                ->groupBy('period')
+                ->orderBy('period', 'desc')
+                ->paginate(30);
+        }
+
+        return Inertia::render('posts/archive', [
+            'counts' => $counts,
+            'view' => $view,
+            'appName' => config('app.name'),
+        ]);
+    }
+
+    /**
+     * Search posts in archive.
+     */
+    public function archiveSearch(Request $request)
+    {
+        $keyword = $request->query('keyword');
+        $targetUsername = $request->query('target_username') === 'true';
+        $targetTitle = $request->query('target_title') === 'true';
+        $targetBody = $request->query('target_body') === 'true';
+        $ignoreCase = $request->query('ignore_case', 'true') === 'true';
+        $dates = $request->query('dates', []);
+        $perPage = $request->query('d', 100);
+
+        if (!$keyword && empty($dates)) {
+            return redirect()->route('posts.archive');
+        }
+
+        $query = Post::query();
+
+        // Filter by dates if provided
+        if (!empty($dates)) {
+            $query->where(function ($q) use ($dates) {
+                foreach ($dates as $date) {
+                    // Check if it's a month (YYYY-MM) or date (YYYY-MM-DD)
+                    if (preg_match('/^\d{4}-\d{2}$/', $date)) {
+                        $q->orWhereRaw('strftime("%Y-%m", created_at) = ?', [$date]);
+                    } else {
+                        $q->orWhereDate('created_at', $date);
+                    }
+                }
+            });
+        }
+
+        // Build search conditions for keyword
+        if ($keyword) {
+            $driver = \DB::getDriverName();
+            
+            $query->where(function ($q) use ($keyword, $targetUsername, $targetTitle, $targetBody, $ignoreCase, $driver) {
+                if ($targetUsername) {
+                    if ($ignoreCase) {
+                        $q->orWhereRaw('LOWER(username) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    } else {
+                        if ($driver === 'sqlite') {
+                            $q->orWhereRaw('username GLOB ?', ['*' . $keyword . '*']);
+                        } else {
+                            $q->orWhereRaw('username LIKE ? COLLATE utf8mb4_bin', ['%' . $keyword . '%']);
+                        }
+                    }
+                }
+                if ($targetTitle) {
+                    if ($ignoreCase) {
+                        $q->orWhereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    } else {
+                        if ($driver === 'sqlite') {
+                            $q->orWhereRaw('title GLOB ?', ['*' . $keyword . '*']);
+                        } else {
+                            $q->orWhereRaw('title LIKE ? COLLATE utf8mb4_bin', ['%' . $keyword . '%']);
+                        }
+                    }
+                }
+                if ($targetBody) {
+                    if ($ignoreCase) {
+                        $q->orWhereRaw('LOWER(body) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    } else {
+                        if ($driver === 'sqlite') {
+                            $q->orWhereRaw('body GLOB ?', ['*' . $keyword . '*']);
+                        } else {
+                            $q->orWhereRaw('body LIKE ? COLLATE utf8mb4_bin', ['%' . $keyword . '%']);
+                        }
+                    }
+                }
+            });
+        }
+
+        $posts = $query->orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->appends([
+                'keyword' => $keyword,
+                'target_username' => $targetUsername,
+                'target_title' => $targetTitle,
+                'target_body' => $targetBody,
+                'ignore_case' => $ignoreCase,
+                'dates' => $dates,
+                'd' => $perPage,
+            ]);
+
+        return inertia('posts/archive-search', [
+            'posts' => $posts,
+            'keyword' => $keyword,
+            'targetUsername' => $targetUsername,
+            'targetTitle' => $targetTitle,
+            'targetBody' => $targetBody,
+            'ignoreCase' => $ignoreCase,
+            'dates' => $dates,
+            'perPage' => $perPage,
+        ]);
+    }
+
+    /**
+     * Display posts by date or month.
+     */
+    public function archiveByDate(Request $request, string $date)
+    {
+        $perPage = $request->query('d', 100);
+        $perPage = max(1, min((int) $perPage, 500));
+
+        // Check if it's a month (YYYY-MM) or date (YYYY-MM-DD)
+        if (preg_match('/^\d{4}-\d{2}$/', $date)) {
+            // Monthly view (SQLite compatible)
+            $posts = Post::whereRaw('strftime("%Y-%m", created_at) = ?', [$date])
+                ->orderBy('created_at', 'asc')
+                ->paginate($perPage)
+                ->appends(['d' => $perPage]);
+            $title = $date;
+        } else {
+            // Daily view
+            $posts = Post::whereDate('created_at', $date)
+                ->orderBy('created_at', 'asc')
+                ->paginate($perPage)
+                ->appends(['d' => $perPage]);
+            $title = $date;
+        }
+
+        return Inertia::render('posts/archive-date', [
+            'posts' => $posts,
+            'date' => $title,
+            'perPage' => $perPage,
+            'appName' => config('app.name'),
         ]);
     }
 

@@ -114,7 +114,7 @@ export default function BbsMenu({
                         {(informationPage.url || informationPage.hasContent) && ' | '}
                     </>
                 )}
-                <a href="#">Archive</a>
+                <Link href="/archive">Archive</Link>
                 {customLinks.length > 0 && (
                     <>
                         {customLinks.map((link) => (

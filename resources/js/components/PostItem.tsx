@@ -11,6 +11,7 @@ import {
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { formatBbsDateTime, humanizeDiff } from '@/utils/datetime';
+import Highlighter from 'react-highlight-words';
 
 interface Post {
     id: number;
@@ -31,9 +32,11 @@ interface PostItemProps {
     post: Post;
     lastPostId?: number;
     canUndo?: boolean;
+    highlightKeyword?: string;
+    highlightCaseSensitive?: boolean;
 }
 
-export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
+export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, highlightCaseSensitive }: PostItemProps) {
     const [open, setOpen] = useState(false);
 
     // Check if username is valid (not empty, not Anonymous, not just whitespace)
@@ -49,6 +52,16 @@ export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
             onSuccess: () => setOpen(false),
         });
     };
+
+    // Strip HTML tags for highlighting
+    const stripHtml = (html: string) => {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    };
+
+    const bodyText = stripHtml(post.body);
+    const shouldHighlight = highlightKeyword && highlightKeyword.trim() !== '';
 
     return (
         <>
@@ -169,16 +182,33 @@ export default function PostItem({ post, lastPostId, canUndo }: PostItemProps) {
                         </span>
                     </span>
                     <div className="post-contents">
-                        <pre
-                            className="msgnormal"
-                            dangerouslySetInnerHTML={{
-                                __html:
-                                    post.body +
-                                    (post.parent_id
-                                        ? `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatBbsDateTime(post.parent.created_at) : '#' + post.parent_id}</a>`
-                                        : ''),
-                            }}
-                        />
+                        {shouldHighlight ? (
+                            <pre className="msgnormal">
+                                <Highlighter
+                                    searchWords={[highlightKeyword]}
+                                    autoEscape={true}
+                                    textToHighlight={bodyText}
+                                    caseSensitive={highlightCaseSensitive}
+                                    highlightStyle={{ backgroundColor: '#ffff00', color: '#000', padding: 0 }}
+                                />
+                                {post.parent_id && (
+                                    <span dangerouslySetInnerHTML={{
+                                        __html: `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatBbsDateTime(post.parent.created_at) : '#' + post.parent_id}</a>`
+                                    }} />
+                                )}
+                            </pre>
+                        ) : (
+                            <pre
+                                className="msgnormal"
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        post.body +
+                                        (post.parent_id
+                                            ? `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatBbsDateTime(post.parent.created_at) : '#' + post.parent_id}</a>`
+                                            : ''),
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
                 <hr />
