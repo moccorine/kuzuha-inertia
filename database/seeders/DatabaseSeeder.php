@@ -31,8 +31,30 @@ class DatabaseSeeder extends Seeder
         // Seed custom links
         $this->call(CustomLinkSeeder::class);
 
-        // Import legacy BBS posts
-        $this->command->info('Importing legacy BBS posts...');
-        $this->command->call('bbs:import', ['date' => '20251110', '--file' => true]);
+        // Import legacy BBS posts from cache (local only)
+        // 
+        // How to prepare cache (first time only):
+        // 1. Cache all logs:
+        //    ./vendor/bin/sail artisan bbs:cache-logs-all logs storage/cache
+        // 2. Run seeder (this will import from cache):
+        //    ./vendor/bin/sail artisan db:seed
+        // 
+        // Note: This takes time but only needs to be done once per fresh database
+        if (app()->environment('local')) {
+            $cacheDir = storage_path('cache');
+            if (is_dir($cacheDir)) {
+                $jsonFiles = glob($cacheDir . '/*.json');
+                if (!empty($jsonFiles)) {
+                    $this->command->info('Importing cached legacy BBS posts...');
+                    $this->command->info('This may take several minutes...');
+                    
+                    foreach ($jsonFiles as $jsonFile) {
+                        $basename = basename($jsonFile);
+                        $this->command->info("Importing {$basename}...");
+                        $this->command->call('bbs:import-cache', ['input' => $jsonFile]);
+                    }
+                }
+            }
+        }
     }
 }

@@ -76,7 +76,7 @@ export default function Index({
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <a href="#" style={{ fontSize: '14px' }}>Contact</a>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <a href="#" style={{ fontSize: '14px' }}>Archive</a>
+                    <Link href="/archive" style={{ fontSize: '14px' }}>Archive</Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <Link href="/tree" style={{ fontSize: '14px' }}>Tree View</Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
