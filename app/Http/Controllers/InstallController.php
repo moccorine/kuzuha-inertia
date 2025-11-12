@@ -30,13 +30,17 @@ class InstallController extends Controller
         ]);
 
         // 管理ユーザーを作成
-        User::create([
+        $user = User::create([
             'username' => $request->username,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'email_verified_at' => now(),
         ]);
+
+        // adminロールを作成して付与
+        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
+        $user->assignRole($adminRole);
 
         // 初期設定
         Setting::set('counter', 0);

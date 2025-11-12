@@ -32,7 +32,7 @@ import { useTranslation } from '@/lib/i18n';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Menu, Search, MessageSquare, UserX, Settings } from 'lucide-react';
+import { LayoutGrid, Menu, Search, MessageSquare, UserX, Settings, Home } from 'lucide-react';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -45,6 +45,11 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const { t } = useTranslation();
 
     const mainNavItems: NavItem[] = [
+        {
+            title: '掲示板に戻る',
+            href: '/',
+            icon: Home,
+        },
         {
             title: 'ダッシュボード',
             href: '/admin',

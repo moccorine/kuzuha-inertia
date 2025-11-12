@@ -51,7 +51,7 @@ export default function BbsMenu({
     return (
         <>
             <div style={{ marginTop: '1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Link href="/settings">
+                <Link href="/settings" style={{ textDecoration: 'none' }}>
                     <button type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem' }}>
                         <Settings size={16} />
                         Settings

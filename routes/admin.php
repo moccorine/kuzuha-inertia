@@ -4,12 +4,25 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SystemController;
+use App\Models\SpamLog;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
-        return Inertia::render('dashboard');
+        $recentSpam = SpamLog::latest()->take(10)->get();
+        $spamCount24h = SpamLog::where('created_at', '>=', now()->subDay())->count();
+        $topSpamIps = SpamLog::selectRaw('ip_address, COUNT(*) as count')
+            ->groupBy('ip_address')
+            ->orderByDesc('count')
+            ->take(5)
+            ->get();
+
+        return Inertia::render('dashboard', [
+            'recentSpam' => $recentSpam,
+            'spamCount24h' => $spamCount24h,
+            'topSpamIps' => $topSpamIps,
+        ]);
     })->name('dashboard');
     
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');

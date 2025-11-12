@@ -15,6 +15,7 @@ import Highlighter from 'react-highlight-words';
 
 interface Post {
     id: number;
+    user_id?: number | null;
     parent_id: number | null;
     parent?: {
         id: number;
@@ -26,6 +27,9 @@ interface Post {
     title: string | null;
     body: string;
     created_at: string;
+    latitude?: number | null;
+    longitude?: number | null;
+    location_name?: string | null;
 }
 
 interface PostItemProps {
@@ -73,7 +77,16 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                         {hasValidUsername && (
                             <>
                                 <span className="mu">Author: </span>
-                                <span className="mun">{post.username}</span>
+                                <span 
+                                    className="mun" 
+                                    style={post.user_id ? { 
+                                        fontWeight: 'bold', 
+                                        color: '#ffd700',
+                                        textShadow: '0 0 2px rgba(255, 215, 0, 0.5)'
+                                    } : undefined}
+                                >
+                                    {post.username}
+                                </span>
                                 {post.tripcode && (
                                     <span className="muh"> {post.tripcode}</span>
                                 )}
@@ -208,6 +221,19 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                                             : ''),
                                 }}
                             />
+                        )}
+                        {post.latitude && post.longitude && (
+                            <div style={{ fontSize: '12px', marginTop: '0.5rem', opacity: 0.8 }}>
+                                📍 Location: {post.latitude.toFixed(6)}, {post.longitude.toFixed(6)}{' '}
+                                <a 
+                                    href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ textDecoration: 'underline' }}
+                                >
+                                    (View on Map)
+                                </a>
+                            </div>
                         )}
                     </div>
                 </div>

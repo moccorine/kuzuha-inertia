@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->unsignedBigInteger('thread_id')->nullable()->index();
             $table->unsignedBigInteger('parent_id')->nullable()->index();
             $table->string('username')->default('');
@@ -23,6 +24,9 @@ return new class extends Migration
             $table->string('user_agent')->nullable();
             $table->string('protect_code', 4)->nullable();
             $table->string('undo_token', 32)->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->string('location_name')->nullable();
             $table->timestamps();
 
             $table->index('created_at');

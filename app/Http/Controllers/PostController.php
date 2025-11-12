@@ -87,6 +87,8 @@ class PostController extends Controller
             'url' => 'nullable|url|max:255',
             'parent_id' => 'nullable|exists:posts,id',
             'autolink' => 'nullable|boolean',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         // デフォルト値設定
@@ -123,6 +125,7 @@ class PostController extends Controller
 
         // 投稿作成
         $post = Post::create([
+            'user_id' => $request->user()?->id,
             'username' => $username,
             'tripcode' => $tripcode,
             'email' => $validated['email'],
@@ -132,6 +135,8 @@ class PostController extends Controller
             'thread_id' => $threadId,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
+            'latitude' => $validated['latitude'] ?? null,
+            'longitude' => $validated['longitude'] ?? null,
         ]);
 
         // Set thread_id to self if it's a new thread
