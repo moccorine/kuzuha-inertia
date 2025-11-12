@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('online_users', function (Blueprint $table) {
             $table->string('ip_hash', 64)->primary();
             $table->timestamp('last_seen_at');
-            
+
             $table->index('last_seen_at');
         });
     }

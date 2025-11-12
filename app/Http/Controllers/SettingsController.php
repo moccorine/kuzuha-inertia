@@ -9,7 +9,7 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $themes = collect(config('themes'))->map(fn($theme, $key) => [
+        $themes = collect(config('themes'))->map(fn ($theme, $key) => [
             'key' => $key,
             'name' => $theme['name'],
         ])->values();
@@ -22,7 +22,7 @@ class SettingsController extends Controller
 
     public function customTheme()
     {
-        $themes = collect(config('themes'))->map(fn($theme, $key) => [
+        $themes = collect(config('themes'))->map(fn ($theme, $key) => [
             'key' => $key,
             'name' => $theme['name'],
         ])->values();
@@ -39,7 +39,7 @@ class SettingsController extends Controller
     public function updateTheme(Request $request)
     {
         $request->validate([
-            'theme' => 'required|string|in:' . implode(',', array_keys(config('themes'))),
+            'theme' => 'required|string|in:'.implode(',', array_keys(config('themes'))),
         ]);
 
         return redirect()->back()->cookie('theme', $request->theme, 60 * 24 * 365);

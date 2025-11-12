@@ -24,7 +24,7 @@ export default function SettingsIndex({ themes, currentTheme }: Props) {
         <AppLayout>
             <div className="p-6">
                 <h1 className="text-2xl font-bold">設定</h1>
-                
+
                 <form onSubmit={handleSubmit} className="mt-6">
                     <div className="mb-4">
                         <label className="mb-2 block font-medium">テーマ</label>
@@ -42,7 +42,10 @@ export default function SettingsIndex({ themes, currentTheme }: Props) {
                     </div>
 
                     <div className="flex gap-2">
-                        <button type="submit" className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+                        <button
+                            type="submit"
+                            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                        >
                             保存
                         </button>
                         <button

@@ -1,6 +1,6 @@
 import GuestLayout from '@/layouts/guest-layout';
-import { Head, Link } from '@inertiajs/react';
 import { formatBbsDateTime } from '@/utils/datetime';
+import { Head, Link } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -41,8 +41,21 @@ export default function Topics({ threads, date, usernameCounts }: Props) {
                 </h1>
 
                 {date && usernameCounts.length > 0 && (
-                    <div style={{ marginBottom: '0.5rem', fontSize: '13px', lineHeight: '1.5' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '0.3rem' }}>投稿者別トピック数:</div>
+                    <div
+                        style={{
+                            marginBottom: '0.5rem',
+                            fontSize: '13px',
+                            lineHeight: '1.5',
+                        }}
+                    >
+                        <div
+                            style={{
+                                fontWeight: 'bold',
+                                marginBottom: '0.3rem',
+                            }}
+                        >
+                            投稿者別トピック数:
+                        </div>
                         {usernameCounts.map((item, index) => (
                             <span key={index}>
                                 {item.username} ({item.count})
@@ -55,21 +68,22 @@ export default function Topics({ threads, date, usernameCounts }: Props) {
 
                 <div style={{ fontSize: '14px', lineHeight: '1.6' }}>
                     {threads.data.map((post) => {
-                        const replyCount = String(post.replies_count || 0).padStart(2, '0');
+                        const replyCount = String(
+                            post.replies_count || 0,
+                        ).padStart(2, '0');
                         const datetime = formatBbsDateTime(post.created_at);
-                        const bodyPreview = post.body.replace(/<[^>]*>/g, '').substring(0, 100);
-                        
+                        const bodyPreview = post.body
+                            .replace(/<[^>]*>/g, '')
+                            .substring(0, 100);
+
                         return (
-                            <div key={post.id} style={{ marginBottom: '0.3rem' }}>
-                                <Link href={`/threads/${post.id}`}>◆</Link>
-                                {' '}
-                                <Link href={`/tree/${post.id}`}>木</Link>
-                                {' '}
-                                {replyCount}
-                                {' '}
-                                [{datetime}]
-                                {' '}
-                                {bodyPreview}
+                            <div
+                                key={post.id}
+                                style={{ marginBottom: '0.3rem' }}
+                            >
+                                <Link href={`/threads/${post.id}`}>◆</Link>{' '}
+                                <Link href={`/tree/${post.id}`}>木</Link>{' '}
+                                {replyCount} [{datetime}] {bodyPreview}
                             </div>
                         );
                     })}
@@ -83,14 +97,20 @@ export default function Topics({ threads, date, usernameCounts }: Props) {
                                     href={link.url}
                                     style={{
                                         padding: '0.25rem 0.5rem',
-                                        textDecoration: link.active ? 'underline' : 'none',
+                                        textDecoration: link.active
+                                            ? 'underline'
+                                            : 'none',
                                     }}
                                 >
-                                    {link.label.replace('&laquo;', '«').replace('&raquo;', '»')}
+                                    {link.label
+                                        .replace('&laquo;', '«')
+                                        .replace('&raquo;', '»')}
                                 </Link>
                             ) : (
                                 <span style={{ padding: '0.25rem 0.5rem' }}>
-                                    {link.label.replace('&laquo;', '«').replace('&raquo;', '»')}
+                                    {link.label
+                                        .replace('&laquo;', '«')
+                                        .replace('&raquo;', '»')}
                                 </span>
                             )}
                         </span>

@@ -32,7 +32,15 @@ import { useTranslation } from '@/lib/i18n';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Menu, Search, MessageSquare, UserX, Settings, Home } from 'lucide-react';
+import {
+    Home,
+    LayoutGrid,
+    Menu,
+    MessageSquare,
+    Search,
+    Settings,
+    UserX,
+} from 'lucide-react';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -97,7 +105,9 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                     Navigation Menu
                                 </SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
-                                    <span className="text-lg font-semibold">{name}</span>
+                                    <span className="text-lg font-semibold">
+                                        {name}
+                                    </span>
                                 </SheetHeader>
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">

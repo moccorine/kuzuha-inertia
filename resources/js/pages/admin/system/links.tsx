@@ -1,16 +1,14 @@
-import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useForm, router } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import AppLayout from '@/layouts/app-layout';
 import {
-    DndContext,
     closestCenter,
+    DndContext,
+    DragEndEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent,
 } from '@dnd-kit/core';
 import {
     arrayMove,
@@ -20,7 +18,9 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { router, useForm } from '@inertiajs/react';
 import { GripVertical } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 
 interface CustomLink {
     id: number;
@@ -34,22 +34,17 @@ interface Props {
     links: CustomLink[];
 }
 
-function SortableItem({ 
-    link, 
-    onToggleActive, 
-    onDelete 
-}: { 
-    link: CustomLink; 
+function SortableItem({
+    link,
+    onToggleActive,
+    onDelete,
+}: {
+    link: CustomLink;
     onToggleActive: (link: CustomLink) => void;
     onDelete: (id: number) => void;
 }) {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-    } = useSortable({ id: link.id });
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id: link.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -60,19 +55,27 @@ function SortableItem({
         <div
             ref={setNodeRef}
             style={style}
-            className="flex items-center gap-4 p-4 border rounded-lg"
+            className="flex items-center gap-4 rounded-lg border p-4"
         >
-            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+            <div
+                {...attributes}
+                {...listeners}
+                className="cursor-grab active:cursor-grabbing"
+            >
                 <GripVertical className="h-5 w-5 text-muted-foreground" />
             </div>
             <div className="flex-1">
-                <div className={`font-medium ${!link.is_active ? 'line-through opacity-50' : ''}`}>
+                <div
+                    className={`font-medium ${!link.is_active ? 'line-through opacity-50' : ''}`}
+                >
                     {link.title}
                 </div>
-                <div className={`text-sm text-muted-foreground ${!link.is_active ? 'line-through opacity-50' : ''}`}>
-                    <a 
-                        href={link.url} 
-                        target="_blank" 
+                <div
+                    className={`text-sm text-muted-foreground ${!link.is_active ? 'line-through opacity-50' : ''}`}
+                >
+                    <a
+                        href={link.url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline"
                     >
@@ -103,12 +106,12 @@ function SortableItem({
 export default function Links({ links: initialLinks }: Props) {
     const [editingId, setEditingId] = useState<number | null>(null);
     const [links, setLinks] = useState(initialLinks);
-    
+
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
-        })
+        }),
     );
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -123,18 +126,22 @@ export default function Links({ links: initialLinks }: Props) {
 
             // Update order in database
             newLinks.forEach((link, index) => {
-                router.patch(`/admin/system/links/${link.id}`, {
-                    title: link.title,
-                    url: link.url,
-                    order: index + 1,
-                    is_active: link.is_active,
-                }, {
-                    preserveScroll: true,
-                });
+                router.patch(
+                    `/admin/system/links/${link.id}`,
+                    {
+                        title: link.title,
+                        url: link.url,
+                        order: index + 1,
+                        is_active: link.is_active,
+                    },
+                    {
+                        preserveScroll: true,
+                    },
+                );
             });
         }
     };
-    
+
     const { data, setData, post, processing, reset } = useForm({
         title: '',
         url: '',
@@ -148,31 +155,44 @@ export default function Links({ links: initialLinks }: Props) {
     };
 
     const handleToggleActive = (link: CustomLink) => {
-        console.log('Toggling active for link:', link.id, 'current:', link.is_active);
-        
-        router.patch(`/admin/system/links/${link.id}`, {
-            title: link.title,
-            url: link.url,
-            order: link.order,
-            is_active: !link.is_active,
-        }, {
-            onSuccess: () => {
-                console.log('Toggle success');
-                setLinks(links.map(l => 
-                    l.id === link.id ? { ...l, is_active: !l.is_active } : l
-                ));
+        console.log(
+            'Toggling active for link:',
+            link.id,
+            'current:',
+            link.is_active,
+        );
+
+        router.patch(
+            `/admin/system/links/${link.id}`,
+            {
+                title: link.title,
+                url: link.url,
+                order: link.order,
+                is_active: !link.is_active,
             },
-            onError: (errors) => {
-                console.error('Toggle error:', errors);
+            {
+                onSuccess: () => {
+                    console.log('Toggle success');
+                    setLinks(
+                        links.map((l) =>
+                            l.id === link.id
+                                ? { ...l, is_active: !l.is_active }
+                                : l,
+                        ),
+                    );
+                },
+                onError: (errors) => {
+                    console.error('Toggle error:', errors);
+                },
             },
-        });
+        );
     };
 
     const handleDelete = (linkId: number) => {
         if (confirm('このリンクを削除しますか？')) {
             router.delete(`/admin/system/links/${linkId}`, {
                 onSuccess: () => {
-                    setLinks(links.filter(l => l.id !== linkId));
+                    setLinks(links.filter((l) => l.id !== linkId));
                 },
             });
         }
@@ -194,25 +214,27 @@ export default function Links({ links: initialLinks }: Props) {
     return (
         <AppLayout>
             <div className="p-6">
-                <h1 className="text-2xl font-bold mb-6">Link Management</h1>
+                <h1 className="mb-6 text-2xl font-bold">Link Management</h1>
 
-                <div className="mb-8 p-4 border rounded-lg">
-                    <h2 className="text-lg font-semibold mb-4">Add New Link</h2>
+                <div className="mb-8 rounded-lg border p-4">
+                    <h2 className="mb-4 text-lg font-semibold">Add New Link</h2>
                     <form onSubmit={submit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium mb-1">
+                            <label className="mb-1 block text-sm font-medium">
                                 Title
                             </label>
                             <Input
                                 type="text"
                                 value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
+                                onChange={(e) =>
+                                    setData('title', e.target.value)
+                                }
                                 className="bg-background"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">
+                            <label className="mb-1 block text-sm font-medium">
                                 URL
                             </label>
                             <Input
@@ -231,23 +253,32 @@ export default function Links({ links: initialLinks }: Props) {
 
                 <div className="space-y-4">
                     <h2 className="text-lg font-semibold">Custom Links</h2>
-                    
+
                     {links.length > 0 && (
-                        <div className="p-4 border rounded-lg bg-muted/50">
-                            <div className="text-sm font-medium mb-2">Preview:</div>
+                        <div className="rounded-lg border bg-muted/50 p-4">
+                            <div className="mb-2 text-sm font-medium">
+                                Preview:
+                            </div>
                             <div className="text-sm">
-                                {links.filter(l => l.is_active).map((link, index) => (
-                                    <span key={link.id}>
-                                        {index > 0 && ' | '}
-                                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                            {link.title}
-                                        </a>
-                                    </span>
-                                ))}
+                                {links
+                                    .filter((l) => l.is_active)
+                                    .map((link, index) => (
+                                        <span key={link.id}>
+                                            {index > 0 && ' | '}
+                                            <a
+                                                href={link.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:underline"
+                                            >
+                                                {link.title}
+                                            </a>
+                                        </span>
+                                    ))}
                             </div>
                         </div>
                     )}
-                    
+
                     {links.length === 0 ? (
                         <p className="text-muted-foreground">No links yet.</p>
                     ) : (
@@ -257,7 +288,7 @@ export default function Links({ links: initialLinks }: Props) {
                             onDragEnd={handleDragEnd}
                         >
                             <SortableContext
-                                items={links.map(l => l.id)}
+                                items={links.map((l) => l.id)}
                                 strategy={verticalListSortingStrategy}
                             >
                                 <div className="space-y-2">

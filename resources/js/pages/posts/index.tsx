@@ -58,33 +58,56 @@ export default function Index({
         new Date().getTime() - new Date(lastPostTime).getTime() < 5 * 60 * 1000;
 
     // Check if user is admin
-    const isAdmin = auth?.user?.roles?.some((role: any) => role.name === 'admin');
+    const isAdmin = auth?.user?.roles?.some(
+        (role: any) => role.name === 'admin',
+    );
 
     return (
         <GuestLayout>
             <Head title={appName} />
             <div style={{ padding: '1rem 0.5rem 0 0.5rem' }}>
                 <div className="pagetitle" style={{ marginBottom: '1rem' }}>
-                    <Link href="/" style={{ fontSize: '24px', fontWeight: 'bold' }}>{appName}</Link>
+                    <Link
+                        href="/"
+                        style={{ fontSize: '24px', fontWeight: 'bold' }}
+                    >
+                        {appName}
+                    </Link>
                     {informationPage && (
                         <>
                             <span style={{ margin: '0 0.5rem' }}>|</span>
                             {informationPage.url ? (
-                                <a href={informationPage.url} style={{ fontSize: '14px' }}>Information</a>
+                                <a
+                                    href={informationPage.url}
+                                    style={{ fontSize: '14px' }}
+                                >
+                                    Information
+                                </a>
                             ) : informationPage.hasContent ? (
-                                <Link href="/information" style={{ fontSize: '14px' }}>Information</Link>
+                                <Link
+                                    href="/information"
+                                    style={{ fontSize: '14px' }}
+                                >
+                                    Information
+                                </Link>
                             ) : null}
                         </>
                     )}
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <Link href="/contact" style={{ fontSize: '14px' }}>Contact</Link>
+                    <Link href="/contact" style={{ fontSize: '14px' }}>
+                        Contact
+                    </Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <Link href="/archive" style={{ fontSize: '14px' }}>Archive</Link>
+                    <Link href="/archive" style={{ fontSize: '14px' }}>
+                        Archive
+                    </Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <Link href="/tree" style={{ fontSize: '14px' }}>Tree View</Link>
+                    <Link href="/tree" style={{ fontSize: '14px' }}>
+                        Tree View
+                    </Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <a 
-                        href={hideForm ? "/" : `/?hide=1&d=${perPage}`}
+                    <a
+                        href={hideForm ? '/' : `/?hide=1&d=${perPage}`}
                         style={{ fontSize: '14px', cursor: 'pointer' }}
                     >
                         {hideForm ? 'Show Form' : 'Log Read'}
@@ -92,7 +115,9 @@ export default function Index({
                     {isAdmin && (
                         <>
                             <span style={{ margin: '0 0.5rem' }}>|</span>
-                            <Link href="/admin" style={{ fontSize: '14px' }}>Admin</Link>
+                            <Link href="/admin" style={{ fontSize: '14px' }}>
+                                Admin
+                            </Link>
                         </>
                     )}
                 </div>

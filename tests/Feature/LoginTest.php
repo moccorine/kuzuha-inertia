@@ -15,7 +15,7 @@ beforeEach(function () {
 
 test('login page can be rendered', function () {
     $response = $this->get('/login');
-    
+
     $response->assertStatus(200);
 });
 
@@ -29,7 +29,7 @@ test('users can authenticate using username', function () {
         'username' => 'testuser',
         'password' => 'password',
     ]);
-    
+
     $this->assertAuthenticated();
     $response->assertRedirect('/admin');
 });

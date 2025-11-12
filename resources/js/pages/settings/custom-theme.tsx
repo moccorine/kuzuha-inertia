@@ -8,7 +8,7 @@ interface Theme {
 
 interface Props {
     themes: Theme[];
-    themesData: Record<string, any>;
+    themesData: Record<string, unknown>;
     currentTheme: string;
 }
 
@@ -34,7 +34,11 @@ const defaultColors: CustomColors = {
     quote: '#cccccc',
 };
 
-export default function CustomTheme({ themes, themesData, currentTheme }: Props) {
+export default function CustomTheme({
+    themes,
+    themesData,
+    currentTheme,
+}: Props) {
     const [baseTheme, setBaseTheme] = useState(currentTheme);
     const [colors, setColors] = useState<CustomColors>(defaultColors);
 
@@ -49,7 +53,7 @@ export default function CustomTheme({ themes, themesData, currentTheme }: Props)
                 // Ignore parse errors
             }
         }
-    }, []);
+    }, [currentTheme]);
 
     const handleLoadBaseTheme = () => {
         // If custom is selected, load from localStorage
@@ -65,17 +69,21 @@ export default function CustomTheme({ themes, themesData, currentTheme }: Props)
                 }
             }
         }
-        
+
         // Load colors from the selected base theme
         const selectedTheme = themesData[baseTheme];
         if (selectedTheme) {
             const themeColors: CustomColors = {
                 text: selectedTheme.text || defaultColors.text,
-                background: selectedTheme.background || defaultColors.background,
+                background:
+                    selectedTheme.background || defaultColors.background,
                 link: selectedTheme.link || defaultColors.link,
-                link_visited: selectedTheme.link_visited || defaultColors.link_visited,
-                link_active: selectedTheme.link_active || defaultColors.link_active,
-                link_hover: selectedTheme.link_hover || defaultColors.link_hover,
+                link_visited:
+                    selectedTheme.link_visited || defaultColors.link_visited,
+                link_active:
+                    selectedTheme.link_active || defaultColors.link_active,
+                link_hover:
+                    selectedTheme.link_hover || defaultColors.link_hover,
                 title: selectedTheme.title || defaultColors.title,
                 quote: selectedTheme.quote || defaultColors.quote,
             };
@@ -85,12 +93,12 @@ export default function CustomTheme({ themes, themesData, currentTheme }: Props)
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        
+
         const themeData = {
             base: baseTheme,
             colors: colors,
         };
-        
+
         localStorage.setItem('customTheme', JSON.stringify(themeData));
 
         // Set custom theme cookie via direct navigation
@@ -128,8 +136,7 @@ export default function CustomTheme({ themes, themesData, currentTheme }: Props)
                                         {theme.name}
                                     </option>
                                 ))}
-                            </select>
-                            {' '}
+                            </select>{' '}
                             <button type="button" onClick={handleLoadBaseTheme}>
                                 Set
                             </button>
@@ -142,96 +149,200 @@ export default function CustomTheme({ themes, themesData, currentTheme }: Props)
                             <table style={{ fontSize: '14px' }}>
                                 <tbody>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Text Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Text Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.text.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, text: '#' + e.target.value })}
+                                                value={colors.text.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        text:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Background Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Background Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.background.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, background: '#' + e.target.value })}
+                                                value={colors.background.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        background:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Link Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Link Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.link.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, link: '#' + e.target.value })}
+                                                value={colors.link.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        link:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Visited Link Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Visited Link Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.link_visited.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, link_visited: '#' + e.target.value })}
+                                                value={colors.link_visited.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        link_visited:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Active Link Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Active Link Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.link_active.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, link_active: '#' + e.target.value })}
+                                                value={colors.link_active.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        link_active:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Hover Link Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Hover Link Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.link_hover.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, link_hover: '#' + e.target.value })}
+                                                value={colors.link_hover.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        link_hover:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Title Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Title Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.title.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, title: '#' + e.target.value })}
+                                                value={colors.title.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        title:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ padding: '0.3rem' }}>Quote Color</td>
                                         <td style={{ padding: '0.3rem' }}>
-                                            #<input
+                                            Quote Color
+                                        </td>
+                                        <td style={{ padding: '0.3rem' }}>
+                                            #
+                                            <input
                                                 type="text"
-                                                value={colors.quote.replace('#', '')}
-                                                onChange={(e) => setColors({ ...colors, quote: '#' + e.target.value })}
+                                                value={colors.quote.replace(
+                                                    '#',
+                                                    '',
+                                                )}
+                                                onChange={(e) =>
+                                                    setColors({
+                                                        ...colors,
+                                                        quote:
+                                                            '#' +
+                                                            e.target.value,
+                                                    })
+                                                }
                                                 maxLength={6}
                                                 style={{ width: '80px' }}
                                             />
@@ -247,7 +358,10 @@ export default function CustomTheme({ themes, themesData, currentTheme }: Props)
                         <button type="button" onClick={handleReset}>
                             Reset
                         </button>
-                        <button type="button" onClick={() => router.visit('/settings')}>
+                        <button
+                            type="button"
+                            onClick={() => router.visit('/settings')}
+                        >
                             Back
                         </button>
                     </div>

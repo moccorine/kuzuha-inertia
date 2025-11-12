@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\InstallController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\InstallController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::prefix('install')->name('install.')->group(function () {
     Route::get('/', [InstallController::class, 'index'])->name('index');
@@ -42,12 +41,12 @@ Route::post('/settings/theme', [SettingsController::class, 'updateTheme'])->name
 
 // Theme switcher (for testing)
 Route::get('/theme/{theme}', function ($theme) {
-    if (!in_array($theme, ['default', 'dark', 'custom'])) {
+    if (! in_array($theme, ['default', 'dark', 'custom'])) {
         abort(404);
     }
-    
+
     $cookie = cookie('theme', $theme, 60 * 24 * 365, '/', null, false, false);
-    
+
     return redirect()->back()->withCookie($cookie);
 })->name('theme.switch');
 

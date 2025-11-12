@@ -1,5 +1,5 @@
-import GuestLayout from '@/layouts/guest-layout';
 import PostItem from '@/components/PostItem';
+import GuestLayout from '@/layouts/guest-layout';
 import { Head, Link, usePage } from '@inertiajs/react';
 
 interface Post {
@@ -30,7 +30,16 @@ interface Props {
     perPage: number;
 }
 
-export default function ArchiveSearch({ posts, keyword, targetUsername, targetTitle, targetBody, ignoreCase, dates, perPage }: Props) {
+export default function ArchiveSearch({
+    posts,
+    keyword,
+    targetUsername,
+    targetTitle,
+    targetBody,
+    ignoreCase,
+    dates,
+    perPage,
+}: Props) {
     const { props } = usePage<{ appName: string }>();
 
     const targets = [];
@@ -44,7 +53,12 @@ export default function ArchiveSearch({ posts, keyword, targetUsername, targetTi
 
             <div style={{ padding: '1rem 0.5rem 0 0.5rem' }}>
                 <div className="pagetitle" style={{ marginBottom: '1rem' }}>
-                    <Link href="/" style={{ fontSize: '24px', fontWeight: 'bold' }}>{props.appName}</Link>
+                    <Link
+                        href="/"
+                        style={{ fontSize: '24px', fontWeight: 'bold' }}
+                    >
+                        {props.appName}
+                    </Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <span style={{ fontSize: '18px' }}>検索結果</span>
                 </div>
@@ -62,7 +76,9 @@ export default function ArchiveSearch({ posts, keyword, targetUsername, targetTi
                             {' | '}
                             検索対象: {targets.join(', ')}
                             {' | '}
-                            {ignoreCase ? '大文字小文字を区別しない' : '大文字小文字を区別する'}
+                            {ignoreCase
+                                ? '大文字小文字を区別しない'
+                                : '大文字小文字を区別する'}
                             <br />
                         </>
                     )}
@@ -78,8 +94,8 @@ export default function ArchiveSearch({ posts, keyword, targetUsername, targetTi
                 <hr style={{ marginBottom: '1rem' }} />
 
                 {posts.data.map((post) => (
-                    <PostItem 
-                        key={post.id} 
+                    <PostItem
+                        key={post.id}
                         post={post}
                         highlightKeyword={keyword}
                         highlightCaseSensitive={!ignoreCase}
@@ -94,14 +110,20 @@ export default function ArchiveSearch({ posts, keyword, targetUsername, targetTi
                                     href={link.url}
                                     style={{
                                         padding: '0.25rem 0.5rem',
-                                        textDecoration: link.active ? 'underline' : 'none',
+                                        textDecoration: link.active
+                                            ? 'underline'
+                                            : 'none',
                                     }}
                                 >
-                                    {link.label.replace('&laquo;', '«').replace('&raquo;', '»')}
+                                    {link.label
+                                        .replace('&laquo;', '«')
+                                        .replace('&raquo;', '»')}
                                 </Link>
                             ) : (
                                 <span style={{ padding: '0.25rem 0.5rem' }}>
-                                    {link.label.replace('&laquo;', '«').replace('&raquo;', '»')}
+                                    {link.label
+                                        .replace('&laquo;', '«')
+                                        .replace('&raquo;', '»')}
                                 </span>
                             )}
                         </span>

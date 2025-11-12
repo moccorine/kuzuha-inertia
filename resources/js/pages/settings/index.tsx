@@ -1,5 +1,5 @@
-import { Head, router, usePage, Link } from '@inertiajs/react';
-import { FormEvent, useState, useEffect } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import { FormEvent, useEffect, useState } from 'react';
 
 interface Theme {
     key: string;
@@ -22,7 +22,9 @@ export default function Index({ themes, currentTheme }: Props) {
             try {
                 const parsed = JSON.parse(saved);
                 setDisplayCount(parsed.d || 40);
-                setAutolink(parsed.autolink !== undefined ? parsed.autolink : true);
+                setAutolink(
+                    parsed.autolink !== undefined ? parsed.autolink : true,
+                );
             } catch (e) {
                 // Ignore parse errors
             }
@@ -31,7 +33,7 @@ export default function Index({ themes, currentTheme }: Props) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        
+
         // Save display count and autolink to localStorage
         const saved = localStorage.getItem('bbsFormData');
         let formData = {};
@@ -42,13 +44,16 @@ export default function Index({ themes, currentTheme }: Props) {
                 // Ignore
             }
         }
-        
-        localStorage.setItem('bbsFormData', JSON.stringify({
-            ...formData,
-            d: displayCount,
-            autolink: autolink,
-        }));
-        
+
+        localStorage.setItem(
+            'bbsFormData',
+            JSON.stringify({
+                ...formData,
+                d: displayCount,
+                autolink: autolink,
+            }),
+        );
+
         window.location.href = `/theme/${selectedTheme}`;
     };
 
@@ -66,7 +71,9 @@ export default function Index({ themes, currentTheme }: Props) {
                         <div className="post-contents">
                             <select
                                 value={selectedTheme}
-                                onChange={(e) => setSelectedTheme(e.target.value)}
+                                onChange={(e) =>
+                                    setSelectedTheme(e.target.value)
+                                }
                                 className="p-2"
                                 style={{
                                     background: 'var(--theme-input-bg)',
@@ -91,7 +98,11 @@ export default function Index({ themes, currentTheme }: Props) {
                                 min="1"
                                 max="200"
                                 value={displayCount}
-                                onChange={(e) => setDisplayCount(parseInt(e.target.value) || 40)}
+                                onChange={(e) =>
+                                    setDisplayCount(
+                                        parseInt(e.target.value) || 40,
+                                    )
+                                }
                                 className="p-2"
                                 style={{
                                     background: 'var(--theme-input-bg)',
@@ -100,7 +111,12 @@ export default function Index({ themes, currentTheme }: Props) {
                                     width: '100px',
                                 }}
                             />
-                            <span style={{ marginLeft: '0.5rem', fontSize: '13px' }}>
+                            <span
+                                style={{
+                                    marginLeft: '0.5rem',
+                                    fontSize: '13px',
+                                }}
+                            >
                                 (1-200)
                             </span>
                         </div>
@@ -109,11 +125,19 @@ export default function Index({ themes, currentTheme }: Props) {
                     <div className="m">
                         <div className="ms">URL Auto-linking</div>
                         <div className="post-contents">
-                            <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+                            <label
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    cursor: 'pointer',
+                                }}
+                            >
                                 <input
                                     type="checkbox"
                                     checked={autolink}
-                                    onChange={(e) => setAutolink(e.target.checked)}
+                                    onChange={(e) =>
+                                        setAutolink(e.target.checked)
+                                    }
                                     style={{ marginRight: '0.5rem' }}
                                 />
                                 Automatically convert URLs to links

@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class CacheLegacyLogsAll extends Command
 {
     protected $signature = 'bbs:cache-logs-all {input-dir : Input directory path} {output-dir : Output directory path} {--days= : Limit to most recent N days}';
+
     protected $description = 'Parse all legacy BBS logs in directory and cache as JSON';
 
     public function handle()
@@ -15,19 +16,21 @@ class CacheLegacyLogsAll extends Command
         $outputDir = $this->argument('output-dir');
         $daysLimit = $this->option('days');
 
-        if (!is_dir($inputDir)) {
+        if (! is_dir($inputDir)) {
             $this->error("Directory not found: {$inputDir}");
+
             return 1;
         }
 
-        if (!is_dir($outputDir)) {
+        if (! is_dir($outputDir)) {
             mkdir($outputDir, 0755, true);
         }
 
-        $files = glob($inputDir . '/*.html');
-        
+        $files = glob($inputDir.'/*.html');
+
         if (empty($files)) {
             $this->error("No .html files found in: {$inputDir}");
+
             return 1;
         }
 
@@ -36,16 +39,16 @@ class CacheLegacyLogsAll extends Command
 
         // Limit to recent days if specified
         if ($daysLimit) {
-            $files = array_slice($files, 0, (int)$daysLimit);
+            $files = array_slice($files, 0, (int) $daysLimit);
             $this->info("Limited to most recent {$daysLimit} days");
         }
 
-        $this->info("Found " . count($files) . " files");
+        $this->info('Found '.count($files).' files');
         $bar = $this->output->createProgressBar(count($files));
 
         foreach ($files as $file) {
             $basename = basename($file, '.html');
-            $outputFile = $outputDir . '/' . $basename . '.json';
+            $outputFile = $outputDir.'/'.$basename.'.json';
 
             $html = file_get_contents($file);
             $posts = $this->parsePosts($html);
@@ -57,6 +60,7 @@ class CacheLegacyLogsAll extends Command
         $bar->finish();
         $this->newLine();
         $this->info("All files cached to: {$outputDir}");
+
         return 0;
     }
 

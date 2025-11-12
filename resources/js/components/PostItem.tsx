@@ -8,9 +8,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { formatBbsDateTime, humanizeDiff } from '@/utils/datetime';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { formatBbsDateTime, humanizeDiff } from '@/utils/datetime';
 import Highlighter from 'react-highlight-words';
 
 interface Post {
@@ -40,7 +40,13 @@ interface PostItemProps {
     highlightCaseSensitive?: boolean;
 }
 
-export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, highlightCaseSensitive }: PostItemProps) {
+export default function PostItem({
+    post,
+    lastPostId,
+    canUndo,
+    highlightKeyword,
+    highlightCaseSensitive,
+}: PostItemProps) {
     const [open, setOpen] = useState(false);
 
     // Check if username is valid (not empty, not Anonymous, not just whitespace)
@@ -77,24 +83,33 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                         {hasValidUsername && (
                             <>
                                 <span className="mu">Author: </span>
-                                <span 
-                                    className="mun" 
-                                    style={post.user_id ? { 
-                                        fontWeight: 'bold', 
-                                        color: '#ffd700',
-                                        textShadow: '0 0 2px rgba(255, 215, 0, 0.5)'
-                                    } : undefined}
+                                <span
+                                    className="mun"
+                                    style={
+                                        post.user_id
+                                            ? {
+                                                  fontWeight: 'bold',
+                                                  color: '#ffd700',
+                                                  textShadow:
+                                                      '0 0 2px rgba(255, 215, 0, 0.5)',
+                                              }
+                                            : undefined
+                                    }
                                 >
                                     {post.username}
                                 </span>
                                 {post.tripcode && (
-                                    <span className="muh"> {post.tripcode}</span>
+                                    <span className="muh">
+                                        {' '}
+                                        {post.tripcode}
+                                    </span>
                                 )}
                                 &nbsp;&nbsp;
                             </>
                         )}
                         <span className="md">
-                            Posted: {formatBbsDateTime(post.created_at)} ({humanizeDiff(post.created_at)})
+                            Posted: {formatBbsDateTime(post.created_at)} (
+                            {humanizeDiff(post.created_at)})
                             <a id={`a${post.id}`}>&nbsp;</a>
                             <span className="nb">
                                 &nbsp;&nbsp;&nbsp;
@@ -152,13 +167,14 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                                                     ×
                                                 </button>
                                             </DialogTrigger>
-                                            <DialogContent 
-                                                className="bg-[var(--theme-background)] border-[var(--theme-hr)]"
+                                            <DialogContent
+                                                className="border-[var(--theme-hr)] bg-[var(--theme-background)]"
                                                 style={{
                                                     position: 'fixed',
                                                     top: '50%',
                                                     left: '50%',
-                                                    transform: 'translate(-50%, -50%)',
+                                                    transform:
+                                                        'translate(-50%, -50%)',
                                                 }}
                                             >
                                                 <DialogHeader>
@@ -171,7 +187,15 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                                                         action cannot be undone.
                                                     </DialogDescription>
                                                 </DialogHeader>
-                                                <DialogFooter style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', justifyContent: 'center' }}>
+                                                <DialogFooter
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        gap: '0.5rem',
+                                                        justifyContent:
+                                                            'center',
+                                                    }}
+                                                >
                                                     <Button
                                                         variant="outline"
                                                         onClick={() =>
@@ -202,12 +226,18 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                                     autoEscape={true}
                                     textToHighlight={bodyText}
                                     caseSensitive={highlightCaseSensitive}
-                                    highlightStyle={{ backgroundColor: '#ffff00', color: '#000', padding: 0 }}
+                                    highlightStyle={{
+                                        backgroundColor: '#ffff00',
+                                        color: '#000',
+                                        padding: 0,
+                                    }}
                                 />
                                 {post.parent_id && (
-                                    <span dangerouslySetInnerHTML={{
-                                        __html: `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatBbsDateTime(post.parent.created_at) : '#' + post.parent_id}</a>`
-                                    }} />
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: `\n\n<a href="/posts/${post.parent_id}">Reference: ${post.parent ? formatBbsDateTime(post.parent.created_at) : '#' + post.parent_id}</a>`,
+                                        }}
+                                    />
                                 )}
                             </pre>
                         ) : (
@@ -223,9 +253,16 @@ export default function PostItem({ post, lastPostId, canUndo, highlightKeyword, 
                             />
                         )}
                         {post.latitude && post.longitude && (
-                            <div style={{ fontSize: '12px', marginTop: '0.5rem', opacity: 0.8 }}>
-                                📍 Location: {post.latitude.toFixed(6)}, {post.longitude.toFixed(6)}{' '}
-                                <a 
+                            <div
+                                style={{
+                                    fontSize: '12px',
+                                    marginTop: '0.5rem',
+                                    opacity: 0.8,
+                                }}
+                            >
+                                📍 Location: {post.latitude.toFixed(6)},{' '}
+                                {post.longitude.toFixed(6)}{' '}
+                                <a
                                     href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
                                     target="_blank"
                                     rel="noopener noreferrer"

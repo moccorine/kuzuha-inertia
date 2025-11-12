@@ -1,5 +1,5 @@
-import GuestLayout from '@/layouts/guest-layout';
 import PostItem from '@/components/PostItem';
+import GuestLayout from '@/layouts/guest-layout';
 import { Head, Link } from '@inertiajs/react';
 
 interface Post {
@@ -33,9 +33,16 @@ export default function ArchiveDate({ posts, date, perPage, appName }: Props) {
             <Head title={`${appName} - Archive ${date}`} />
             <div style={{ padding: '1rem 0.5rem 0 0.5rem' }}>
                 <div className="pagetitle" style={{ marginBottom: '1rem' }}>
-                    <Link href="/" style={{ fontSize: '24px', fontWeight: 'bold' }}>{appName}</Link>
+                    <Link
+                        href="/"
+                        style={{ fontSize: '24px', fontWeight: 'bold' }}
+                    >
+                        {appName}
+                    </Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <Link href="/archive" style={{ fontSize: '18px' }}>Archive</Link>
+                    <Link href="/archive" style={{ fontSize: '18px' }}>
+                        Archive
+                    </Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <span style={{ fontSize: '18px' }}>{date}</span>
                 </div>
@@ -66,7 +73,12 @@ export default function ArchiveDate({ posts, date, perPage, appName }: Props) {
                         ))}
 
                         {posts.links && (
-                            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                            <div
+                                style={{
+                                    marginTop: '1rem',
+                                    marginBottom: '1rem',
+                                }}
+                            >
                                 {posts.links.map((link, index) => {
                                     if (!link.url) return null;
 
@@ -87,7 +99,9 @@ export default function ArchiveDate({ posts, date, perPage, appName }: Props) {
                                     return (
                                         <span key={index}>
                                             <Link href={link.url}>
-                                                <button type="button">{label}</button>
+                                                <button type="button">
+                                                    {label}
+                                                </button>
                                             </Link>{' '}
                                         </span>
                                     );

@@ -13,7 +13,7 @@ class OnlineCounterTest extends TestCase
     public function test_online_counter_tracks_new_user(): void
     {
         $count = online_counter();
-        
+
         $this->assertEquals(1, $count);
         $this->assertDatabaseCount('online_users', 1);
     }
@@ -23,13 +23,13 @@ class OnlineCounterTest extends TestCase
         // First access
         online_counter();
         $firstTime = DB::table('online_users')->first()->last_seen_at;
-        
+
         sleep(1);
-        
+
         // Second access from same IP
         online_counter();
         $secondTime = DB::table('online_users')->first()->last_seen_at;
-        
+
         $this->assertDatabaseCount('online_users', 1);
         $this->assertNotEquals($firstTime, $secondTime);
     }
@@ -41,18 +41,18 @@ class OnlineCounterTest extends TestCase
             'ip_hash' => hash('sha256', '10.0.0.1'),
             'last_seen_at' => now()->subMinutes(6),
         ]);
-        
+
         // Insert recent entry (2 minutes ago)
         DB::table('online_users')->insert([
             'ip_hash' => hash('sha256', '10.0.0.2'),
             'last_seen_at' => now()->subMinutes(2),
         ]);
-        
+
         $this->assertDatabaseCount('online_users', 2);
-        
+
         // Trigger cleanup
         $count = online_counter();
-        
+
         // Should have 2 users: the recent one + current request
         $this->assertEquals(2, $count);
         $this->assertDatabaseCount('online_users', 2);
@@ -67,9 +67,9 @@ class OnlineCounterTest extends TestCase
                 'last_seen_at' => now(),
             ]);
         }
-        
+
         $count = online_counter();
-        
+
         // Should count 5 existing + 1 current = 6
         $this->assertEquals(6, $count);
     }
@@ -77,9 +77,9 @@ class OnlineCounterTest extends TestCase
     public function test_online_counter_uses_ip_hash(): void
     {
         online_counter();
-        
+
         $entry = DB::table('online_users')->first();
-        
+
         // Should be a SHA256 hash (64 characters)
         $this->assertEquals(64, strlen($entry->ip_hash));
     }

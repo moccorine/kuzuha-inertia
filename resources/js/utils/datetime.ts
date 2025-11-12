@@ -9,10 +9,10 @@ export function formatBbsDateTime(dateString: string): string {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    
+
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
     const weekday = weekdays[date.getDay()];
-    
+
     return `${year}/${month}/${day}(${weekday}) ${hours}:${minutes}:${seconds}`;
 }
 
@@ -27,7 +27,7 @@ export function humanizeDiff(dateString: string): string {
     const diffMin = Math.floor(diffSec / 60);
     const diffHour = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHour / 24);
-    
+
     if (diffSec < 60) {
         return `${diffSec}秒前`;
     } else if (diffMin < 60) {

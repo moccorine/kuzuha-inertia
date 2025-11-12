@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
-import { EditorState } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers } from '@codemirror/view';
 import { defaultKeymap } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
+import { EditorState } from '@codemirror/state';
+import { EditorView, keymap, lineNumbers } from '@codemirror/view';
+import { useEffect, useRef } from 'react';
 
 interface MarkdownEditorProps {
     value: string;

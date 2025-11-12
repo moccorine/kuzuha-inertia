@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTranslation } from '@/lib/i18n';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
-import { profile, password, twoFactor } from '@/routes/admin/settings';
+import { password, profile, twoFactor } from '@/routes/admin/settings';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';

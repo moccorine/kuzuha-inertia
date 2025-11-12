@@ -8,26 +8,29 @@ use Illuminate\Console\Command;
 class ImportFromCache extends Command
 {
     protected $signature = 'bbs:import-cache {input : Input .json file path}';
+
     protected $description = 'Import posts from cached JSON file';
 
     public function handle()
     {
         $inputPath = $this->argument('input');
 
-        if (!file_exists($inputPath)) {
+        if (! file_exists($inputPath)) {
             $this->error("File not found: {$inputPath}");
+
             return 1;
         }
 
         $this->info("Loading: {$inputPath}");
         $posts = json_decode(file_get_contents($inputPath), true);
 
-        if (!$posts) {
-            $this->error("Failed to parse JSON");
+        if (! $posts) {
+            $this->error('Failed to parse JSON');
+
             return 1;
         }
 
-        $this->info("Importing " . count($posts) . " posts...");
+        $this->info('Importing '.count($posts).' posts...');
         $bar = $this->output->createProgressBar(count($posts));
         $imported = 0;
         $skipped = 0;
@@ -36,6 +39,7 @@ class ImportFromCache extends Command
             if (Post::where('id', $postData['id'])->exists()) {
                 $skipped++;
                 $bar->advance();
+
                 continue;
             }
 
@@ -67,6 +71,7 @@ class ImportFromCache extends Command
         $bar->finish();
         $this->newLine();
         $this->info("Import completed: {$imported} imported, {$skipped} skipped");
+
         return 0;
     }
 
@@ -75,6 +80,7 @@ class ImportFromCache extends Command
         if (preg_match('/(\d{4})\/(\d{2})\/(\d{2})\([^)]+\)\s+(\d{2}):(\d{2}):(\d{2})/', $dateStr, $m)) {
             return "{$m[1]}-{$m[2]}-{$m[3]} {$m[4]}:{$m[5]}:{$m[6]}";
         }
+
         return now();
     }
 }

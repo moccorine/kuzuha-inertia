@@ -27,9 +27,9 @@ class ContactController extends Controller
         // Verify CAPTCHA
         $question = $validated['captcha_question'];
         $answer = (int) $validated['captcha_answer'];
-        
+
         if (preg_match('/(\d+)\+(\d+)/', $question, $matches)) {
-            $correctAnswer = (int)$matches[1] + (int)$matches[2];
+            $correctAnswer = (int) $matches[1] + (int) $matches[2];
             if ($answer !== $correctAnswer) {
                 return back()->withErrors(['captcha_answer' => 'Incorrect answer.'])->withInput();
             }

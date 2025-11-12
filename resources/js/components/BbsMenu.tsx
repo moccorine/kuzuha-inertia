@@ -1,8 +1,8 @@
-import { Link } from '@inertiajs/react';
 import { Spinner } from '@/components/ui/spinner';
-import { Settings } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { humanizeDiff } from '@/utils/datetime';
+import { Link } from '@inertiajs/react';
+import { Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface BbsMenuProps {
     counter: number;
@@ -30,7 +30,7 @@ export default function BbsMenu({
 }: BbsMenuProps) {
     const [processing, setProcessing] = useState(false);
     const [customBgColor, setCustomBgColor] = useState('#004040');
-    
+
     const installedDate = new Date(installedAt);
     const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
     const installedDiff = humanizeDiff(installedAt);
@@ -50,58 +50,81 @@ export default function BbsMenu({
     }, []);
     return (
         <>
-            <div style={{ marginTop: '1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div
+                style={{
+                    marginTop: '1rem',
+                    marginBottom: '0.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                }}
+            >
                 <Link href="/settings" style={{ textDecoration: 'none' }}>
-                    <button type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem' }}>
+                    <button
+                        type="button"
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.25rem',
+                            padding: '0.5rem 1rem',
+                        }}
+                    >
                         <Settings size={16} />
                         Settings
                     </button>
                 </Link>
-                
+
                 <div style={{ fontSize: '13px' }}>
                     <a href="/theme/default">
-                        <span style={{ 
-                            display: 'inline-block', 
-                            width: '12px', 
-                            height: '12px', 
-                            backgroundColor: '#004040',
-                            border: '1px solid #fff',
-                            marginRight: '3px',
-                            verticalAlign: 'middle'
-                        }}></span>
+                        <span
+                            style={{
+                                display: 'inline-block',
+                                width: '12px',
+                                height: '12px',
+                                backgroundColor: '#004040',
+                                border: '1px solid #fff',
+                                marginRight: '3px',
+                                verticalAlign: 'middle',
+                            }}
+                        ></span>
                         Legacy
                     </a>
                     {' | '}
                     <a href="/theme/dark">
-                        <span style={{ 
-                            display: 'inline-block', 
-                            width: '12px', 
-                            height: '12px', 
-                            backgroundColor: '#1a1a1a',
-                            border: '1px solid #fff',
-                            marginRight: '3px',
-                            verticalAlign: 'middle'
-                        }}></span>
+                        <span
+                            style={{
+                                display: 'inline-block',
+                                width: '12px',
+                                height: '12px',
+                                backgroundColor: '#1a1a1a',
+                                border: '1px solid #fff',
+                                marginRight: '3px',
+                                verticalAlign: 'middle',
+                            }}
+                        ></span>
                         Dark
                     </a>
                     {' | '}
                     <a href="/theme/custom">
-                        <span style={{ 
-                            display: 'inline-block', 
-                            width: '12px', 
-                            height: '12px', 
-                            backgroundColor: customBgColor,
-                            border: '1px solid #fff',
-                            marginRight: '3px',
-                            verticalAlign: 'middle'
-                        }}></span>
+                        <span
+                            style={{
+                                display: 'inline-block',
+                                width: '12px',
+                                height: '12px',
+                                backgroundColor: customBgColor,
+                                border: '1px solid #fff',
+                                marginRight: '3px',
+                                verticalAlign: 'middle',
+                            }}
+                        ></span>
                         Custom
                     </a>
                 </div>
             </div>
 
             <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>
-                {counter} since {formattedDate} ({installedDiff}) (Durability Level: ∞)
+                {counter} since {formattedDate} ({installedDiff}) (Durability
+                Level: ∞)
                 {onlineCount !== undefined && (
                     <> | Online: {onlineCount} (within 5 min)</>
                 )}
@@ -117,7 +140,8 @@ export default function BbsMenu({
                         ) : informationPage.hasContent ? (
                             <Link href="/information">Information</Link>
                         ) : null}
-                        {(informationPage.url || informationPage.hasContent) && ' | '}
+                        {(informationPage.url || informationPage.hasContent) &&
+                            ' | '}
                     </>
                 )}
                 <Link href="/archive">Archive</Link>
@@ -126,7 +150,11 @@ export default function BbsMenu({
                         {customLinks.map((link) => (
                             <span key={link.id}>
                                 {' | '}
-                                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                <a
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     {link.title}
                                 </a>
                             </span>
@@ -146,7 +174,12 @@ export default function BbsMenu({
                 <button
                     type="button"
                     disabled={processing}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem' }}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        padding: '0.5rem 1rem',
+                    }}
                     onClick={() => {
                         const form = document.getElementById(
                             'post-form',
@@ -163,7 +196,9 @@ export default function BbsMenu({
                     Post / Reload
                 </button>{' '}
                 <Link href={`/?readnew=1&d=${perPage}`}>
-                    <button type="button" style={{ padding: '0.5rem 1rem' }}>Unread</button>
+                    <button type="button" style={{ padding: '0.5rem 1rem' }}>
+                        Unread
+                    </button>
                 </Link>
             </div>
 

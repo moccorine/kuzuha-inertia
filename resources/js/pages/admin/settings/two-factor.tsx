@@ -7,12 +7,12 @@ import { useTwoFactorAuth } from '@/hooks/use-two-factor-auth';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { useTranslation } from '@/lib/i18n';
-import { disable, enable, show } from '@/routes/two-factor';
+import { twoFactor } from '@/routes/admin/settings';
+import { disable, enable } from '@/routes/two-factor';
 import { type BreadcrumbItem } from '@/types';
 import { Form, Head } from '@inertiajs/react';
 import { ShieldBan, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
-import { twoFactor } from '@/routes/admin/settings';
 
 interface TwoFactorProps {
     requiresConfirmation?: boolean;

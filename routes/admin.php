@@ -24,7 +24,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
             'topSpamIps' => $topSpamIps,
         ]);
     })->name('dashboard');
-    
+
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     Route::get('/restrictions', [RestrictionController::class, 'index'])->name('restrictions.index');
     Route::get('/system', [SystemController::class, 'index'])->name('system.index');
@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('/system/links', [SystemController::class, 'storeLink'])->name('system.links.store');
     Route::patch('/system/links/{link}', [SystemController::class, 'updateLink'])->name('system.links.update');
     Route::delete('/system/links/{link}', [SystemController::class, 'deleteLink'])->name('system.links.delete');
-    
+
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');

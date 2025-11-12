@@ -15,7 +15,7 @@ class PostController extends Controller
 
         // ログ読みモード（フォーム非表示）
         $hideForm = $request->query('hide');
-        
+
         $query = Post::with(['parent', 'thread'])->latest();
 
         // 未読モード
@@ -54,7 +54,7 @@ class PostController extends Controller
             'customLinks' => $customLinks,
             'informationPage' => $informationPage ? [
                 'url' => $informationPage->url,
-                'hasContent' => !empty($informationPage->content),
+                'hasContent' => ! empty($informationPage->content),
             ] : null,
         ]);
     }
@@ -108,10 +108,10 @@ class PostController extends Controller
         }
 
         // Apply autolink if enabled
-        if (!empty($validated['autolink'])) {
-            \Log::info('Before autolink: ' . $body);
+        if (! empty($validated['autolink'])) {
+            \Log::info('Before autolink: '.$body);
             $body = autolink($body);
-            \Log::info('After autolink: ' . $body);
+            \Log::info('After autolink: '.$body);
         }
 
         // Calculate thread_id
@@ -220,7 +220,7 @@ class PostController extends Controller
     {
         $page = \App\Models\InformationPage::first();
 
-        if (!$page || empty($page->content)) {
+        if (! $page || empty($page->content)) {
             abort(404);
         }
 
@@ -234,7 +234,7 @@ class PostController extends Controller
     {
         $page = \App\Models\InformationPage::where('url', $url)->first();
 
-        if (!$page || empty($page->content)) {
+        if (! $page || empty($page->content)) {
             abort(404);
         }
 
@@ -316,13 +316,13 @@ class PostController extends Controller
     /**
      * Display topic list (threads only).
      */
-    public function topics(Request $request, string $date = null)
+    public function topics(Request $request, ?string $date = null)
     {
         $query = Post::whereNull('parent_id')
             ->withCount(['replies' => function ($query) {
                 $query->select(\DB::raw('count(*)'));
             }]);
-        
+
         if ($date) {
             // Check if it's a month (YYYY-MM) or date (YYYY-MM-DD)
             if (preg_match('/^\d{4}-\d{2}$/', $date)) {
@@ -331,14 +331,14 @@ class PostController extends Controller
                 $query->whereDate('created_at', $date);
             }
         }
-        
+
         $threads = $query->orderBy('created_at', 'desc')->paginate(1500);
-        
+
         // Get username counts (exclude empty/anonymous)
         $usernameQuery = Post::whereNull('parent_id')
             ->whereNotNull('username')
             ->where('username', '!=', '');
-        
+
         if ($date) {
             if (preg_match('/^\d{4}-\d{2}$/', $date)) {
                 $usernameQuery->whereRaw('strftime("%Y-%m", created_at) = ?', [$date]);
@@ -346,13 +346,13 @@ class PostController extends Controller
                 $usernameQuery->whereDate('created_at', $date);
             }
         }
-        
+
         $usernameCounts = $usernameQuery
             ->selectRaw('username, COUNT(*) as count')
             ->groupBy('username')
             ->orderBy('count', 'desc')
             ->get();
-        
+
         return inertia('posts/topics', [
             'threads' => $threads,
             'date' => $date,
@@ -398,7 +398,7 @@ class PostController extends Controller
             $hasNewPosts = $readnew && $lastSeenId && $posts->where('id', '>', $lastSeenId)->count() > 0;
 
             // Skip thread if in readnew mode and no new posts
-            if ($readnew && $lastSeenId && !$hasNewPosts) {
+            if ($readnew && $lastSeenId && ! $hasNewPosts) {
                 continue;
             }
 
@@ -462,14 +462,14 @@ class PostController extends Controller
         $dates = $request->query('dates', []);
         $perPage = $request->query('d', 100);
 
-        if (!$keyword && empty($dates)) {
+        if (! $keyword && empty($dates)) {
             return redirect()->route('posts.archive');
         }
 
         $query = Post::query();
 
         // Filter by dates if provided
-        if (!empty($dates)) {
+        if (! empty($dates)) {
             $query->where(function ($q) use ($dates) {
                 foreach ($dates as $date) {
                     // Check if it's a month (YYYY-MM) or date (YYYY-MM-DD)
@@ -485,38 +485,38 @@ class PostController extends Controller
         // Build search conditions for keyword
         if ($keyword) {
             $driver = \DB::getDriverName();
-            
+
             $query->where(function ($q) use ($keyword, $targetUsername, $targetTitle, $targetBody, $ignoreCase, $driver) {
                 if ($targetUsername) {
                     if ($ignoreCase) {
-                        $q->orWhereRaw('LOWER(username) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                        $q->orWhereRaw('LOWER(username) LIKE ?', ['%'.strtolower($keyword).'%']);
                     } else {
                         if ($driver === 'sqlite') {
-                            $q->orWhereRaw('username GLOB ?', ['*' . $keyword . '*']);
+                            $q->orWhereRaw('username GLOB ?', ['*'.$keyword.'*']);
                         } else {
-                            $q->orWhereRaw('username LIKE ? COLLATE utf8mb4_bin', ['%' . $keyword . '%']);
+                            $q->orWhereRaw('username LIKE ? COLLATE utf8mb4_bin', ['%'.$keyword.'%']);
                         }
                     }
                 }
                 if ($targetTitle) {
                     if ($ignoreCase) {
-                        $q->orWhereRaw('LOWER(title) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                        $q->orWhereRaw('LOWER(title) LIKE ?', ['%'.strtolower($keyword).'%']);
                     } else {
                         if ($driver === 'sqlite') {
-                            $q->orWhereRaw('title GLOB ?', ['*' . $keyword . '*']);
+                            $q->orWhereRaw('title GLOB ?', ['*'.$keyword.'*']);
                         } else {
-                            $q->orWhereRaw('title LIKE ? COLLATE utf8mb4_bin', ['%' . $keyword . '%']);
+                            $q->orWhereRaw('title LIKE ? COLLATE utf8mb4_bin', ['%'.$keyword.'%']);
                         }
                     }
                 }
                 if ($targetBody) {
                     if ($ignoreCase) {
-                        $q->orWhereRaw('LOWER(body) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                        $q->orWhereRaw('LOWER(body) LIKE ?', ['%'.strtolower($keyword).'%']);
                     } else {
                         if ($driver === 'sqlite') {
-                            $q->orWhereRaw('body GLOB ?', ['*' . $keyword . '*']);
+                            $q->orWhereRaw('body GLOB ?', ['*'.$keyword.'*']);
                         } else {
-                            $q->orWhereRaw('body LIKE ? COLLATE utf8mb4_bin', ['%' . $keyword . '%']);
+                            $q->orWhereRaw('body LIKE ? COLLATE utf8mb4_bin', ['%'.$keyword.'%']);
                         }
                     }
                 }

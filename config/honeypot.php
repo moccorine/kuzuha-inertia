@@ -1,7 +1,5 @@
 <?php
 
-use Spatie\Honeypot\SpamResponder\BlankPageResponder;
-
 return [
     /*
      * This switch determines if the honeypot protection should be activated.
@@ -65,7 +63,7 @@ return [
     'spam_protection' => \Spatie\Honeypot\SpamProtection::class,
 
     /*
-     * need to add @csp https://github.com/spatie/laravel-csp in style tag hidden items 
+     * need to add @csp https://github.com/spatie/laravel-csp in style tag hidden items
     */
     'with_csp' => env('HONEYPOT_WITH_CSP', false),
 ];

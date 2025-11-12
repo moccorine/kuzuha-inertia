@@ -1,6 +1,6 @@
-import AppLayout from '@/layouts/app-layout';
-import { Button } from '@/components/ui/button';
 import { MarkdownEditor } from '@/components/markdown-editor';
+import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -64,7 +64,7 @@ export default function InformationPage({ content }: Props) {
                 ) : (
                     <div className="rounded-lg border p-6">
                         {content ? (
-                            <pre className="whitespace-pre-wrap font-mono text-sm">
+                            <pre className="font-mono text-sm whitespace-pre-wrap">
                                 {content}
                             </pre>
                         ) : (

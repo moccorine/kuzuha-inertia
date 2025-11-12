@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class CacheLegacyLogs extends Command
 {
     protected $signature = 'bbs:cache-logs {date : Date in YYYYMMDD format} {--output= : Output path (default: storage/cache/{date}.json)}';
+
     protected $description = 'Parse legacy BBS logs and cache as JSON';
 
     public function handle()
@@ -15,23 +16,25 @@ class CacheLegacyLogs extends Command
         $inputPath = base_path("logs/{$date}.html");
         $outputPath = $this->option('output') ?: storage_path("cache/{$date}.json");
 
-        if (!file_exists($inputPath)) {
+        if (! file_exists($inputPath)) {
             $this->error("File not found: {$inputPath}");
+
             return 1;
         }
 
         $this->info("Parsing: {$inputPath}");
         $html = file_get_contents($inputPath);
         $posts = $this->parsePosts($html);
-        $this->info("Parsed " . count($posts) . " posts");
+        $this->info('Parsed '.count($posts).' posts');
 
         $outputDir = dirname($outputPath);
-        if (!is_dir($outputDir)) {
+        if (! is_dir($outputDir)) {
             mkdir($outputDir, 0755, true);
         }
 
         file_put_contents($outputPath, json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         $this->info("Cached to: {$outputPath}");
+
         return 0;
     }
 

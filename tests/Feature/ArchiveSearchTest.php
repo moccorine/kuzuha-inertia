@@ -15,7 +15,7 @@ class ArchiveSearchTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create a user to mark installation as complete
         User::factory()->create(['username' => 'testuser']);
     }
@@ -28,9 +28,8 @@ class ArchiveSearchTest extends TestCase
         $response = $this->get('/archive/search?keyword=HTTP&target_body=true&ignore_case=true');
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (Assert $page) => 
-            $page->component('posts/archive-search')
-                ->has('posts.data', 2)
+        $response->assertInertia(fn (Assert $page) => $page->component('posts/archive-search')
+            ->has('posts.data', 2)
         );
     }
 
@@ -42,9 +41,8 @@ class ArchiveSearchTest extends TestCase
         $response = $this->get('/archive/search?keyword=HTTP&target_body=true&ignore_case=false');
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (Assert $page) => 
-            $page->component('posts/archive-search')
-                ->has('posts.data', 1)
+        $response->assertInertia(fn (Assert $page) => $page->component('posts/archive-search')
+            ->has('posts.data', 1)
         );
     }
 
@@ -56,9 +54,8 @@ class ArchiveSearchTest extends TestCase
         $response = $this->get('/archive/search?keyword=TestUser&target_username=true&ignore_case=true');
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (Assert $page) => 
-            $page->component('posts/archive-search')
-                ->has('posts.data', 1)
+        $response->assertInertia(fn (Assert $page) => $page->component('posts/archive-search')
+            ->has('posts.data', 1)
         );
     }
 
@@ -70,9 +67,8 @@ class ArchiveSearchTest extends TestCase
         $response = $this->get('/archive/search?keyword=test&target_body=true&dates[]=2025-11-10');
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (Assert $page) => 
-            $page->component('posts/archive-search')
-                ->has('posts.data', 1)
+        $response->assertInertia(fn (Assert $page) => $page->component('posts/archive-search')
+            ->has('posts.data', 1)
         );
     }
 

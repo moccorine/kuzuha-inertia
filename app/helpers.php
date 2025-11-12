@@ -66,7 +66,8 @@ if (! function_exists('generate_tripcode')) {
     function generate_tripcode(string $password): string
     {
         $hash = hash_hmac('sha256', $password, config('app.key'));
-        return '◆' . substr($hash, 0, 10);
+
+        return '◆'.substr($hash, 0, 10);
     }
 }
 
@@ -102,6 +103,7 @@ if (! function_exists('autolink')) {
     function autolink(string $text): string
     {
         $pattern = '/((https?|ftp|news):\/\/[-_.,!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+
         return preg_replace($pattern, '<a href="$1" target="_blank" rel="noopener noreferrer" class="autolink">$1</a>', $text);
     }
 }

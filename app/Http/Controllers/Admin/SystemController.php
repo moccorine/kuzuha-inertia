@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\InformationPage;
 use App\Models\CustomLink;
+use App\Models\InformationPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,7 +20,7 @@ class SystemController extends Controller
     public function information(): Response
     {
         $page = InformationPage::first();
-        
+
         return Inertia::render('admin/system/information', [
             'content' => $page?->content ?? '',
         ]);
@@ -33,7 +33,7 @@ class SystemController extends Controller
         ]);
 
         $page = InformationPage::first();
-        
+
         if ($page) {
             $page->update(['content' => $request->content]);
         } else {
@@ -46,7 +46,7 @@ class SystemController extends Controller
     public function links(): Response
     {
         $links = CustomLink::orderBy('order')->get();
-        
+
         return Inertia::render('admin/system/links', [
             'links' => $links,
         ]);

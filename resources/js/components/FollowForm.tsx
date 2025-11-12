@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
+import { Textarea } from '@/components/ui/textarea';
 import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
@@ -17,7 +17,7 @@ export default function FollowForm({
     defaultTitle,
 }: FollowFormProps) {
     const { auth } = usePage().props as any;
-    
+
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',
         email: '',
@@ -47,7 +47,8 @@ export default function FollowForm({
                     body: quotedBody,
                     url: '',
                     parent_id: parentId,
-                    autolink: parsed.autolink !== undefined ? parsed.autolink : true,
+                    autolink:
+                        parsed.autolink !== undefined ? parsed.autolink : true,
                     latitude: null,
                     longitude: null,
                 });
@@ -92,12 +93,14 @@ export default function FollowForm({
                         setLocationError('位置情報を取得できませんでした');
                         break;
                     case error.TIMEOUT:
-                        setLocationError('位置情報の取得がタイムアウトしました');
+                        setLocationError(
+                            '位置情報の取得がタイムアウトしました',
+                        );
                         break;
                     default:
                         setLocationError('位置情報の取得に失敗しました');
                 }
-            }
+            },
         );
     };
 
@@ -127,9 +130,23 @@ export default function FollowForm({
     return (
         <form method="post" action="/posts" onSubmit={submit}>
             {/* Honeypot fields */}
-            <input type="text" name="my_name" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
-            <input type="text" name="my_time" value={Date.now()} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" readOnly />
-            
+            <input
+                type="text"
+                name="my_name"
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+            />
+            <input
+                type="text"
+                name="my_time"
+                value={Date.now()}
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+                readOnly
+            />
+
             <div className="form" style={{ marginBottom: '1rem' }}>
                 <div style={{ marginBottom: '0.5rem' }}>
                     Name{' '}
@@ -141,7 +158,14 @@ export default function FollowForm({
                         onChange={(e) => setData('username', e.target.value)}
                         style={{ display: 'inline-block', width: '200px' }}
                     />
-                    <span style={{ marginLeft: '0.5rem', fontSize: '12px', color: 'var(--theme-text)', opacity: 0.7 }}>
+                    <span
+                        style={{
+                            marginLeft: '0.5rem',
+                            fontSize: '12px',
+                            color: 'var(--theme-text)',
+                            opacity: 0.7,
+                        }}
+                    >
                         (Use Name#password for tripcode)
                     </span>
                 </div>
@@ -224,12 +248,20 @@ export default function FollowForm({
                 </div>
 
                 <div style={{ marginTop: '0.5rem' }}>
-                    <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <label
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                        }}
+                    >
                         <input
                             type="checkbox"
                             name="autolink"
                             checked={data.autolink}
-                            onChange={(e) => setData('autolink', e.target.checked)}
+                            onChange={(e) =>
+                                setData('autolink', e.target.checked)
+                            }
                             style={{ marginRight: '0.3rem' }}
                         />
                         URL自動リンク
@@ -237,7 +269,13 @@ export default function FollowForm({
                 </div>
 
                 <div style={{ marginTop: '0.5rem' }}>
-                    <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <label
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                        }}
+                    >
                         <input
                             type="checkbox"
                             checked={enableLocation}
@@ -252,14 +290,24 @@ export default function FollowForm({
                         位置情報を付与する
                     </label>
                     {enableLocation && (
-                        <div style={{ marginTop: '0.5rem', marginLeft: '1.5rem' }}>
+                        <div
+                            style={{
+                                marginTop: '0.5rem',
+                                marginLeft: '1.5rem',
+                            }}
+                        >
                             {data.latitude && data.longitude ? (
                                 <div style={{ fontSize: '13px' }}>
-                                    ✓ 位置情報取得済み ({data.latitude.toFixed(6)}, {data.longitude.toFixed(6)}){' '}
+                                    ✓ 位置情報取得済み (
+                                    {data.latitude.toFixed(6)},{' '}
+                                    {data.longitude.toFixed(6)}){' '}
                                     <button
                                         type="button"
                                         onClick={clearLocation}
-                                        style={{ fontSize: '12px', padding: '0.2rem 0.5rem' }}
+                                        style={{
+                                            fontSize: '12px',
+                                            padding: '0.2rem 0.5rem',
+                                        }}
                                     >
                                         クリア
                                     </button>
@@ -272,12 +320,20 @@ export default function FollowForm({
                                     disabled={gettingLocation}
                                     size="sm"
                                 >
-                                    {gettingLocation && <Spinner className="mr-1" />}
+                                    {gettingLocation && (
+                                        <Spinner className="mr-1" />
+                                    )}
                                     位置情報を取得
                                 </Button>
                             )}
                             {locationError && (
-                                <div style={{ fontSize: '12px', color: '#ff6b6b', marginTop: '0.3rem' }}>
+                                <div
+                                    style={{
+                                        fontSize: '12px',
+                                        color: '#ff6b6b',
+                                        marginTop: '0.3rem',
+                                    }}
+                                >
                                     {locationError}
                                 </div>
                             )}
