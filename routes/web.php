@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InstallController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,14 @@ Route::get('/tree', [PostController::class, 'treeIndex'])->name('posts.tree.inde
 Route::get('/archive', [PostController::class, 'archive'])->name('posts.archive');
 Route::get('/archive/search', [PostController::class, 'archiveSearch'])->name('posts.archive.search');
 Route::get('/archive/{date}', [PostController::class, 'archiveByDate'])->name('posts.archive.date');
-Route::get('/{url}', [PostController::class, 'informationByUrl'])->name('information.url')->where('url', '^(?!posts|threads|tree|archive|topics|users|settings|theme|install|admin).*$');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware(\Spatie\Honeypot\ProtectAgainstSpam::class)
+    ->name('contact.store');
+Route::get('/contact/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
+
+Route::get('/{url}', [PostController::class, 'informationByUrl'])->name('information.url')->where('url', '^(?!posts|threads|tree|archive|topics|users|settings|theme|install|admin|contact).*$');
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/threads/{id}', [PostController::class, 'thread'])->name('posts.thread');
 Route::get('/tree/{id}', [PostController::class, 'tree'])->name('posts.tree');

@@ -77,7 +77,7 @@ export default function Index({
                         </>
                     )}
                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                    <a href="#" style={{ fontSize: '14px' }}>Contact</a>
+                    <Link href="/contact" style={{ fontSize: '14px' }}>Contact</Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>
                     <Link href="/archive" style={{ fontSize: '14px' }}>Archive</Link>
                     <span style={{ margin: '0 0.5rem' }}>|</span>

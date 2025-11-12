@@ -164,7 +164,6 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - User restrictions (ユーザー制限)
     - Ban IP addresses (IP禁止)
     - View access logs (アクセスログ)
-    - Spatie/Honeypot
     - anonymouse ID
   - System settings (システム設定)
     - BBS configuration (掲示板設定)
@@ -175,13 +174,7 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
     - Statistics (統計情報)
 - [ ] Mobile responsive design improvements (モバイル対応改善)
 
-### Real-time Features (リアルタイム機能)
-- [x] Online user counter (同時接続数表示)
-  - Database-based implementation (DBベース実装)
-  - 5分以内のアクセスをカウント
-  - IPベースのユニークキー生成（SHA256ハッシュ）
-  - 古いエントリの自動削除
-  - Display "Online: X (within 5 min)" in BbsMenu
+### Modern View
 - [ ] Modern Mode with WebSocket (モダンモード)
   - Laravel Reverbを使用したWebSocket統合
   - Real-time post updates (新規投稿のリアルタイム表示)
@@ -189,17 +182,12 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
   - Optional: typing indicators (入力中表示)
   - Toggle between legacy mode and modern mode
   - Graceful degradation for non-WebSocket browsers
+- [ ] Tree Viewインライン表示
 
 ### optional
 - [ ] Optional
   - [ ] Image upload support (画像アップロード)
   - [ ] RSS feed (RSSフィード)
-  - [ ] 問合せform
-  - [ ] Tree Viewインライン表示
-  - [x] Humanized Datediff
-    - Unified datetime format: `2025/11/11(火) 18:17:02`
-    - Human-readable diff: `3分前`, `2時間前`, `5日前`
-    - Utility functions in `/utils/datetime.ts`
   - [ ] Bookmark / Faves
   - [ ] Search optimization (検索高速化)
     - Full-text search with Meilisearch or Elasticsearch
