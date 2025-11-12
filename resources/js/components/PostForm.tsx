@@ -10,7 +10,7 @@ interface PostFormProps {
 }
 
 export default function PostForm({ perPage }: PostFormProps) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage().props as { auth: { user?: { username?: string; email?: string } } };
 
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',

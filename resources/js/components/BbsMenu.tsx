@@ -29,25 +29,22 @@ export default function BbsMenu({
     informationPage,
 }: BbsMenuProps) {
     const [processing, setProcessing] = useState(false);
-    const [customBgColor, setCustomBgColor] = useState('#004040');
-
-    const installedDate = new Date(installedAt);
-    const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
-    const installedDiff = humanizeDiff(installedAt);
-
-    useEffect(() => {
+    const [customBgColor] = useState(() => {
         const customTheme = localStorage.getItem('customTheme');
         if (customTheme) {
             try {
                 const { colors } = JSON.parse(customTheme);
-                if (colors?.background) {
-                    setCustomBgColor(colors.background);
-                }
+                return colors?.background || '#004040';
             } catch {
-                // Ignore parse errors
+                return '#004040';
             }
         }
-    }, []);
+        return '#004040';
+    });
+
+    const installedDate = new Date(installedAt);
+    const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
+    const installedDiff = humanizeDiff(installedAt);
     return (
         <>
             <div

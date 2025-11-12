@@ -50,7 +50,11 @@ export default function Index({
     customLinks,
     informationPage,
 }: Props) {
-    const { lastPostId, lastPostTime, auth } = usePage().props as any;
+    const { lastPostId, lastPostTime, auth } = usePage().props as {
+        lastPostId?: number;
+        lastPostTime?: string;
+        auth: { user?: { roles?: Array<{ name: string }> } };
+    };
 
     // Check if undo is available (within 5 minutes)
     const canUndo =
@@ -59,7 +63,7 @@ export default function Index({
 
     // Check if user is admin
     const isAdmin = auth?.user?.roles?.some(
-        (role: any) => role.name === 'admin',
+        (role) => role.name === 'admin',
     );
 
     return (

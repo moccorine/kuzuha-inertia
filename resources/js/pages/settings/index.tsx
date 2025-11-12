@@ -13,23 +13,30 @@ interface Props {
 
 export default function Index({ themes, currentTheme }: Props) {
     const [selectedTheme, setSelectedTheme] = useState(currentTheme);
-    const [displayCount, setDisplayCount] = useState(40);
-    const [autolink, setAutolink] = useState(true);
-
-    useEffect(() => {
+    const [displayCount, setDisplayCount] = useState(() => {
         const saved = localStorage.getItem('bbsFormData');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                setDisplayCount(parsed.d || 40);
-                setAutolink(
-                    parsed.autolink !== undefined ? parsed.autolink : true,
-                );
+                return parsed.d || 40;
             } catch {
-                // Ignore parse errors
+                return 40;
             }
         }
-    }, []);
+        return 40;
+    });
+    const [autolink, setAutolink] = useState(() => {
+        const saved = localStorage.getItem('bbsFormData');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                return parsed.autolink !== undefined ? parsed.autolink : true;
+            } catch {
+                return true;
+            }
+        }
+        return true;
+    });
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();

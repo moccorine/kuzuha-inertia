@@ -104,7 +104,6 @@ function SortableItem({
 }
 
 export default function Links({ links: initialLinks }: Props) {
-    const [editingId, setEditingId] = useState<number | null>(null);
     const [links, setLinks] = useState(initialLinks);
 
     const sensors = useSensors(
@@ -196,19 +195,6 @@ export default function Links({ links: initialLinks }: Props) {
                 },
             });
         }
-    };
-
-    const handleUpdate = (link: CustomLink) => {
-        const form = useForm({
-            title: link.title,
-            url: link.url,
-            order: link.order,
-            is_active: link.is_active,
-        });
-
-        form.patch(`/admin/system/links/${link.id}`, {
-            onSuccess: () => setEditingId(null),
-        });
     };
 
     return (

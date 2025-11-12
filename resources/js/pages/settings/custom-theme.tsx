@@ -39,21 +39,30 @@ export default function CustomTheme({
     themesData,
     currentTheme,
 }: Props) {
-    const [baseTheme, setBaseTheme] = useState(currentTheme);
-    const [colors, setColors] = useState<CustomColors>(defaultColors);
-
-    useEffect(() => {
+    const [baseTheme, setBaseTheme] = useState(() => {
         const saved = localStorage.getItem('customTheme');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                setBaseTheme(parsed.base || currentTheme);
-                setColors({ ...defaultColors, ...parsed.colors });
+                return parsed.base || currentTheme;
             } catch {
-                // Ignore parse errors
+                return currentTheme;
             }
         }
-    }, [currentTheme]);
+        return currentTheme;
+    });
+    const [colors, setColors] = useState<CustomColors>(() => {
+        const saved = localStorage.getItem('customTheme');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                return { ...defaultColors, ...parsed.colors };
+            } catch {
+                return defaultColors;
+            }
+        }
+        return defaultColors;
+    });
 
     const handleLoadBaseTheme = () => {
         // If custom is selected, load from localStorage

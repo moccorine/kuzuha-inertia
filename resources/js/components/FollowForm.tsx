@@ -16,7 +16,7 @@ export default function FollowForm({
     quotedBody,
     defaultTitle,
 }: FollowFormProps) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage().props as { auth: { user?: { username?: string; email?: string } } };
 
     const { data, setData, post, processing, errors, reset } = useForm({
         username: '',

@@ -29,8 +29,8 @@ export interface SharedData {
     sidebarOpen: boolean;
     locale: string;
     fallbackLocale: string;
-    translations: Record<string, any>;
-    fallbackTranslations: Record<string, any>;
+    translations: Record<string, string>;
+    fallbackTranslations: Record<string, string>;
     [key: string]: unknown;
 }
 

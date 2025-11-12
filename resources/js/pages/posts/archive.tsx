@@ -9,17 +9,17 @@ interface Count {
     topic_count: number;
 }
 
+interface PaginatedCounts {
+    data: Count[];
+    links?: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+}
+
 interface Props {
-    counts:
-        | {
-              data: Count[];
-              links?: Array<{
-                  url: string | null;
-                  label: string;
-                  active: boolean;
-              }>;
-          }
-        | Count[];
+    counts: PaginatedCounts | Count[];
     view: string;
     appName: string;
 }
@@ -27,8 +27,8 @@ interface Props {
 export default function Archive({ counts, view, appName }: Props) {
     const isMonthly = view === 'monthly';
     const isPaginated = !Array.isArray(counts);
-    const data = isPaginated ? (counts as any).data : counts;
-    const links = isPaginated ? (counts as any).links : null;
+    const data = isPaginated ? (counts as PaginatedCounts).data : counts;
+    const links = isPaginated ? (counts as PaginatedCounts).links : null;
 
     // Default: select most recent day
     const getDefaultDate = () => {
@@ -268,7 +268,7 @@ export default function Archive({ counts, view, appName }: Props) {
 
                         {links && (
                             <div style={{ marginTop: '1rem' }}>
-                                {links.map((link: any, index: number) => (
+                                {links.map((link, index: number) => (
                                     <span key={index}>
                                         {link.url ? (
                                             <Link
