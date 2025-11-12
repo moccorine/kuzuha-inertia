@@ -155,44 +155,7 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 
 ## TODO
 
-### Archive & Search (アーカイブ・検索)
-- [x] Archive feature (アーカイブ機能)
-  - Daily/monthly post count views at /archive
-  - Date-specific post listing at /archive/{date}
-  - Pagination support (30 items/page for daily view)
-  - SQLite strftime() compatibility
-- [x] Topic list (トピック一覧)
-  - Legacy BBS format display at /topics/{date}
-  - Show thread count, reply count, datetime, body preview
-  - Username statistics for date-specific views
-  - Pagination (1500 items/page)
-- [x] Keyword search (キーワード検索)
-  - Search by username, title, body
-  - Case-sensitive/insensitive option
-  - Date filter with checkbox selection (default: most recent day)
-  - Search result highlighting with react-highlight-words
-  - Database driver support (SQLite GLOB, MySQL COLLATE)
-  - Feature tests with Inertia assertions
-- [ ] Export functionality (エクスポート機能)
-  - JSON/HTML export of posts
-
 ### Other Features (その他機能)
-- [x] Information page (情報ページ)
-  - Markdown-based content (Markdownで記述)
-  - Store in database (information_page table)
-  - Render with react-markdown
-  - Admin can edit via CodeMirror editor at /admin/system/information
-  - Public display at /{url} or /information
-- [x] Tripcode support (トリップ機能)
-  - Username format: `Name#password` → `Name ◆tripcode`
-  - Generate tripcode using HMAC-SHA256 with APP_KEY
-  - 10-character hash displayed in italic after username
-  - Stored in database (posts.tripcode column)
-  - Same password always generates same tripcode
-- [x] Admin panel UI framework (管理画面UIフレームワーク)
-  - Navigation menu (Dashboard, Posts, Restrictions, System)
-  - Settings pages (Profile, Password, Two-factor, Theme)
-  - AppLayout with breadcrumbs
 - [ ] Admin panel functionality (管理画面機能)
   - Post management (投稿管理)
     - List all posts with filters (投稿一覧・フィルター)
@@ -211,28 +174,6 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
     - Backup/Export (バックアップ・エクスポート)
     - Statistics (統計情報)
 - [ ] Mobile responsive design improvements (モバイル対応改善)
-- [x] URL auto-linking (URL自動リンク)
-  - Detect URLs in post body and convert to links
-  - Support http, https, ftp protocols
-  - Optional checkbox "URL自動リンク" (default: checked)
-  - Server-side processing with autolink() helper
-  - Preference saved in localStorage
-- [x] Log read mode (ログ読みモード)
-  - Hide post form and menu for read-only mode
-  - Access via /?hide=1 parameter
-  - Toggle with "Log Read" / "Show Form" link
-- [x] Undo/Delete own post (投稿取り消し)
-  - Allow users to delete their most recent post
-  - Time limit: 5 minutes after posting
-  - Encrypted token-based authentication
-  - Show delete button only on user's latest post
-- [x] Tree View (ツリービュー)
-  - Display threads in tree structure with text-based branches (├, │, └)
-  - All threads view at /tree
-  - Individual thread tree at /tree/{id}
-  - Unread mode support with post highlighting
-  - Remove quoted lines (>) from display
-  - Show username with tripcode in italic
 
 ### Real-time Features (リアルタイム機能)
 - [x] Online user counter (同時接続数表示)
@@ -265,6 +206,8 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
     - Full-text search with Meilisearch or Elasticsearch
     - MySQL FULLTEXT with ngram parser for Japanese
     - SQLite FTS5 with custom tokenizer
+  - [ ] Export functionality (エクスポート機能)
+    - JSON/HTML export of posts
 
 ## License
 

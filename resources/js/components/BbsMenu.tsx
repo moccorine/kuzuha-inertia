@@ -1,6 +1,8 @@
 import { Link } from '@inertiajs/react';
 import { Spinner } from '@/components/ui/spinner';
+import { Settings } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { humanizeDiff } from '@/utils/datetime';
 
 interface BbsMenuProps {
     counter: number;
@@ -31,6 +33,7 @@ export default function BbsMenu({
     
     const installedDate = new Date(installedAt);
     const formattedDate = `${installedDate.getFullYear()}/${String(installedDate.getMonth() + 1).padStart(2, '0')}/${String(installedDate.getDate()).padStart(2, '0')}`;
+    const installedDiff = humanizeDiff(installedAt);
 
     useEffect(() => {
         const customTheme = localStorage.getItem('customTheme');
@@ -47,55 +50,58 @@ export default function BbsMenu({
     }, []);
     return (
         <>
-            <div style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
+            <div style={{ marginTop: '1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <Link href="/settings">
-                    <button type="button">Settings</button>
+                    <button type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem' }}>
+                        <Settings size={16} />
+                        Settings
+                    </button>
                 </Link>
+                
+                <div style={{ fontSize: '13px' }}>
+                    <a href="/theme/default">
+                        <span style={{ 
+                            display: 'inline-block', 
+                            width: '12px', 
+                            height: '12px', 
+                            backgroundColor: '#004040',
+                            border: '1px solid #fff',
+                            marginRight: '3px',
+                            verticalAlign: 'middle'
+                        }}></span>
+                        Legacy
+                    </a>
+                    {' | '}
+                    <a href="/theme/dark">
+                        <span style={{ 
+                            display: 'inline-block', 
+                            width: '12px', 
+                            height: '12px', 
+                            backgroundColor: '#1a1a1a',
+                            border: '1px solid #fff',
+                            marginRight: '3px',
+                            verticalAlign: 'middle'
+                        }}></span>
+                        Dark
+                    </a>
+                    {' | '}
+                    <a href="/theme/custom">
+                        <span style={{ 
+                            display: 'inline-block', 
+                            width: '12px', 
+                            height: '12px', 
+                            backgroundColor: customBgColor,
+                            border: '1px solid #fff',
+                            marginRight: '3px',
+                            verticalAlign: 'middle'
+                        }}></span>
+                        Custom
+                    </a>
+                </div>
             </div>
 
             <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>
-                <a href="/theme/default">
-                    <span style={{ 
-                        display: 'inline-block', 
-                        width: '12px', 
-                        height: '12px', 
-                        backgroundColor: '#004040',
-                        border: '1px solid #fff',
-                        marginRight: '3px',
-                        verticalAlign: 'middle'
-                    }}></span>
-                    Legacy
-                </a>
-                {' | '}
-                <a href="/theme/dark">
-                    <span style={{ 
-                        display: 'inline-block', 
-                        width: '12px', 
-                        height: '12px', 
-                        backgroundColor: '#1a1a1a',
-                        border: '1px solid #fff',
-                        marginRight: '3px',
-                        verticalAlign: 'middle'
-                    }}></span>
-                    Dark
-                </a>
-                {' | '}
-                <a href="/theme/custom">
-                    <span style={{ 
-                        display: 'inline-block', 
-                        width: '12px', 
-                        height: '12px', 
-                        backgroundColor: customBgColor,
-                        border: '1px solid #fff',
-                        marginRight: '3px',
-                        verticalAlign: 'middle'
-                    }}></span>
-                    Custom
-                </a>
-            </div>
-
-            <div style={{ fontSize: '13px', marginBottom: '0.5rem' }}>
-                {counter} since {formattedDate} (Durability Level: ∞)
+                {counter} since {formattedDate} ({installedDiff}) (Durability Level: ∞)
                 {onlineCount !== undefined && (
                     <> | Online: {onlineCount} (within 5 min)</>
                 )}

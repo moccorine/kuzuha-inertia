@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
         //    ./vendor/bin/sail artisan db:seed
         // 
         // Note: This takes time but only needs to be done once per fresh database
+	/*
         if (app()->environment('local')) {
             $cacheDir = storage_path('cache');
             if (is_dir($cacheDir)) {
@@ -56,5 +57,6 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
+	 */
     }
 }
