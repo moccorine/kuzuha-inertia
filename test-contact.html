@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Form Test</title>
+</head>
+<body>
+    <h1>Contact Form Test</h1>
+    
+    <h2>Test 1: Wrong CAPTCHA Answer</h2>
+    <form action="http://localhost:8000/contact" method="POST">
+        <input type="hidden" name="_token" value="GET_FROM_BROWSER">
+        <input type="text" name="my_name" style="display:none">
+        <input type="text" name="my_time" value="" style="display:none">
+        
+        <input type="text" name="name" value="Test User" placeholder="Name"><br>
+        <input type="email" name="email" value="test@example.com" placeholder="Email"><br>
+        <input type="text" name="subject" value="Test Subject" placeholder="Subject"><br>
+        <textarea name="message" placeholder="Message">Test message</textarea><br>
+        
+        <label>What is 5 + 3?</label>
+        <input type="text" name="captcha_answer" value="999" placeholder="Wrong answer"><br>
+        <input type="hidden" name="captcha_question" value="5+3"><br>
+        
+        <button type="submit">Submit (Wrong Answer)</button>
+    </form>
+    
+    <h2>Test 2: Correct CAPTCHA Answer</h2>
+    <form action="http://localhost:8000/contact" method="POST">
+        <input type="hidden" name="_token" value="GET_FROM_BROWSER">
+        <input type="text" name="my_name" style="display:none">
+        <input type="text" name="my_time" value="" style="display:none">
+        
+        <input type="text" name="name" value="Test User" placeholder="Name"><br>
+        <input type="email" name="email" value="test@example.com" placeholder="Email"><br>
+        <input type="text" name="subject" value="Test Subject" placeholder="Subject"><br>
+        <textarea name="message" placeholder="Message">Test message</textarea><br>
+        
+        <label>What is 5 + 3?</label>
+        <input type="text" name="captcha_answer" value="8" placeholder="Correct answer"><br>
+        <input type="hidden" name="captcha_question" value="5+3"><br>
+        
+        <button type="submit">Submit (Correct Answer)</button>
+    </form>
+    
+    <h3>Instructions:</h3>
+    <ol>
+        <li>Open http://localhost:8000/contact in browser</li>
+        <li>Open Developer Tools (F12)</li>
+        <li>Go to Console tab</li>
+        <li>Get CSRF token: <code>document.querySelector('meta[name="csrf-token"]').content</code></li>
+        <li>Replace "GET_FROM_BROWSER" with the token in this HTML</li>
+        <li>Open this file in browser and test</li>
+    </ol>
+</body>
+</html>
