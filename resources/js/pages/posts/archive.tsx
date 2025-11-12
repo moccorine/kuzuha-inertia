@@ -28,7 +28,12 @@ export default function Archive({ counts, view, appName }: Props) {
     const data = isPaginated ? (counts as any).data : counts;
     const links = isPaginated ? (counts as any).links : null;
 
-    const [selectedDates, setSelectedDates] = useState<string[]>([]);
+    // Default: select most recent day
+    const getDefaultDate = () => {
+        return data.length > 0 ? [data[0].period] : [];
+    };
+
+    const [selectedDates, setSelectedDates] = useState<string[]>(getDefaultDate());
 
     const { data: formData, setData, get, processing } = useForm({
         keyword: '',

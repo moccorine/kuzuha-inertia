@@ -156,11 +156,25 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
 ## TODO
 
 ### Archive & Search (アーカイブ・検索)
-- [ ] 年月別投稿数一覧ページ
-- [ ] SQLite FTS5による全文検索
-- [ ] キーワード検索（タイトル・本文）
-- [ ] 日付範囲指定検索
-- [ ] 投稿のJSON/HTMLエクスポート機能
+- [x] Archive feature (アーカイブ機能)
+  - Daily/monthly post count views at /archive
+  - Date-specific post listing at /archive/{date}
+  - Pagination support (30 items/page for daily view)
+  - SQLite strftime() compatibility
+- [x] Topic list (トピック一覧)
+  - Legacy BBS format display at /topics/{date}
+  - Show thread count, reply count, datetime, body preview
+  - Username statistics for date-specific views
+  - Pagination (1500 items/page)
+- [x] Keyword search (キーワード検索)
+  - Search by username, title, body
+  - Case-sensitive/insensitive option
+  - Date filter with checkbox selection (default: most recent day)
+  - Search result highlighting with react-highlight-words
+  - Database driver support (SQLite GLOB, MySQL COLLATE)
+  - Feature tests with Inertia assertions
+- [ ] Export functionality (エクスポート機能)
+  - JSON/HTML export of posts
 
 ### Other Features (その他機能)
 - [x] Information page (情報ページ)
@@ -247,6 +261,10 @@ Legacy BBS stored user preferences in cookies (colors, display count, etc.). Mod
     - Human-readable diff: `3分前`, `2時間前`, `5日前`
     - Utility functions in `/utils/datetime.ts`
   - [ ] Bookmark / Faves
+  - [ ] Search optimization (検索高速化)
+    - Full-text search with Meilisearch or Elasticsearch
+    - MySQL FULLTEXT with ngram parser for Japanese
+    - SQLite FTS5 with custom tokenizer
 
 ## License
 
