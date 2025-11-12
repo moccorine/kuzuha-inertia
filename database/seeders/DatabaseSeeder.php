@@ -25,6 +25,11 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Assign admin role to test user
+        $user = User::where('email', 'test@example.com')->first();
+        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
+        $user->assignRole($adminRole);
+
         // Seed information page
         $this->call(InformationPageSeeder::class);
 

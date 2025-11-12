@@ -50,12 +50,15 @@ export default function Index({
     customLinks,
     informationPage,
 }: Props) {
-    const { lastPostId, lastPostTime } = usePage().props as any;
+    const { lastPostId, lastPostTime, auth } = usePage().props as any;
 
     // Check if undo is available (within 5 minutes)
     const canUndo =
         lastPostTime &&
         new Date().getTime() - new Date(lastPostTime).getTime() < 5 * 60 * 1000;
+
+    // Check if user is admin
+    const isAdmin = auth?.user?.roles?.some((role: any) => role.name === 'admin');
 
     return (
         <GuestLayout>
@@ -86,6 +89,12 @@ export default function Index({
                     >
                         {hideForm ? 'Show Form' : 'Log Read'}
                     </a>
+                    {isAdmin && (
+                        <>
+                            <span style={{ margin: '0 0.5rem' }}>|</span>
+                            <Link href="/admin" style={{ fontSize: '14px' }}>Admin</Link>
+                        </>
+                    )}
                 </div>
 
                 {!hideForm && <PostForm perPage={perPage} />}

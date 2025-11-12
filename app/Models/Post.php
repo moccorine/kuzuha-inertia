@@ -13,6 +13,7 @@ class Post extends Model
 
     protected $fillable = [
         'id',
+        'user_id',
         'thread_id',
         'parent_id',
         'username',
@@ -24,11 +25,19 @@ class Post extends Model
         'user_agent',
         'protect_code',
         'undo_token',
+        'latitude',
+        'longitude',
+        'location_name',
     ];
 
     public function thread(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'thread_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function parent(): BelongsTo
