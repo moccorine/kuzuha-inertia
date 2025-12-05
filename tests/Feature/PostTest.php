@@ -19,7 +19,7 @@ test('can view posts index', function () {
     $this->get(route('posts.index'))
         ->assertInertia(fn (Assert $page) => $page
             ->component('posts/index')
-            ->has('posts', 1, fn (Assert $page) => $page
+            ->has('posts.data', 1, fn (Assert $page) => $page
                 ->where('username', 'testuser')
                 ->where('message', 'Check out https://example.com for more info')
                 ->has('metadata', fn (Assert $page) => $page
@@ -45,7 +45,7 @@ test('can view posts with url metadata', function () {
     $this->get(route('posts.index'))
         ->assertInertia(fn (Assert $page) => $page
             ->component('posts/index')
-            ->has('posts', 1, fn (Assert $page) => $page
+            ->has('posts.data', 1, fn (Assert $page) => $page
                 ->has('metadata', fn (Assert $page) => $page
                     ->where('url', 'https://example.com')
                     ->where('auto_link', false)

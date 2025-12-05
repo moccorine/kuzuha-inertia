@@ -46,7 +46,12 @@ export default function PostForm() {
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Mail')}</span>
-                        <Input type="email" name="email" className="w-64" placeholder="mail@example.com" />
+                        <Input
+                            type="email"
+                            name="email"
+                            className="w-64"
+                            placeholder="mail@example.com"
+                        />
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Subject')}</span>
@@ -73,12 +78,16 @@ export default function PostForm() {
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="flex items-center gap-2">
-                            <span className="text-sm">{__('Display count')}</span>
+                            <span className="text-sm">
+                                {__('Display count')}
+                            </span>
                             <Input
                                 type="number"
                                 name="per_page"
                                 value={perPage}
-                                onChange={(e) => setPerPage(parseInt(e.target.value) || 10)}
+                                onChange={(e) =>
+                                    setPerPage(parseInt(e.target.value) || 10)
+                                }
                                 className="w-16"
                                 min={1}
                             />
@@ -111,12 +120,14 @@ export default function PostForm() {
                                 : __('Link Row ON')}
                         </button>
                     </div>
-                    {isLinkRowOpen && (
+                    {isLinkRowOpen ? (
                         <>
                             <hr />
                             <LinkRow />
                             <hr />
                         </>
+                    ) : (
+                        <hr />
                     )}
                 </>
             )}
