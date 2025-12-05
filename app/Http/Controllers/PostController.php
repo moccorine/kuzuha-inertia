@@ -21,7 +21,18 @@ class PostController extends Controller
             return redirect()->route('posts.index');
         }
 
-        Post::create($request->only(['username', 'email', 'title', 'message']));
+        $metadata = null;
+        if ($request->filled('url')) {
+            $metadata = [
+                'url' => $request->url,
+                'auto_link' => $request->boolean('auto_link'),
+            ];
+        }
+
+        Post::create([
+            ...$request->only(['username', 'email', 'title', 'message']),
+            'metadata' => $metadata,
+        ]);
 
         return redirect()->route('posts.index');
     }

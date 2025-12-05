@@ -14,5 +14,10 @@ class Post extends Model
         'email',
         'title',
         'message',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'metadata' => 'array',
     ];
 }
