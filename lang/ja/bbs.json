@@ -1,0 +1,15 @@
+{
+    "Author": "投稿者",
+    "Clear": "消す",
+    "Content note": "内容（350桁80行まで。適当に改行を入れてください。タグは使えません。）",
+    "Email": "メールアドレス",
+    "Execution time": "実行時間",
+    "Mail": "メール",
+    "Message": "メッセージ",
+    "Post": "投稿／リロード",
+    "Subject": "題名",
+    "Submit": "投稿",
+    "Title": "タイトル",
+    "Username": "ユーザー名",
+    "seconds": "秒"
+}

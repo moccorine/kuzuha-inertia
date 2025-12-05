@@ -42,12 +42,15 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'version' => config('app.version'),
+            'repository' => config('app.repository'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'lang' => $this->frontendTranslations(),
+            'executionTime' => defined('LARAVEL_START') ? round((microtime(true) - LARAVEL_START) * 1000, 2) : null,
         ];
     }
 
@@ -59,14 +62,19 @@ class HandleInertiaRequests extends Middleware
     protected function frontendTranslations(): array
     {
         $locale = app()->getLocale();
-        $path = lang_path("{$locale}/starter-kit.json");
+        $files = ['starter-kit.json', 'bbs.json'];
+        $translations = [];
 
-        if (! File::exists($path)) {
-            return [];
+        foreach ($files as $file) {
+            $path = lang_path("{$locale}/{$file}");
+            if (File::exists($path)) {
+                $content = json_decode(File::get($path), true);
+                if (is_array($content)) {
+                    $translations = array_merge($translations, $content);
+                }
+            }
         }
 
-        $translations = json_decode(File::get($path), true);
-
-        return is_array($translations) ? $translations : [];
+        return $translations;
     }
 }
