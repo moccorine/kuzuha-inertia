@@ -19,6 +19,10 @@ export default function PostForm() {
         const saved = localStorage.getItem('autoLink');
         return saved !== null ? JSON.parse(saved) : true;
     });
+    const [perPage, setPerPage] = useState(() => {
+        const saved = localStorage.getItem('perPage');
+        return saved !== null ? parseInt(saved) : 10;
+    });
 
     useEffect(() => {
         localStorage.setItem('linkRowOpen', JSON.stringify(isLinkRowOpen));
@@ -27,6 +31,10 @@ export default function PostForm() {
     useEffect(() => {
         localStorage.setItem('autoLink', JSON.stringify(autoLink));
     }, [autoLink]);
+
+    useEffect(() => {
+        localStorage.setItem('perPage', perPage.toString());
+    }, [perPage]);
 
     return (
         <Form action={store()} resetOnSuccess className="space-y-3">
@@ -38,7 +46,7 @@ export default function PostForm() {
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Mail')}</span>
-                        <Input type="email" name="email" className="w-64" />
+                        <Input type="email" name="email" className="w-64" placeholder="mail@example.com" />
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Subject')}</span>
@@ -60,10 +68,21 @@ export default function PostForm() {
                             type="url"
                             name="url"
                             className="flex-1"
-                            placeholder="https://example.com"
+                            placeholder="http://"
                         />
                     </div>
                     <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm">{__('Display count')}</span>
+                            <Input
+                                type="number"
+                                name="per_page"
+                                value={perPage}
+                                onChange={(e) => setPerPage(parseInt(e.target.value) || 10)}
+                                className="w-16"
+                                min={1}
+                            />
+                        </div>
                         <label className="flex cursor-pointer items-center gap-2">
                             <Checkbox
                                 name="auto_link"

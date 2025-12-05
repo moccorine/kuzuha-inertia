@@ -9,10 +9,12 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', config('bbs.messages_per_page'));
+        
         return Inertia::render('posts/index', [
-            'posts' => Post::latest()->get(),
+            'posts' => Post::latest()->paginate($perPage),
             'customLinks' => CustomLink::orderBy('order')->get(),
         ]);
     }
@@ -20,7 +22,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         if (empty($request->message)) {
-            return redirect()->route('posts.index');
+            return redirect()->route('posts.index', ['per_page' => $request->per_page]);
         }
 
         $metadata = null;
@@ -36,6 +38,6 @@ class PostController extends Controller
             'metadata' => $metadata,
         ]);
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index', ['per_page' => $request->per_page]);
     }
 }

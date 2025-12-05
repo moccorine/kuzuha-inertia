@@ -1,6 +1,8 @@
 import PostForm from '@/components/post-form';
 import { useAutoLink } from '@/hooks/use-auto-link';
+import { useLang } from '@/hooks/useLang';
 import PublicLayout from '@/layouts/public-layout';
+import { Link } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -15,8 +17,21 @@ interface Post {
     created_at: string;
 }
 
-export default function Index({ posts }: { posts: Post[] }) {
+interface PaginatedPosts {
+    data: Post[];
+    links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+    }[];
+    from: number | null;
+    to: number | null;
+    total: number;
+}
+
+export default function Index({ posts }: { posts: PaginatedPosts }) {
     const { autoLinkUrls } = useAutoLink();
+    const { __ } = useLang('bbs');
 
     function renderMessage(post: Post): { __html: string } {
         let content = post.message;
@@ -37,7 +52,7 @@ export default function Index({ posts }: { posts: Post[] }) {
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="space-y-4">
                     <PostForm />
-                    {posts.map((post) => (
+                    {posts.data.map((post) => (
                         <div
                             key={post.id}
                             className="rounded-lg border bg-white p-4 shadow"
@@ -61,6 +76,31 @@ export default function Index({ posts }: { posts: Post[] }) {
                             />
                         </div>
                     ))}
+
+                    {posts.from && posts.to && (
+                        <div className="text-sm text-gray-600">
+                            {__('Pagination info')
+                                .replace(':from', posts.from.toString())
+                                .replace(':to', posts.to.toString())}
+                        </div>
+                    )}
+
+                    <div className="flex gap-1">
+                        {posts.links
+                            .filter((link, index) => index === 0 || index === posts.links.length - 1)
+                            .map((link, index) => (
+                            <Link
+                                key={index}
+                                href={link.url || '#'}
+                                className={`px-3 py-1 border rounded ${
+                                    link.url
+                                        ? 'bg-white hover:bg-gray-100'
+                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                }`}
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </PublicLayout>
