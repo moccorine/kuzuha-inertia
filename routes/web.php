@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InfoPageController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,6 +14,7 @@ Route::get('/', function () {
 
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');
 Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+Route::get('info', [InfoPageController::class, 'show'])->name('info');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomLink;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,6 +13,7 @@ class PostController extends Controller
     {
         return Inertia::render('posts/index', [
             'posts' => Post::latest()->get(),
+            'customLinks' => CustomLink::orderBy('order')->get(),
         ]);
     }
 

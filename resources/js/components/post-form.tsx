@@ -5,9 +5,28 @@ import { Textarea } from '@/components/ui/textarea';
 import { useLang } from '@/hooks/useLang';
 import { store } from '@/routes/posts';
 import { Form } from '@inertiajs/react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import LinkRow from './link-row';
 
 export default function PostForm() {
     const { __ } = useLang('bbs');
+    const [isLinkRowOpen, setIsLinkRowOpen] = useState(() => {
+        const saved = localStorage.getItem('linkRowOpen');
+        return saved !== null ? JSON.parse(saved) : true;
+    });
+    const [autoLink, setAutoLink] = useState(() => {
+        const saved = localStorage.getItem('autoLink');
+        return saved !== null ? JSON.parse(saved) : true;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('linkRowOpen', JSON.stringify(isLinkRowOpen));
+    }, [isLinkRowOpen]);
+
+    useEffect(() => {
+        localStorage.setItem('autoLink', JSON.stringify(autoLink));
+    }, [autoLink]);
 
     return (
         <Form action={store()} resetOnSuccess className="space-y-3">
@@ -49,13 +68,37 @@ export default function PostForm() {
                             <Checkbox
                                 name="auto_link"
                                 value="1"
-                                defaultChecked
+                                checked={autoLink}
+                                onCheckedChange={(checked) =>
+                                    setAutoLink(!!checked)
+                                }
                             />
                             <span className="text-sm">
                                 {__('Auto-link URLs')}
                             </span>
                         </label>
+                        <button
+                            type="button"
+                            onClick={() => setIsLinkRowOpen(!isLinkRowOpen)}
+                            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                        >
+                            {isLinkRowOpen ? (
+                                <ChevronDown className="h-4 w-4" />
+                            ) : (
+                                <ChevronRight className="h-4 w-4" />
+                            )}
+                            {isLinkRowOpen
+                                ? __('Link Row OFF')
+                                : __('Link Row ON')}
+                        </button>
                     </div>
+                    {isLinkRowOpen && (
+                        <>
+                            <hr />
+                            <LinkRow />
+                            <hr />
+                        </>
+                    )}
                 </>
             )}
         </Form>
