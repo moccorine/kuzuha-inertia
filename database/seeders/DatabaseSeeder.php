@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\CustomLink;
-use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,7 +24,6 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        Post::factory(50)->create();
 
         CustomLink::create([
             'name' => '暫wiki',
@@ -33,6 +31,9 @@ class DatabaseSeeder extends Seeder
             'order' => 1,
         ]);
 
-        $this->call(InfoPageSeeder::class);
+        $this->call([
+            PostSeeder::class,
+            InfoPageSeeder::class,
+        ]);
     }
 }

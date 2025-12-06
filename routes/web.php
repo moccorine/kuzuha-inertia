@@ -14,6 +14,7 @@ Route::get('/', function () {
 
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');
 Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+Route::get('posts/{post}/follow', [PostController::class, 'follow'])->name('posts.follow');
 Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 Route::get('info', [InfoPageController::class, 'show'])->name('info');
 

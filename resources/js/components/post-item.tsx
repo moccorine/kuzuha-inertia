@@ -1,8 +1,8 @@
 import { useAutoLink } from '@/hooks/use-auto-link';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { useLang } from '@/hooks/useLang';
-import { destroy } from '@/routes/posts';
-import { router } from '@inertiajs/react';
+import { destroy, follow } from '@/routes/posts';
+import { Link, router } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -13,6 +13,10 @@ interface Post {
     metadata: {
         url?: string;
         auto_link?: boolean;
+        reference?: {
+            post_id: number;
+            created_at: string;
+        };
     } | null;
     created_at: string;
     can_delete?: boolean;
@@ -32,6 +36,14 @@ export default function PostItem({ post }: { post: Post }) {
 
         if (post.metadata?.url) {
             content += `\n\n<a href="${post.metadata.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${post.metadata.url}</a>`;
+        }
+
+        if (post.metadata?.reference) {
+            const refDate = formatDate(post.metadata.reference.created_at);
+            const refUrl = follow({
+                post: post.metadata.reference.post_id,
+            }).url;
+            content += `\n\n<a href="${refUrl}" class="text-blue-600 hover:underline">参考：${refDate}</a>`;
         }
 
         return { __html: content };
@@ -61,9 +73,12 @@ export default function PostItem({ post }: { post: Post }) {
                 </span>
                 <span className="ml-4 text-sm">
                     &nbsp;&nbsp;&nbsp;
-                    <a href="#" className="hover:underline">
+                    <Link
+                        href={follow({ post: post.id })}
+                        className="hover:underline"
+                    >
                         ■
-                    </a>
+                    </Link>
                     &nbsp;&nbsp;&nbsp;
                     <a href="#" className="hover:underline">
                         ★

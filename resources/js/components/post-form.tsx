@@ -9,7 +9,19 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import LinkRow from './link-row';
 
-export default function PostForm() {
+interface PostFormProps {
+    defaultTitle?: string;
+    defaultMessage?: string;
+    followId?: number;
+    hideLinks?: boolean;
+}
+
+export default function PostForm({
+    defaultTitle = '',
+    defaultMessage = '',
+    followId,
+    hideLinks = false,
+}: PostFormProps = {}) {
     const { __ } = useLang('bbs');
     const [isLinkRowOpen, setIsLinkRowOpen] = useState(() => {
         const saved = localStorage.getItem('linkRowOpen');
@@ -40,6 +52,13 @@ export default function PostForm() {
         <Form action={store()} resetOnSuccess className="space-y-3">
             {({ processing }) => (
                 <>
+                    {followId && (
+                        <input
+                            type="hidden"
+                            name="follow_id"
+                            value={followId}
+                        />
+                    )}
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Author')}</span>
                         <Input type="text" name="username" className="w-48" />
@@ -55,7 +74,12 @@ export default function PostForm() {
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Subject')}</span>
-                        <Input type="text" name="title" className="flex-1" />
+                        <Input
+                            type="text"
+                            name="title"
+                            className="flex-1"
+                            defaultValue={defaultTitle}
+                        />
                         <Button type="submit" disabled={processing}>
                             {__('Post')}
                         </Button>
@@ -65,7 +89,12 @@ export default function PostForm() {
                     </div>
                     <div>
                         <div className="mb-1 text-sm">{__('Content note')}</div>
-                        <Textarea name="message" rows={5} maxLength={350} />
+                        <Textarea
+                            name="message"
+                            rows={5}
+                            maxLength={350}
+                            defaultValue={defaultMessage}
+                        />
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">URL</span>
@@ -76,58 +105,66 @@ export default function PostForm() {
                             placeholder="http://"
                         />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm">
-                                {__('Display count')}
-                            </span>
-                            <Input
-                                type="number"
-                                name="per_page"
-                                value={perPage}
-                                onChange={(e) =>
-                                    setPerPage(parseInt(e.target.value) || 10)
-                                }
-                                className="w-16"
-                                min={1}
-                            />
-                        </div>
-                        <label className="flex cursor-pointer items-center gap-2">
-                            <Checkbox
-                                name="auto_link"
-                                value="1"
-                                checked={autoLink}
-                                onCheckedChange={(checked) =>
-                                    setAutoLink(!!checked)
-                                }
-                            />
-                            <span className="text-sm">
-                                {__('Auto-link URLs')}
-                            </span>
-                        </label>
-                        <button
-                            type="button"
-                            onClick={() => setIsLinkRowOpen(!isLinkRowOpen)}
-                            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-                        >
-                            {isLinkRowOpen ? (
-                                <ChevronDown className="h-4 w-4" />
-                            ) : (
-                                <ChevronRight className="h-4 w-4" />
-                            )}
-                            {isLinkRowOpen
-                                ? __('Link Row OFF')
-                                : __('Link Row ON')}
-                        </button>
-                    </div>
-                    {isLinkRowOpen ? (
+                    {!hideLinks && (
                         <>
-                            <hr />
-                            <LinkRow />
-                            <hr />
+                            <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm">
+                                        {__('Display count')}
+                                    </span>
+                                    <Input
+                                        type="number"
+                                        name="per_page"
+                                        value={perPage}
+                                        onChange={(e) =>
+                                            setPerPage(
+                                                parseInt(e.target.value) || 10,
+                                            )
+                                        }
+                                        className="w-16"
+                                        min={1}
+                                    />
+                                </div>
+                                <label className="flex cursor-pointer items-center gap-2">
+                                    <Checkbox
+                                        name="auto_link"
+                                        value="1"
+                                        checked={autoLink}
+                                        onCheckedChange={(checked) =>
+                                            setAutoLink(!!checked)
+                                        }
+                                    />
+                                    <span className="text-sm">
+                                        {__('Auto-link URLs')}
+                                    </span>
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setIsLinkRowOpen(!isLinkRowOpen)
+                                    }
+                                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                                >
+                                    {isLinkRowOpen ? (
+                                        <ChevronDown className="h-4 w-4" />
+                                    ) : (
+                                        <ChevronRight className="h-4 w-4" />
+                                    )}
+                                    {isLinkRowOpen
+                                        ? __('Link Row OFF')
+                                        : __('Link Row ON')}
+                                </button>
+                            </div>
+                            {isLinkRowOpen ? (
+                                <>
+                                    <hr />
+                                    <LinkRow />
+                                    <hr />
+                                </>
+                            ) : (
+                                <hr />
+                            )}
                         </>
-                    ) : (
-                        <hr />
                     )}
                 </>
             )}

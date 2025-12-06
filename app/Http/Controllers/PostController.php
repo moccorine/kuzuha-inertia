@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomLink;
 use App\Models\Post;
+use App\Services\PostDeleteTokenService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Crypt;
 use Inertia\Inertia;
 
 class PostController extends Controller
 {
+    public function __construct(
+        private PostDeleteTokenService $tokenService
+    ) {}
+
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', config('bbs.messages_per_page'));
@@ -18,7 +22,8 @@ class PostController extends Controller
         $posts = Post::latest()->paginate($perPage);
 
         // 削除可能な投稿IDを取得
-        $canDeletePostId = $this->getCanDeletePostId($request);
+        $token = $request->cookie('post_delete_token');
+        $canDeletePostId = $token ? $this->tokenService->getPostIdFromToken($token) : null;
 
         // 各投稿に削除可能フラグを追加
         $posts->getCollection()->transform(function ($post) use ($canDeletePostId) {
@@ -31,33 +36,6 @@ class PostController extends Controller
             'posts' => $posts,
             'customLinks' => CustomLink::orderBy('order')->get(),
         ]);
-    }
-
-    private function getCanDeletePostId(Request $request): ?int
-    {
-        $token = $request->cookie('post_delete_token');
-
-        if (! $token) {
-            return null;
-        }
-
-        try {
-            $data = json_decode(Crypt::decryptString($token), true);
-
-            if ($data['expires_at'] < now()->timestamp) {
-                return null;
-            }
-
-            $expectedSignature = hash_hmac('sha256', $data['post_id'], config('app.key'));
-            if ($data['signature'] !== $expectedSignature) {
-                return null;
-            }
-
-            return $data['post_id'];
-
-        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-            return null;
-        }
     }
 
     public function store(Request $request)
@@ -74,55 +52,49 @@ class PostController extends Controller
             ];
         }
 
-        $post = Post::create([
-            ...$request->only(['username', 'email', 'title', 'message']),
-            'metadata' => $metadata,
-        ]);
+        $parentId = $request->input('follow_id');
+
+        if ($parentId && $parent = Post::find($parentId)) {
+            $post = Post::createAsFollowUp([
+                ...$request->only(['username', 'email', 'title', 'message']),
+                'metadata' => $metadata,
+            ], $parent);
+        } else {
+            $post = Post::create([
+                ...$request->only(['username', 'email', 'title', 'message']),
+                'metadata' => $metadata,
+            ]);
+        }
 
         // 削除トークン生成
-        $deleteToken = Crypt::encryptString(json_encode([
-            'post_id' => $post->id,
-            'expires_at' => now()->addDay()->timestamp,
-            'signature' => hash_hmac('sha256', $post->id, config('app.key')),
-        ]));
-
+        $deleteToken = $this->tokenService->generateToken($post);
         Cookie::queue('post_delete_token', $deleteToken, 60 * 24);
 
         return redirect()->route('posts.index', ['per_page' => $request->per_page]);
+    }
+
+    public function follow(Request $request, Post $post)
+    {
+        return Inertia::render('posts/follow', [
+            'post' => $post,
+            'quotedMessage' => $post->getQuotedMessage(),
+            'defaultTitle' => $post->generateFollowTitle(),
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
     }
 
     public function destroy(Request $request, Post $post)
     {
         $token = $request->cookie('post_delete_token');
 
-        if (! $token) {
+        if (! $token || ! $this->tokenService->validateToken($token, $post->id)) {
             abort(403, 'No delete permission');
         }
 
-        try {
-            $data = json_decode(Crypt::decryptString($token), true);
+        $post->delete();
 
-            if ($data['post_id'] !== $post->id) {
-                abort(403, 'Invalid token');
-            }
+        Cookie::queue(Cookie::forget('post_delete_token'));
 
-            if ($data['expires_at'] < now()->timestamp) {
-                abort(403, 'Token expired');
-            }
-
-            $expectedSignature = hash_hmac('sha256', $post->id, config('app.key'));
-            if ($data['signature'] !== $expectedSignature) {
-                abort(403, 'Invalid signature');
-            }
-
-            $post->delete();
-
-            Cookie::queue(Cookie::forget('post_delete_token'));
-
-            return redirect()->route('posts.index', ['per_page' => $request->per_page]);
-
-        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-            abort(403, 'Invalid token');
-        }
+        return redirect()->route('posts.index', ['per_page' => $request->per_page]);
     }
 }

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('parent_id')->nullable()->constrained('posts')->onDelete('set null');
+            $table->foreignId('thread_id')->nullable()->constrained('posts')->onDelete('cascade');
             $table->string('username')->nullable();
             $table->string('email')->nullable();
             $table->string('title')->nullable();
