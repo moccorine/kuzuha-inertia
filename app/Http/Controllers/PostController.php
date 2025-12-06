@@ -108,4 +108,19 @@ class PostController extends Controller
             'customLinks' => CustomLink::orderBy('order')->get(),
         ]);
     }
+
+    public function thread(Request $request, Post $post)
+    {
+        $threadId = $post->thread_id ?? $post->id;
+        $posts = Post::where('thread_id', $threadId)
+            ->orWhere('id', $threadId)
+            ->latest()
+            ->get();
+
+        return Inertia::render('posts/thread', [
+            'posts' => $posts,
+            'threadId' => $threadId,
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
+    }
 }

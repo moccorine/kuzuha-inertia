@@ -2,6 +2,7 @@
     "Author": "投稿者",
     "Author search": "投稿者検索",
     "Auto-link URLs": "本文中のURLを自動リンク化",
+    "Button legend": "■ : フォロー投稿(返信)　★ : 投稿者検索　◆ : スレッド表示　木 : ツリー表示　 × : 自分の投稿を消す（直前の投稿のみ）",
     "Clear": "消す",
     "Content note": "内容（350桁80行まで。適当に改行を入れてください。タグは使えません。）",
     "Display count": "表示件数",
@@ -19,6 +20,7 @@
     "posts found": "件の投稿が見つかりました",
     "Subject": "題名",
     "Submit": "投稿",
+    "Thread view": "スレッド表示",
     "Title": "タイトル",
     "Username": "ユーザー名",
     "seconds": "秒"

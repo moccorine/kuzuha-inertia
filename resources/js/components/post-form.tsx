@@ -160,9 +160,17 @@ export default function PostForm({
                                     <hr />
                                     <LinkRow />
                                     <hr />
+                                    <div className="text-xs text-gray-600">
+                                        {__('Button legend')}
+                                    </div>
                                 </>
                             ) : (
-                                <hr />
+                                <>
+                                    <hr />
+                                    <div className="text-xs text-gray-600">
+                                        {__('Button legend')}
+                                    </div>
+                                </>
                             )}
                         </>
                     )}

@@ -1,6 +1,8 @@
 {
     "Author": "Author",
+    "Author search": "Author search",
     "Auto-link URLs": "Auto-link URLs in content",
+    "Button legend": "■ : Reply　★ : Author search　◆ : Thread view　木 : Tree view　 × : Delete your post (last post only)",
     "Clear": "Clear",
     "Content note": "Content (up to 350 characters and 80 lines. Please add line breaks as needed. HTML tags are not allowed.)",
     "Display count": "Display count",
@@ -15,8 +17,10 @@
     "Post": "Post / Reload",
     "Posted by": "Posted by",
     "Posted date": "Posted date",
+    "posts found": "posts found",
     "Subject": "Subject",
     "Submit": "Submit",
+    "Thread view": "Thread view",
     "Title": "Title",
     "Username": "Username",
     "seconds": "seconds"
