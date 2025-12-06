@@ -97,4 +97,15 @@ class PostController extends Controller
 
         return redirect()->route('posts.index', ['per_page' => $request->per_page]);
     }
+
+    public function search(Request $request, string $user)
+    {
+        $posts = Post::where('username', $user)->latest()->get();
+
+        return Inertia::render('posts/search', [
+            'posts' => $posts,
+            'username' => $user,
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
+    }
 }

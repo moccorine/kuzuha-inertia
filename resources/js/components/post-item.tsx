@@ -1,7 +1,7 @@
 import { useAutoLink } from '@/hooks/use-auto-link';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { useLang } from '@/hooks/useLang';
-import { destroy, follow } from '@/routes/posts';
+import { destroy, follow, search } from '@/routes/posts';
 import { Link, router } from '@inertiajs/react';
 
 interface Post {
@@ -79,10 +79,17 @@ export default function PostItem({ post }: { post: Post }) {
                     >
                         ■
                     </Link>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href="#" className="hover:underline">
-                        ★
-                    </a>
+                    {post.username && post.username !== ' ' && (
+                        <>
+                            &nbsp;&nbsp;&nbsp;
+                            <Link
+                                href={search({ user: post.username })}
+                                className="hover:underline"
+                            >
+                                ★
+                            </Link>
+                        </>
+                    )}
                     &nbsp;&nbsp;&nbsp;
                     <a href="#" className="hover:underline">
                         ◆
