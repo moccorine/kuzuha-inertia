@@ -14,6 +14,10 @@ interface PostFormProps {
     defaultMessage?: string;
     followId?: number;
     hideLinks?: boolean;
+    counter?: number | null;
+    counterStartDate?: string | null;
+    activeVisitors?: number | null;
+    activeVisitorTimeout?: number | null;
 }
 
 export default function PostForm({
@@ -21,6 +25,10 @@ export default function PostForm({
     defaultMessage = '',
     followId,
     hideLinks = false,
+    counter,
+    counterStartDate,
+    activeVisitors,
+    activeVisitorTimeout,
 }: PostFormProps = {}) {
     const { __ } = useLang('bbs');
     const [isLinkRowOpen, setIsLinkRowOpen] = useState(() => {
@@ -157,6 +165,42 @@ export default function PostForm({
                             </div>
                             {isLinkRowOpen ? (
                                 <>
+                                    {counter !== null &&
+                                        counter !== undefined &&
+                                        counterStartDate && (
+                                            <div className="text-sm text-gray-600">
+                                                {__('Counter format')
+                                                    .replace(
+                                                        ':date',
+                                                        (() => {
+                                                            const d = new Date(
+                                                                counterStartDate,
+                                                            );
+                                                            return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+                                                        })(),
+                                                    )
+                                                    .replace(
+                                                        ':count',
+                                                        counter.toLocaleString(),
+                                                    )
+                                                    .replace(':level', '∞')}
+                                                {activeVisitors !== null &&
+                                                    activeVisitors !== undefined &&
+                                                    activeVisitorTimeout !==
+                                                        null &&
+                                                    activeVisitorTimeout !==
+                                                        undefined &&
+                                                    `　${__('Active visitors')
+                                                        .replace(
+                                                            ':count',
+                                                            activeVisitors.toString(),
+                                                        )
+                                                        .replace(
+                                                            ':timeout',
+                                                            activeVisitorTimeout.toString(),
+                                                        )}`}
+                                            </div>
+                                        )}
                                     <hr />
                                     <LinkRow />
                                     <hr />
@@ -166,6 +210,42 @@ export default function PostForm({
                                 </>
                             ) : (
                                 <>
+                                    {counter !== null &&
+                                        counter !== undefined &&
+                                        counterStartDate && (
+                                            <div className="text-sm text-gray-600">
+                                                {__('Counter format')
+                                                    .replace(
+                                                        ':date',
+                                                        (() => {
+                                                            const d = new Date(
+                                                                counterStartDate,
+                                                            );
+                                                            return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+                                                        })(),
+                                                    )
+                                                    .replace(
+                                                        ':count',
+                                                        counter.toLocaleString(),
+                                                    )
+                                                    .replace(':level', '∞')}
+                                                {activeVisitors !== null &&
+                                                    activeVisitors !== undefined &&
+                                                    activeVisitorTimeout !==
+                                                        null &&
+                                                    activeVisitorTimeout !==
+                                                        undefined &&
+                                                    `　${__('Active visitors')
+                                                        .replace(
+                                                            ':count',
+                                                            activeVisitors.toString(),
+                                                        )
+                                                        .replace(
+                                                            ':timeout',
+                                                            activeVisitorTimeout.toString(),
+                                                        )}`}
+                                            </div>
+                                        )}
                                     <hr />
                                     <div className="text-xs text-gray-600">
                                         {__('Button legend')}

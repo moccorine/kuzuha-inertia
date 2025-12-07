@@ -30,14 +30,31 @@ interface PaginatedPosts {
     total: number;
 }
 
-export default function Index({ posts }: { posts: PaginatedPosts }) {
+export default function Index({
+    posts,
+    counter,
+    counterStartDate,
+    activeVisitors,
+    activeVisitorTimeout,
+}: {
+    posts: PaginatedPosts;
+    counter?: number | null;
+    counterStartDate?: string | null;
+    activeVisitors?: number | null;
+    activeVisitorTimeout?: number | null;
+}) {
     const { __ } = useLang('bbs');
 
     return (
         <PublicLayout title="Posts">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="space-y-4">
-                    <PostForm />
+                    <PostForm
+                        counter={counter}
+                        counterStartDate={counterStartDate}
+                        activeVisitors={activeVisitors}
+                        activeVisitorTimeout={activeVisitorTimeout}
+                    />
                     {posts.data.map((post) => (
                         <PostItem key={post.id} post={post} />
                     ))}

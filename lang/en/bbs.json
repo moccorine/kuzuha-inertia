@@ -1,10 +1,12 @@
 {
+    "Active visitors": "Active visitors: :count (:timeout seconds)",
     "Author": "Author",
     "Author search": "Author search",
     "Auto-link URLs": "Auto-link URLs in content",
     "Button legend": "■ : Reply　★ : Author search　◆ : Thread view　木 : Tree view　 × : Delete your post (last post only)",
     "Clear": "Clear",
     "Content note": "Content (up to 350 characters and 80 lines. Please add line breaks as needed. HTML tags are not allowed.)",
+    "Counter format": ":date since :count (robustness level: :level)",
     "Display count": "Display count",
     "Email": "Email",
     "Execution time": "Execution time",

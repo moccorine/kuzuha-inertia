@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomLink;
 use App\Models\Post;
+use App\Services\ActiveVisitorService;
+use App\Services\CounterService;
 use App\Services\PostDeleteTokenService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -12,7 +14,9 @@ use Inertia\Inertia;
 class PostController extends Controller
 {
     public function __construct(
-        private PostDeleteTokenService $tokenService
+        private PostDeleteTokenService $tokenService,
+        private CounterService $counterService,
+        private ActiveVisitorService $activeVisitorService
     ) {}
 
     public function index(Request $request)
@@ -32,9 +36,21 @@ class PostController extends Controller
             return $post;
         });
 
+        // カウンターをインクリメント
+        $counter = $this->counterService->increment();
+        $counterStartDate = $this->counterService->getStartDate();
+
+        // アクティブ訪問者を記録
+        $activeVisitors = $this->activeVisitorService->recordVisit($request->ip());
+        $activeVisitorTimeout = $this->activeVisitorService->getTimeout();
+
         return Inertia::render('posts/index', [
             'posts' => $posts,
             'customLinks' => CustomLink::orderBy('order')->get(),
+            'counter' => $counter,
+            'counterStartDate' => $counterStartDate,
+            'activeVisitors' => $activeVisitors,
+            'activeVisitorTimeout' => $activeVisitorTimeout,
         ]);
     }
 
