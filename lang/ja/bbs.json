@@ -1,8 +1,10 @@
 {
     "Active visitors": "現在の参加者：:count名 (:timeout秒以内)",
     "Author": "投稿者",
+    "Author prefix": "投稿者：",
     "Author search": "投稿者検索",
     "Auto-link URLs": "本文中のURLを自動リンク化",
+    "Back": "戻る",
     "Button legend": "■ : フォロー投稿(返信)　★ : 投稿者検索　◆ : スレッド表示　木 : ツリー表示　 × : 自分の投稿を消す（直前の投稿のみ）",
     "Archive": "過去ログ",
     "Clear": "消す",
@@ -22,11 +24,15 @@
     "Posted date": "投稿日時：",
     "posts found": "件の投稿が見つかりました",
     "Subject": "題名",
+    "Standard view": "標準表示",
     "Submit": "投稿",
     "Thread view": "スレッド表示",
     "Title": "タイトル",
+    "Tree view": "ツリー表示",
     "Unread": "未読",
     "No unread messages": "未読メッセージはありません",
+    "Update date": "更新日",
+    "Update date prefix": "更新日：",
     "Username": "ユーザー名",
     "seconds": "秒"
 }

@@ -18,14 +18,17 @@ interface Post {
         };
     } | null;
     created_at: string;
+    can_delete?: boolean;
 }
 
 export default function Thread({
     posts,
     threadId,
+    lastViewedId,
 }: {
     posts: Post[];
     threadId: number;
+    lastViewedId: number;
 }) {
     const { __ } = useLang('bbs');
 
@@ -43,7 +46,14 @@ export default function Thread({
                 </div>
                 <div className="space-y-4">
                     {posts.map((post) => (
-                        <PostItem key={post.id} post={post} />
+                        <div
+                            key={post.id}
+                            className={
+                                post.id > lastViewedId ? 'bg-cyan-50' : ''
+                            }
+                        >
+                            <PostItem post={post} lastViewedId={lastViewedId} />
+                        </div>
                     ))}
                 </div>
             </div>

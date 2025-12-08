@@ -40,7 +40,8 @@ class PostController extends Controller
 
             $posts = Post::where('id', '>', $searchFromId)
                 ->latest()
-                ->paginate($perPage);
+                ->paginate($perPage)
+                ->appends(['per_page' => $perPage, 'readnew' => true]);
 
             \Log::info('Readnew mode', [
                 'query' => "id > {$searchFromId}",
@@ -50,7 +51,7 @@ class PostController extends Controller
             // 未読モードでも最新IDをセッションに保存
             session(['last_viewed_post_id' => $latestId]);
         } else {
-            $posts = Post::latest()->paginate($perPage);
+            $posts = Post::latest()->paginate($perPage)->appends(['per_page' => $perPage]);
             // 通常表示時に最新IDをセッションに保存
             session(['last_viewed_post_id' => $latestId]);
             \Log::info('Normal mode - saved to session', ['saved_id' => $latestId]);
@@ -186,9 +187,47 @@ class PostController extends Controller
             ->latest()
             ->get();
 
+        // クエリパラメーターの last_id を優先、なければセッションから取得
+        $lastViewedId = $request->input('last_id', session('last_viewed_post_id', 0));
+
         return Inertia::render('posts/thread', [
             'posts' => $posts,
             'threadId' => $threadId,
+            'lastViewedId' => (int) $lastViewedId,
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
+    }
+
+    public function treeIndex(Request $request)
+    {
+        // 全投稿を取得
+        $posts = Post::latest()->get();
+
+        // クエリパラメーターの last_id を優先、なければセッションから取得
+        $lastViewedId = $request->input('last_id', session('last_viewed_post_id', 0));
+
+        return Inertia::render('posts/tree-index', [
+            'posts' => $posts,
+            'lastViewedId' => (int) $lastViewedId,
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
+    }
+
+    public function tree(Request $request, Post $post)
+    {
+        $threadId = $post->thread_id ?? $post->id;
+        $posts = Post::where('thread_id', $threadId)
+            ->orWhere('id', $threadId)
+            ->latest()
+            ->get();
+
+        // クエリパラメーターの last_id を優先、なければセッションから取得
+        $lastViewedId = $request->input('last_id', session('last_viewed_post_id', 0));
+
+        return Inertia::render('posts/tree', [
+            'posts' => $posts,
+            'threadId' => $threadId,
+            'lastViewedId' => (int) $lastViewedId,
             'customLinks' => CustomLink::orderBy('order')->get(),
         ]);
     }

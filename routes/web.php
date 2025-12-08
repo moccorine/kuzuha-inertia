@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\InfoPageController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\ArchiveController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,8 +15,10 @@ Route::get('/', function () {
 
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');
 Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+Route::get('posts/tree', [PostController::class, 'treeIndex'])->name('posts.tree.index');
 Route::get('posts/{post}/follow', [PostController::class, 'follow'])->name('posts.follow');
 Route::get('posts/{post}/thread', [PostController::class, 'thread'])->name('posts.thread');
+Route::get('posts/{post}/tree', [PostController::class, 'tree'])->name('posts.tree');
 Route::get('posts/{user}/search', [PostController::class, 'search'])->name('posts.search');
 Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 Route::get('info', [InfoPageController::class, 'show'])->name('info');

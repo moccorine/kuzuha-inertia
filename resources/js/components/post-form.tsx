@@ -246,7 +246,9 @@ export default function PostForm({
                                 type="hidden"
                                 name="auto_link"
                                 value={autoLink ? '1' : '0'}
-                                key={autoLink ? 'auto-link-on' : 'auto-link-off'}
+                                key={
+                                    autoLink ? 'auto-link-on' : 'auto-link-off'
+                                }
                             />
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-2">
@@ -341,6 +343,7 @@ export default function PostForm({
                                     <div className="text-xs text-gray-600">
                                         {__('Button legend')}
                                     </div>
+                                    <hr />
                                 </>
                             ) : (
                                 <>
@@ -385,6 +388,7 @@ export default function PostForm({
                                     <div className="text-xs text-gray-600">
                                         {__('Button legend')}
                                     </div>
+                                    <hr />
                                 </>
                             )}
                         </>

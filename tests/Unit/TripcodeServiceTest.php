@@ -3,7 +3,7 @@
 use App\Services\TripcodeService;
 
 test('tripcode data is returned when username contains secret', function () {
-    $service = new TripcodeService();
+    $service = new TripcodeService;
     $result = $service->resolve('Alice#secret');
 
     expect($result['name'])->toBe('Alice')
@@ -11,7 +11,7 @@ test('tripcode data is returned when username contains secret', function () {
 });
 
 test('same secret yields same trip fragment', function () {
-    $service = new TripcodeService();
+    $service = new TripcodeService;
 
     $first = $service->resolve('Bob#shared');
     $second = $service->resolve('Bob#shared');
@@ -20,7 +20,7 @@ test('same secret yields same trip fragment', function () {
 });
 
 test('empty secret removes delimiter', function () {
-    $service = new TripcodeService();
+    $service = new TripcodeService;
 
     $result = $service->resolve('Carol#');
 
@@ -29,7 +29,7 @@ test('empty secret removes delimiter', function () {
 });
 
 test('username without secret stays untouched', function () {
-    $service = new TripcodeService();
+    $service = new TripcodeService;
 
     $result = $service->resolve('Dave');
 

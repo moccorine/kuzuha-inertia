@@ -69,7 +69,11 @@ export default function Index({
                         lastViewedId={lastViewedId}
                     />
                     {posts.data.map((post) => (
-                        <PostItem key={post.id} post={post} />
+                        <PostItem
+                            key={post.id}
+                            post={post}
+                            lastViewedId={lastViewedId}
+                        />
                     ))}
 
                     {isReadnewMode && posts.data.length === 0 ? (

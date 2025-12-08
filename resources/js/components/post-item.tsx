@@ -1,7 +1,7 @@
 import { useAutoLink } from '@/hooks/use-auto-link';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { useLang } from '@/hooks/useLang';
-import { destroy, follow, search, thread } from '@/routes/posts';
+import { destroy, follow, search, thread, tree } from '@/routes/posts';
 import { Link, router } from '@inertiajs/react';
 
 interface Post {
@@ -26,9 +26,11 @@ interface Post {
 export default function PostItem({
     post,
     showDivider = true,
+    lastViewedId,
 }: {
     post: Post;
     showDivider?: boolean;
+    lastViewedId?: number;
 }) {
     const { autoLinkUrls } = useAutoLink();
     const { formatDate } = useDateFormat();
@@ -104,15 +106,28 @@ export default function PostItem({
                     )}
                     &nbsp;&nbsp;&nbsp;
                     <Link
-                        href={thread({ post: post.id })}
+                        href={thread(
+                            { post: post.id },
+                            lastViewedId
+                                ? { query: { last_id: lastViewedId } }
+                                : undefined,
+                        )}
                         className="hover:underline"
                     >
                         ◆
                     </Link>
                     &nbsp;&nbsp;&nbsp;
-                    <a href="#" className="hover:underline">
+                    <Link
+                        href={tree(
+                            { post: post.id },
+                            lastViewedId
+                                ? { query: { last_id: lastViewedId } }
+                                : undefined,
+                        )}
+                        className="hover:underline"
+                    >
                         木
-                    </a>
+                    </Link>
                     {post.can_delete && (
                         <>
                             &nbsp;&nbsp;&nbsp;

@@ -1,4 +1,5 @@
 import { useLang } from '@/hooks/useLang';
+import { info } from '@/routes';
 import { CustomLink } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -7,9 +8,9 @@ export default function LinkRow() {
     const { customLinks } = usePage().props as { customLinks: CustomLink[] };
 
     return (
-        <div className="text-sm text-muted-foreground flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <span>|</span>
-            <Link href="/info" className="hover:text-foreground">
+            <Link href={info().url} className="hover:text-foreground">
                 {__('Info Page')}
             </Link>
             <span>|</span>
