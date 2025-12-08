@@ -13,6 +13,7 @@ interface Post {
     metadata: {
         url?: string;
         auto_link?: boolean;
+        trip?: string;
         reference?: {
             post_id: number;
             created_at: string;
@@ -22,7 +23,13 @@ interface Post {
     can_delete?: boolean;
 }
 
-export default function PostItem({ post }: { post: Post }) {
+export default function PostItem({
+    post,
+    showDivider = true,
+}: {
+    post: Post;
+    showDivider?: boolean;
+}) {
     const { autoLinkUrls } = useAutoLink();
     const { formatDate } = useDateFormat();
     const { __ } = useLang('bbs');
@@ -66,6 +73,11 @@ export default function PostItem({ post }: { post: Post }) {
                         </span>
                     )}
                     {__('Posted by')} {post.username || ' '}
+                    {post.metadata?.trip && (
+                        <em className="ml-2 text-sm text-muted-foreground">
+                            ◆{post.metadata.trip}
+                        </em>
+                    )}
                 </span>
                 <span className="text-sm text-gray-500">
                     &nbsp;&nbsp;{__('Posted date')}
@@ -119,7 +131,7 @@ export default function PostItem({ post }: { post: Post }) {
                 className="whitespace-pre-wrap text-gray-700"
                 dangerouslySetInnerHTML={renderMessage()}
             />
-            <hr className="mt-4" />
+            {showDivider && <hr className="mt-4" />}
         </div>
     );
 }

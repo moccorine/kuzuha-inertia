@@ -30,6 +30,12 @@ export default function PublicLayout({ children, title }: PublicLayoutProps) {
                             >
                                 {__('Info Page')}
                             </Link>
+                            <Link
+                                href="/archive"
+                                className="text-sm text-muted-foreground hover:text-foreground"
+                            >
+                                {__('Archive')}
+                            </Link>
                         </div>
                     </div>
                 </header>

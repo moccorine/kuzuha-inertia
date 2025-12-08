@@ -3,10 +3,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useLang } from '@/hooks/useLang';
-import { store, index } from '@/routes/posts';
+import { index, store } from '@/routes/posts';
 import { Form } from '@inertiajs/react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LinkRow from './link-row';
 
 interface PostFormProps {
@@ -35,33 +35,127 @@ export default function PostForm({
     lastViewedId = 0,
 }: PostFormProps = {}) {
     const { __ } = useLang('bbs');
-    const [isLinkRowOpen, setIsLinkRowOpen] = useState(() => {
-        const saved = localStorage.getItem('linkRowOpen');
-        return saved !== null ? JSON.parse(saved) : true;
-    });
-    const [autoLink, setAutoLink] = useState(() => {
-        const saved = localStorage.getItem('autoLink');
-        return saved !== null ? JSON.parse(saved) : true;
-    });
-    const [perPage, setPerPage] = useState(() => {
-        const saved = localStorage.getItem('perPage');
-        return saved !== null ? parseInt(saved) : 10;
-    });
+    const formRef = useRef<HTMLFormElement>(null);
+    const skipResetRef = useRef(false);
+    const getStoredBoolean = (key: string, fallback: boolean) => {
+        if (typeof window === 'undefined') {
+            return fallback;
+        }
+
+        const saved = localStorage.getItem(key);
+
+        return saved !== null ? JSON.parse(saved) : fallback;
+    };
+    const getStoredNumber = (key: string, fallback: number) => {
+        if (typeof window === 'undefined') {
+            return fallback;
+        }
+
+        const saved = localStorage.getItem(key);
+
+        return saved !== null ? parseInt(saved) : fallback;
+    };
+    const getStoredString = (key: string, fallback = '') => {
+        if (typeof window === 'undefined') {
+            return fallback;
+        }
+
+        return localStorage.getItem(key) ?? fallback;
+    };
+
+    const identifier = followId ? `postForm.follow.${followId}` : 'postForm';
+    const [isLinkRowOpen, setIsLinkRowOpen] = useState(true);
+    const [autoLink, setAutoLink] = useState(true);
+    const [perPage, setPerPage] = useState(10);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [hydrated, setHydrated] = useState(false);
 
     useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        setIsLinkRowOpen(getStoredBoolean('linkRowOpen', true));
+        setAutoLink(getStoredBoolean('postForm.autoLink', true));
+        setPerPage(getStoredNumber('perPage', 10));
+        setUsername(getStoredString(`${identifier}.username`));
+        setEmail(getStoredString(`${identifier}.email`));
+        setHydrated(true);
+    }, [identifier]);
+
+    useEffect(() => {
+        if (!hydrated) {
+            return;
+        }
         localStorage.setItem('linkRowOpen', JSON.stringify(isLinkRowOpen));
-    }, [isLinkRowOpen]);
+    }, [isLinkRowOpen, hydrated]);
 
     useEffect(() => {
-        localStorage.setItem('autoLink', JSON.stringify(autoLink));
-    }, [autoLink]);
+        if (!hydrated) {
+            return;
+        }
+        localStorage.setItem('postForm.autoLink', JSON.stringify(autoLink));
+    }, [autoLink, hydrated]);
 
     useEffect(() => {
+        if (!hydrated) {
+            return;
+        }
         localStorage.setItem('perPage', perPage.toString());
-    }, [perPage]);
+    }, [perPage, hydrated]);
+
+    useEffect(() => {
+        if (!hydrated) {
+            return;
+        }
+        if (username) {
+            localStorage.setItem(`${identifier}.username`, username);
+        } else {
+            localStorage.removeItem(`${identifier}.username`);
+        }
+    }, [username, identifier, hydrated]);
+
+    useEffect(() => {
+        if (!hydrated) {
+            return;
+        }
+        if (email) {
+            localStorage.setItem(`${identifier}.email`, email);
+        } else {
+            localStorage.removeItem(`${identifier}.email`);
+        }
+    }, [email, identifier, hydrated]);
+
+    const handleFormReset = () => {
+        if (skipResetRef.current) {
+            skipResetRef.current = false;
+            return;
+        }
+
+        setIsLinkRowOpen(getStoredBoolean('linkRowOpen', true));
+        setAutoLink(getStoredBoolean('postForm.autoLink', true));
+        setPerPage(getStoredNumber('perPage', 10));
+        setUsername(getStoredString(`${identifier}.username`));
+        setEmail(getStoredString(`${identifier}.email`));
+    };
+
+    const handleClear = () => {
+        skipResetRef.current = true;
+        formRef.current?.reset();
+        setUsername('');
+        setEmail('');
+        setAutoLink(true);
+    };
 
     return (
-        <Form action={store()} resetOnSuccess className="space-y-3">
+        <Form
+            action={store()}
+            resetOnSuccess
+            className="space-y-3"
+            ref={formRef}
+            onReset={handleFormReset}
+        >
             {({ processing }) => (
                 <>
                     {followId && (
@@ -73,7 +167,13 @@ export default function PostForm({
                     )}
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Author')}</span>
-                        <Input type="text" name="username" className="w-48" />
+                        <Input
+                            type="text"
+                            name="username"
+                            className="w-48"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="w-20">{__('Mail')}</span>
@@ -82,6 +182,8 @@ export default function PostForm({
                             name="email"
                             className="w-64"
                             placeholder="mail@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className="flex items-center gap-2">
@@ -112,7 +214,11 @@ export default function PostForm({
                                 {__('Unread')}
                             </Button>
                         )}
-                        <Button type="reset" variant="outline">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleClear}
+                        >
                             {__('Clear')}
                         </Button>
                     </div>
@@ -136,6 +242,12 @@ export default function PostForm({
                     </div>
                     {!hideLinks && (
                         <>
+                            <input
+                                type="hidden"
+                                name="auto_link"
+                                value={autoLink ? '1' : '0'}
+                                key={autoLink ? 'auto-link-on' : 'auto-link-off'}
+                            />
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm">
@@ -206,7 +318,8 @@ export default function PostForm({
                                                     )
                                                     .replace(':level', '∞')}
                                                 {activeVisitors !== null &&
-                                                    activeVisitors !== undefined &&
+                                                    activeVisitors !==
+                                                        undefined &&
                                                     activeVisitorTimeout !==
                                                         null &&
                                                     activeVisitorTimeout !==
@@ -251,7 +364,8 @@ export default function PostForm({
                                                     )
                                                     .replace(':level', '∞')}
                                                 {activeVisitors !== null &&
-                                                    activeVisitors !== undefined &&
+                                                    activeVisitors !==
+                                                        undefined &&
                                                     activeVisitorTimeout !==
                                                         null &&
                                                     activeVisitorTimeout !==

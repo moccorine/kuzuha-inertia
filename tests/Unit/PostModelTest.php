@@ -69,32 +69,24 @@ test('get quoted message handles empty message', function () {
     expect($quoted)->toBe("> \n\n");
 });
 
-test('generate follow title adds prefix to title', function () {
-    $post = new Post(['title' => 'Original Title']);
+test('generate follow title uses username', function () {
+    $post = new Post(['username' => 'Poster', 'title' => 'Original Title']);
 
     $followTitle = $post->generateFollowTitle();
 
-    expect($followTitle)->toBe('＞Original Title');
+    expect($followTitle)->toBe('＞Poster');
 });
 
-test('generate follow title does not add duplicate prefix', function () {
-    $post = new Post(['title' => '＞Already Prefixed']);
+test('generate follow title strips html from username', function () {
+    $post = new Post(['username' => '<b>Bold</b> User']);
 
     $followTitle = $post->generateFollowTitle();
 
-    expect($followTitle)->toBe('＞Already Prefixed');
+    expect($followTitle)->toBe('＞Bold User');
 });
 
-test('generate follow title handles null title', function () {
-    $post = new Post(['title' => null]);
-
-    $followTitle = $post->generateFollowTitle();
-
-    expect($followTitle)->toBe('＞');
-});
-
-test('generate follow title handles empty title', function () {
-    $post = new Post(['title' => '']);
+test('generate follow title falls back when username missing', function () {
+    $post = new Post(['username' => null]);
 
     $followTitle = $post->generateFollowTitle();
 

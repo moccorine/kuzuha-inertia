@@ -44,14 +44,10 @@ class Post extends Model
 
     public function generateFollowTitle(): string
     {
-        $title = $this->title ?? '';
+        $username = $this->username ?? '';
+        $base = strip_tags($username);
 
-        // 既に＞で始まっている場合は追加しない
-        if (! str_starts_with($title, '＞')) {
-            $title = '＞'.$title;
-        }
-
-        return $title;
+        return $base !== '' ? '＞'.$base : '＞';
     }
 
     public static function resolveThreadId(?int $parentId): ?int

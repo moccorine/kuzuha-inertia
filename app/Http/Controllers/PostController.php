@@ -7,6 +7,8 @@ use App\Models\Post;
 use App\Services\ActiveVisitorService;
 use App\Services\CounterService;
 use App\Services\PostDeleteTokenService;
+use App\Services\PostSubmissionService;
+use App\Services\TripcodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Inertia\Inertia;
@@ -16,7 +18,9 @@ class PostController extends Controller
     public function __construct(
         private PostDeleteTokenService $tokenService,
         private CounterService $counterService,
-        private ActiveVisitorService $activeVisitorService
+        private ActiveVisitorService $activeVisitorService,
+        private PostSubmissionService $submissionService,
+        private TripcodeService $tripcodeService
     ) {}
 
     public function index(Request $request)
@@ -93,27 +97,43 @@ class PostController extends Controller
             return redirect()->route('posts.index', ['per_page' => $request->per_page]);
         }
 
-        $metadata = null;
+        if ($this->submissionService->shouldBlock($request)) {
+            return redirect()->route('posts.index', ['per_page' => $request->per_page]);
+        }
+
+        $usernameData = $this->tripcodeService->resolve($request->input('username'));
+        $metadata = [];
+
         if ($request->filled('url')) {
-            $metadata = [
-                'url' => $request->url,
-                'auto_link' => $request->boolean('auto_link'),
-            ];
+            $metadata['url'] = $request->url;
+        }
+
+        $metadata['auto_link'] = $request->boolean('auto_link');
+
+        if ($usernameData['trip']) {
+            $metadata['trip'] = $usernameData['trip'];
+        }
+
+        if ($metadata === []) {
+            $metadata = null;
         }
 
         $parentId = $request->input('follow_id');
+        $postData = [
+            'username' => $usernameData['name'],
+            'email' => $request->input('email'),
+            'title' => $request->input('title'),
+            'message' => $request->input('message'),
+            'metadata' => $metadata,
+        ];
 
         if ($parentId && $parent = Post::find($parentId)) {
-            $post = Post::createAsFollowUp([
-                ...$request->only(['username', 'email', 'title', 'message']),
-                'metadata' => $metadata,
-            ], $parent);
+            $post = Post::createAsFollowUp($postData, $parent);
         } else {
-            $post = Post::create([
-                ...$request->only(['username', 'email', 'title', 'message']),
-                'metadata' => $metadata,
-            ]);
+            $post = Post::create($postData);
         }
+
+        $this->submissionService->markPosted($request);
 
         // 削除トークン生成
         $deleteToken = $this->tokenService->generateToken($post);

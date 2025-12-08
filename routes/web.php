@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InfoPageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ArchiveController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -19,6 +20,7 @@ Route::get('posts/{post}/thread', [PostController::class, 'thread'])->name('post
 Route::get('posts/{user}/search', [PostController::class, 'search'])->name('posts.search');
 Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 Route::get('info', [InfoPageController::class, 'show'])->name('info');
+Route::get('archive', [ArchiveController::class, 'index'])->name('archive');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

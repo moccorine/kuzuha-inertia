@@ -11,6 +11,11 @@ interface Post {
     metadata: {
         url?: string;
         auto_link?: boolean;
+        trip?: string;
+        reference?: {
+            post_id: number;
+            created_at: string;
+        };
     } | null;
     created_at: string;
 }

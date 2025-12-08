@@ -2,7 +2,7 @@ import PostForm from '@/components/post-form';
 import PostItem from '@/components/post-item';
 import { useLang } from '@/hooks/useLang';
 import PublicLayout from '@/layouts/public-layout';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -13,6 +13,11 @@ interface Post {
     metadata: {
         url?: string;
         auto_link?: boolean;
+        trip?: string;
+        reference?: {
+            post_id: number;
+            created_at: string;
+        };
     } | null;
     created_at: string;
     can_delete?: boolean;

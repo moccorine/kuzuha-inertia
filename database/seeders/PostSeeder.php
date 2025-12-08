@@ -25,13 +25,13 @@ class PostSeeder extends Seeder
         $thread1Reply2 = Post::createAsFollowUp([
             'username' => '太郎', // 重複
             'title' => '＞Laravelについて',
-            'message' => '> > Laravel 11の新機能について教えてください'."\n".'> Slim Skeletonが追加されましたよ'."\n\n". 'Per-second rate limitingも便利です',
+            'message' => '> > Laravel 11の新機能について教えてください'."\n".'> Slim Skeletonが追加されましたよ'."\n\n".'Per-second rate limitingも便利です',
         ], $thread1Reply1);
 
         Post::createAsFollowUp([
             'username' => '花子', // 重複
             'title' => '＞Laravelについて',
-            'message' => '> > > Laravel 11の新機能について教えてください'."\n".'> > Slim Skeletonが追加されましたよ'."\n". '> Per-second rate limitingも便利です'. "\n\n". 'Health routing機能も追加されましたね',
+            'message' => '> > > Laravel 11の新機能について教えてください'."\n".'> > Slim Skeletonが追加されましたよ'."\n".'> Per-second rate limitingも便利です'."\n\n".'Health routing機能も追加されましたね',
         ], $thread1Reply2);
 
         // スレッド2: 複数の枝分かれ

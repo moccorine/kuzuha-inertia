@@ -12,6 +12,11 @@ interface Post {
     metadata: {
         url?: string;
         auto_link?: boolean;
+        trip?: string;
+        reference?: {
+            post_id: number;
+            created_at: string;
+        };
     } | null;
     created_at: string;
 }
@@ -30,7 +35,7 @@ export default function Follow({ post, quotedMessage, defaultTitle }: Props) {
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="space-y-4">
                     <div className="rounded border bg-gray-50 p-4">
-                        <PostItem post={post} />
+                        <PostItem post={post} showDivider={false} />
                     </div>
 
                     <PostForm
