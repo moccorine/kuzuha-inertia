@@ -1,8 +1,10 @@
 {
     "Active visitors": "Active visitors: :count (:timeout seconds)",
     "Author": "Author",
+    "Author prefix": "Author: ",
     "Author search": "Author search",
     "Auto-link URLs": "Auto-link URLs in content",
+    "Back": "Back",
     "Button legend": "■ : Reply　★ : Author search　◆ : Thread view　木 : Tree view　 × : Delete your post (last post only)",
     "Clear": "Clear",
     "Content note": "Content (up to 350 characters and 80 lines. Please add line breaks as needed. HTML tags are not allowed.)",
@@ -21,11 +23,15 @@
     "Posted date": "Posted date",
     "posts found": "posts found",
     "Subject": "Subject",
+    "Standard view": "Standard view",
     "Submit": "Submit",
     "Thread view": "Thread view",
     "Title": "Title",
+    "Tree view": "Tree view",
     "Unread": "Unread",
     "No unread messages": "No unread messages",
+    "Update date": "Update date",
+    "Update date prefix": "Update date: ",
     "Username": "Username",
     "seconds": "seconds"
 }

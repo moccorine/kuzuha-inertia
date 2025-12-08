@@ -1,4 +1,5 @@
 import { useLang } from '@/hooks/useLang';
+import { info } from '@/routes';
 import { CustomLink } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -9,7 +10,7 @@ export default function LinkRow() {
     return (
         <div className="text-sm text-muted-foreground">
             |{' '}
-            <Link href="/info" className="hover:text-foreground">
+            <Link href={info().url} className="hover:text-foreground">
                 {__('Info Page')}
             </Link>{' '}
             |

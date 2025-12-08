@@ -1,7 +1,7 @@
 import { useAutoLink } from '@/hooks/use-auto-link';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { useLang } from '@/hooks/useLang';
-import { destroy, follow, search, thread } from '@/routes/posts';
+import { destroy, follow, search, thread, tree } from '@/routes/posts';
 import { Link, router } from '@inertiajs/react';
 
 interface Post {
@@ -22,7 +22,13 @@ interface Post {
     can_delete?: boolean;
 }
 
-export default function PostItem({ post }: { post: Post }) {
+export default function PostItem({
+    post,
+    lastViewedId,
+}: {
+    post: Post;
+    lastViewedId?: number;
+}) {
     const { autoLinkUrls } = useAutoLink();
     const { formatDate } = useDateFormat();
     const { __ } = useLang('bbs');
@@ -92,15 +98,28 @@ export default function PostItem({ post }: { post: Post }) {
                     )}
                     &nbsp;&nbsp;&nbsp;
                     <Link
-                        href={thread({ post: post.id })}
+                        href={thread(
+                            { post: post.id },
+                            lastViewedId
+                                ? { query: { last_id: lastViewedId } }
+                                : undefined,
+                        )}
                         className="hover:underline"
                     >
                         ◆
                     </Link>
                     &nbsp;&nbsp;&nbsp;
-                    <a href="#" className="hover:underline">
+                    <Link
+                        href={tree(
+                            { post: post.id },
+                            lastViewedId
+                                ? { query: { last_id: lastViewedId } }
+                                : undefined,
+                        )}
+                        className="hover:underline"
+                    >
                         木
-                    </a>
+                    </Link>
                     {post.can_delete && (
                         <>
                             &nbsp;&nbsp;&nbsp;

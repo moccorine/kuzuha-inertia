@@ -166,9 +166,47 @@ class PostController extends Controller
             ->latest()
             ->get();
 
+        // クエリパラメーターの last_id を優先、なければセッションから取得
+        $lastViewedId = $request->input('last_id', session('last_viewed_post_id', 0));
+
         return Inertia::render('posts/thread', [
             'posts' => $posts,
             'threadId' => $threadId,
+            'lastViewedId' => (int) $lastViewedId,
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
+    }
+
+    public function treeIndex(Request $request)
+    {
+        // 全投稿を取得
+        $posts = Post::latest()->get();
+
+        // クエリパラメーターの last_id を優先、なければセッションから取得
+        $lastViewedId = $request->input('last_id', session('last_viewed_post_id', 0));
+
+        return Inertia::render('posts/tree-index', [
+            'posts' => $posts,
+            'lastViewedId' => (int) $lastViewedId,
+            'customLinks' => CustomLink::orderBy('order')->get(),
+        ]);
+    }
+
+    public function tree(Request $request, Post $post)
+    {
+        $threadId = $post->thread_id ?? $post->id;
+        $posts = Post::where('thread_id', $threadId)
+            ->orWhere('id', $threadId)
+            ->latest()
+            ->get();
+
+        // クエリパラメーターの last_id を優先、なければセッションから取得
+        $lastViewedId = $request->input('last_id', session('last_viewed_post_id', 0));
+
+        return Inertia::render('posts/tree', [
+            'posts' => $posts,
+            'threadId' => $threadId,
+            'lastViewedId' => (int) $lastViewedId,
             'customLinks' => CustomLink::orderBy('order')->get(),
         ]);
     }
