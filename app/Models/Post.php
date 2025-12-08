@@ -17,6 +17,7 @@ class Post extends Model
         'title',
         'message',
         'metadata',
+        'poster_id',
     ];
 
     protected $casts = [

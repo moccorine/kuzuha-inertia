@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Services\ActiveVisitorService;
 use App\Services\CounterService;
 use App\Services\PostDeleteTokenService;
+use App\Services\PosterIdService;
 use App\Services\PostSubmissionService;
 use App\Services\TripcodeService;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class PostController extends Controller
         private CounterService $counterService,
         private ActiveVisitorService $activeVisitorService,
         private PostSubmissionService $submissionService,
-        private TripcodeService $tripcodeService
+        private TripcodeService $tripcodeService,
+        private PosterIdService $posterIdService
     ) {}
 
     public function index(Request $request)
@@ -126,6 +128,7 @@ class PostController extends Controller
             'title' => $request->input('title'),
             'message' => $request->input('message'),
             'metadata' => $metadata,
+            'poster_id' => $this->posterIdService->generate($request->ip()),
         ];
 
         if ($parentId && $parent = Post::find($parentId)) {
