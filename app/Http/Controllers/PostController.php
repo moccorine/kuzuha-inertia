@@ -23,7 +23,37 @@ class PostController extends Controller
     {
         $perPage = $request->input('per_page', config('bbs.messages_per_page'));
 
-        $posts = Post::latest()->paginate($perPage);
+        // セッションから最終閲覧IDを取得
+        $lastViewedId = session('last_viewed_post_id', 0);
+        $latestId = Post::max('id') ?? 0;
+
+        // 未読のみ表示モード
+        $isReadnewMode = $request->boolean('readnew');
+
+        if ($isReadnewMode) {
+            // パラメータで送られたlast_idを使用（未指定の場合はセッションの値）
+            $searchFromId = $request->input('last_id', $lastViewedId);
+
+            $posts = Post::where('id', '>', $searchFromId)
+                ->latest()
+                ->paginate($perPage);
+
+            \Log::info('Readnew mode', [
+                'query' => "id > {$searchFromId}",
+                'count' => $posts->total(),
+            ]);
+
+            // 未読モードでも最新IDをセッションに保存
+            session(['last_viewed_post_id' => $latestId]);
+        } else {
+            $posts = Post::latest()->paginate($perPage);
+            // 通常表示時に最新IDをセッションに保存
+            session(['last_viewed_post_id' => $latestId]);
+            \Log::info('Normal mode - saved to session', ['saved_id' => $latestId]);
+        }
+
+        // 未読件数を計算
+        $unreadCount = Post::where('id', '>', $lastViewedId)->count();
 
         // 削除可能な投稿IDを取得
         $token = $request->cookie('post_delete_token');
@@ -51,6 +81,9 @@ class PostController extends Controller
             'counterStartDate' => $counterStartDate,
             'activeVisitors' => $activeVisitors,
             'activeVisitorTimeout' => $activeVisitorTimeout,
+            'unreadCount' => $unreadCount,
+            'lastViewedId' => $lastViewedId,
+            'isReadnewMode' => $isReadnewMode,
         ]);
     }
 

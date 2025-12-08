@@ -2,7 +2,7 @@ import PostForm from '@/components/post-form';
 import PostItem from '@/components/post-item';
 import { useLang } from '@/hooks/useLang';
 import PublicLayout from '@/layouts/public-layout';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 interface Post {
     id: number;
@@ -36,12 +36,18 @@ export default function Index({
     counterStartDate,
     activeVisitors,
     activeVisitorTimeout,
+    unreadCount,
+    lastViewedId,
+    isReadnewMode,
 }: {
     posts: PaginatedPosts;
     counter?: number | null;
     counterStartDate?: string | null;
     activeVisitors?: number | null;
     activeVisitorTimeout?: number | null;
+    unreadCount?: number;
+    lastViewedId?: number;
+    isReadnewMode?: boolean;
 }) {
     const { __ } = useLang('bbs');
 
@@ -54,17 +60,26 @@ export default function Index({
                         counterStartDate={counterStartDate}
                         activeVisitors={activeVisitors}
                         activeVisitorTimeout={activeVisitorTimeout}
+                        unreadCount={unreadCount}
+                        lastViewedId={lastViewedId}
                     />
                     {posts.data.map((post) => (
                         <PostItem key={post.id} post={post} />
                     ))}
 
-                    {posts.from && posts.to && (
+                    {isReadnewMode && posts.data.length === 0 ? (
                         <div className="text-sm text-gray-600">
-                            {__('Pagination info')
-                                .replace(':from', posts.from.toString())
-                                .replace(':to', posts.to.toString())}
+                            {__('No unread messages')}
                         </div>
+                    ) : (
+                        posts.from &&
+                        posts.to && (
+                            <div className="text-sm text-gray-600">
+                                {__('Pagination info')
+                                    .replace(':from', posts.from.toString())
+                                    .replace(':to', posts.to.toString())}
+                            </div>
+                        )
                     )}
 
                     <div className="flex gap-1">

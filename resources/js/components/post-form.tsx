@@ -3,7 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useLang } from '@/hooks/useLang';
-import { store } from '@/routes/posts';
+import { store, index } from '@/routes/posts';
 import { Form } from '@inertiajs/react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -18,6 +18,8 @@ interface PostFormProps {
     counterStartDate?: string | null;
     activeVisitors?: number | null;
     activeVisitorTimeout?: number | null;
+    unreadCount?: number;
+    lastViewedId?: number;
 }
 
 export default function PostForm({
@@ -29,6 +31,8 @@ export default function PostForm({
     counterStartDate,
     activeVisitors,
     activeVisitorTimeout,
+    unreadCount = 0,
+    lastViewedId = 0,
 }: PostFormProps = {}) {
     const { __ } = useLang('bbs');
     const [isLinkRowOpen, setIsLinkRowOpen] = useState(() => {
@@ -91,6 +95,23 @@ export default function PostForm({
                         <Button type="submit" disabled={processing}>
                             {__('Post')}
                         </Button>
+                        {!followId && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    window.location.href = index.url({
+                                        query: {
+                                            readnew: 'true',
+                                            per_page: perPage.toString(),
+                                            last_id: lastViewedId.toString(),
+                                        },
+                                    });
+                                }}
+                            >
+                                {__('Unread')}
+                            </Button>
+                        )}
                         <Button type="reset" variant="outline">
                             {__('Clear')}
                         </Button>

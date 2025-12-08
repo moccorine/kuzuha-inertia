@@ -19,19 +19,19 @@ class PostSeeder extends Seeder
         $thread1Reply1 = Post::createAsFollowUp([
             'username' => '花子',
             'title' => '＞Laravelについて',
-            'message' => 'Slim Skeletonが追加されましたよ',
+            'message' => '> Laravel 11の新機能について教えてください'."\n\n".'Slim Skeletonが追加されましたよ',
         ], $thread1Root);
 
         $thread1Reply2 = Post::createAsFollowUp([
             'username' => '太郎', // 重複
             'title' => '＞Laravelについて',
-            'message' => 'Per-second rate limitingも便利です',
+            'message' => '> > Laravel 11の新機能について教えてください'."\n".'> Slim Skeletonが追加されましたよ'."\n\n". 'Per-second rate limitingも便利です',
         ], $thread1Reply1);
 
         Post::createAsFollowUp([
             'username' => '花子', // 重複
             'title' => '＞Laravelについて',
-            'message' => 'Health routing機能も追加されましたね',
+            'message' => '> > > Laravel 11の新機能について教えてください'."\n".'> > Slim Skeletonが追加されましたよ'."\n". '> Per-second rate limitingも便利です'. "\n\n". 'Health routing機能も追加されましたね',
         ], $thread1Reply2);
 
         // スレッド2: 複数の枝分かれ
@@ -123,6 +123,7 @@ class PostSeeder extends Seeder
                 'username' => $usernames[$i],
                 'message' => '返信レベル'.($i + 1).'です',
             ], $current);
+            sleep(1);
         }
     }
 }
