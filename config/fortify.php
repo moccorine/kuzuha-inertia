@@ -71,6 +71,9 @@ return [
     | authentication or password reset when the operations are successful
     | and the user is authenticated. You are free to change this value.
     |
+    | Note: The actual redirect is configured in FortifyServiceProvider using
+    | route('dashboard') which will redirect based on user role.
+    |
     */
 
     'home' => '/dashboard',

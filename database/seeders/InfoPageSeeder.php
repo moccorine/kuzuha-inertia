@@ -7,13 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 class InfoPageSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public static function defaultContent(): string
     {
-        DB::table('info_pages')->insert([
-            'content' => <<<'MARKDOWN'
+        return <<<'MARKDOWN'
 ## Rules
 
 Please follow these guidelines when posting:
@@ -31,7 +27,16 @@ Please follow these guidelines when posting:
 ## Contact
 
 If you have questions, please contact the administrator.
-MARKDOWN,
+MARKDOWN;
+    }
+
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        DB::table('info_pages')->insert([
+            'content' => static::defaultContent(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

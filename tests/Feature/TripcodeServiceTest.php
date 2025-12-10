@@ -1,6 +1,9 @@
 <?php
 
 use App\Services\TripcodeService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 test('tripcode data is returned when username contains secret', function () {
     $service = new TripcodeService;

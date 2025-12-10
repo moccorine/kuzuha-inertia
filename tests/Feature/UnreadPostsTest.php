@@ -11,7 +11,7 @@ test('normal view saves last viewed id to session', function () {
     $post2 = Post::factory()->create();
 
     // 通常表示
-    $response = $this->get('/posts');
+    $response = $this->get(route('posts.index'));
 
     $response->assertStatus(200);
 
@@ -24,14 +24,14 @@ test('readnew shows only unread posts', function () {
     $post1 = Post::factory()->create();
 
     // 通常表示してセッションに保存
-    $this->get('/posts');
+    $this->get(route('posts.index'));
 
     // 新しい投稿を追加
     $post2 = Post::factory()->create();
     $post3 = Post::factory()->create();
 
     // 未読モードでアクセス（post1のIDをlast_idとして送る）
-    $response = $this->get("/posts?readnew=true&last_id={$post1->id}");
+    $response = $this->get(route('posts.index', ['readnew' => 'true', 'last_id' => $post1->id]));
 
     $response->assertStatus(200);
 
@@ -53,10 +53,10 @@ test('readnew with no unread shows message', function () {
     $post1 = Post::factory()->create();
 
     // 通常表示してセッションに保存
-    $this->get('/posts');
+    $this->get(route('posts.index'));
 
     // 未読モードでアクセス（新しい投稿なし、post1のIDをlast_idとして送る）
-    $response = $this->get("/posts?readnew=true&last_id={$post1->id}");
+    $response = $this->get(route('posts.index', ['readnew' => 'true', 'last_id' => $post1->id]));
 
     $response->assertStatus(200);
 
@@ -73,14 +73,14 @@ test('unread count is calculated correctly', function () {
     $post1 = Post::factory()->create();
 
     // 通常表示してセッションに保存
-    $this->get('/posts');
+    $this->get(route('posts.index'));
 
     // 新しい投稿を追加
     $post2 = Post::factory()->create();
     $post3 = Post::factory()->create();
 
     // 未読モードでアクセス（post1のIDをlast_idとして送る）
-    $response = $this->get("/posts?readnew=true&last_id={$post1->id}");
+    $response = $this->get(route('posts.index', ['readnew' => 'true', 'last_id' => $post1->id]));
 
     $props = $response->viewData('page')['props'];
 
@@ -97,13 +97,13 @@ test('readnew updates last viewed id to latest', function () {
     $post1 = Post::factory()->create();
 
     // 通常表示してセッションに保存
-    $this->get('/posts');
+    $this->get(route('posts.index'));
 
     // 新しい投稿を追加
     $post2 = Post::factory()->create();
 
     // 未読モードでアクセス（post1のIDをlast_idとして送る）
-    $this->get("/posts?readnew=true&last_id={$post1->id}");
+    $this->get(route('posts.index', ['readnew' => 'true', 'last_id' => $post1->id]));
 
     // セッションのIDが最新IDに更新されていることを確認
     expect(session('last_viewed_post_id'))->toBe($post2->id);

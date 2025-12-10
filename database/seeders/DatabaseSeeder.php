@@ -6,6 +6,7 @@ use App\Models\CustomLink;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,7 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::firstOrCreate(
+        // Create admin role
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+
+        $user = User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
                 'name' => 'Test User',
@@ -24,6 +28,11 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // Assign admin role to test user
+        if (! $user->hasRole('admin')) {
+            $user->assignRole('admin');
+        }
 
         CustomLink::create([
             'name' => '暫wiki',
