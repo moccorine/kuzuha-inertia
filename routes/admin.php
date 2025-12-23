@@ -12,7 +12,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])
             return redirect()->route('dashboard');
         })->name('index');
 
-        Route::get('/links', LinkManagementController::class)->name('links.index');
+        Route::get('/links', [LinkManagementController::class, 'index'])->name('links.index');
+        Route::post('/links', [LinkManagementController::class, 'store'])->name('links.store');
+        Route::put('/links/{link}', [LinkManagementController::class, 'update'])->name('links.update');
+        Route::delete('/links/{link}', [LinkManagementController::class, 'destroy'])->name('links.destroy');
+        Route::post('/links/reorder', [LinkManagementController::class, 'reorder'])->name('links.reorder');
+
         Route::get('/info', [InfoPageManagementController::class, 'edit'])->name('info.index');
         Route::put('/info', [InfoPageManagementController::class, 'update'])->name('info.update');
 

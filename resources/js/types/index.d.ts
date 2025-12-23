@@ -49,4 +49,5 @@ export interface CustomLink {
     id: number;
     name: string;
     url: string;
+    order: number;
 }
