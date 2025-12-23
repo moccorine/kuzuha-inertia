@@ -4,7 +4,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
@@ -16,7 +15,7 @@ import AppLayout from '@/layouts/app-layout';
 import { index as infoManagementRoute } from '@/routes/admin/info';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { type FormEvent, useEffect } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 type InfoManagementProps = {
@@ -32,6 +31,7 @@ export default function InfoManagementPage({
 }: InfoManagementProps) {
     const { __ } = useLang();
     const { formatDate } = useDateFormat();
+    const [isEditMode, setIsEditMode] = useState(false);
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: __('Info Page Management'),
@@ -55,6 +55,9 @@ export default function InfoManagementPage({
         event.preventDefault();
         form.put(infoManagementRoute().url, {
             preserveScroll: true,
+            onSuccess: () => {
+                setIsEditMode(false);
+            },
         });
     };
 
@@ -62,26 +65,98 @@ export default function InfoManagementPage({
         setData('content', defaultContent);
     };
 
+    const handleEdit = () => {
+        setIsEditMode(true);
+    };
+
+    const handleCancel = () => {
+        setData('content', initialContent);
+        setIsEditMode(false);
+    };
+
+    if (!isEditMode) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title={__('Info Page Management')} />
+                <div className="px-6 md:px-4">
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <CardTitle>{__('Info Page')}</CardTitle>
+                                    <CardDescription>
+                                        {__(
+                                            'Preview of the public info page content.',
+                                        )}
+                                    </CardDescription>
+                                    {formattedUpdatedAt && (
+                                        <p className="mt-2 text-xs text-muted-foreground">
+                                            {__('Last updated at {date}', {
+                                                date: formattedUpdatedAt,
+                                            })}
+                                        </p>
+                                    )}
+                                </div>
+                                <Button onClick={handleEdit}>
+                                    {__('Edit')}
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="prose prose-sm max-w-none">
+                                {form.data.content.trim().length ? (
+                                    <ReactMarkdown
+                                        components={{
+                                            h1: ({ children }) => (
+                                                <h1 className="mb-4 text-3xl font-bold">
+                                                    {children}
+                                                </h1>
+                                            ),
+                                            h2: ({ children }) => (
+                                                <h2 className="mt-6 mb-3 text-2xl font-bold">
+                                                    {children}
+                                                </h2>
+                                            ),
+                                            p: ({ children }) => (
+                                                <p className="mb-4">{children}</p>
+                                            ),
+                                            ul: ({ children }) => (
+                                                <ul className="mb-4 ml-6 list-disc">
+                                                    {children}
+                                                </ul>
+                                            ),
+                                            ol: ({ children }) => (
+                                                <ol className="mb-4 ml-6 list-decimal">
+                                                    {children}
+                                                </ol>
+                                            ),
+                                            li: ({ children }) => (
+                                                <li className="mb-1">{children}</li>
+                                            ),
+                                        }}
+                                    >
+                                        {form.data.content}
+                                    </ReactMarkdown>
+                                ) : (
+                                    <div className="text-sm text-muted-foreground">
+                                        {__(
+                                            'The info page is currently empty. Click Edit to add content.',
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </AppLayout>
+        );
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={__('Info Page Management')} />
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2 px-6 md:px-4">
                 <Card>
-                    <CardHeader>
-                        <CardTitle>{__('Markdown Editor')}</CardTitle>
-                        <CardDescription>
-                            {__(
-                                'Manage the content used on the public info page.',
-                            )}
-                        </CardDescription>
-                        {formattedUpdatedAt && (
-                            <p className="text-xs text-muted-foreground">
-                                {__('Last updated at {date}', {
-                                    date: formattedUpdatedAt,
-                                })}
-                            </p>
-                        )}
-                    </CardHeader>
                     <CardContent>
                         <form
                             onSubmit={handleSubmit}
@@ -91,16 +166,10 @@ export default function InfoManagementPage({
                                 <Label htmlFor="content">{__('Content')}</Label>
                                 <Textarea
                                     id="content"
-                                    name="content"
                                     value={form.data.content}
-                                    onChange={(event) =>
-                                        setData(
-                                            'content',
-                                            event.currentTarget.value,
-                                        )
-                                    }
-                                    rows={14}
-                                    aria-invalid={Boolean(form.errors.content)}
+                                    onChange={(e) => setData('content', e.target.value)}
+                                    placeholder={__('Start typing...')}
+                                    className="min-h-[500px] font-mono text-sm"
                                 />
                                 <InputError
                                     message={form.errors.content}
@@ -116,6 +185,13 @@ export default function InfoManagementPage({
                                     {__('Load template')}
                                 </Button>
                                 <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleCancel}
+                                >
+                                    {__('Cancel')}
+                                </Button>
+                                <Button
                                     type="submit"
                                     disabled={form.processing}
                                 >
@@ -127,20 +203,18 @@ export default function InfoManagementPage({
                                     </span>
                                 )}
                             </div>
+                            {formattedUpdatedAt && (
+                                <p className="text-xs text-muted-foreground">
+                                    {__('Last updated at {date}', {
+                                        date: formattedUpdatedAt,
+                                    })}
+                                </p>
+                            )}
                         </form>
                     </CardContent>
-                    <CardFooter className="text-xs text-muted-foreground">
-                        {__('Work in progress')}
-                    </CardFooter>
                 </Card>
 
                 <Card className="overflow-hidden">
-                    <CardHeader>
-                        <CardTitle>{__('Preview')}</CardTitle>
-                        <CardDescription>
-                            {__('This preview updates as you type.')}
-                        </CardDescription>
-                    </CardHeader>
                     <CardContent>
                         <div className="max-h-[70vh] overflow-auto rounded-lg border border-dashed border-sidebar-border/60 p-4">
                             {form.data.content.trim().length ? (
